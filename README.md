@@ -8,7 +8,7 @@ erDiagram
       int id
       string Name
       string Surname
-      string Post
+      string Position
   }
 
   Client{

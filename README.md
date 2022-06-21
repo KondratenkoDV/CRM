@@ -26,6 +26,6 @@ erDiagram
   WorkPlan{
       int id
       DataTime DataStart
-      DataTime DataStop
+      DataTime DataFinish
   }
   ```

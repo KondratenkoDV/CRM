@@ -2,12 +2,13 @@
 erDiagram
   Employee }|--|{ Contract : has
   Client ||--|{ Contract : has
-  Contract ||--|| WorkPlan : contains
+  Contract ||--|{ WorkPlan : contains
   Employee{
       int Id
       string Name
       string Surname
       string Position
+      int ContractId
   }
 
   Client{
@@ -21,7 +22,6 @@ erDiagram
       string Subject
       decimal Price
       int ClientId
-      int WorkPlanId
       int EmployeeId
   }
 
@@ -29,5 +29,6 @@ erDiagram
       int Id
       DataTime DataStart
       DataTime DataFinish
+      int ContractId
   }
   ```

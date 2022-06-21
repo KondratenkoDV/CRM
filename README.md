@@ -3,11 +3,13 @@ erDiagram
   Employee }|--|{ Contract : h
   Client ||--|{ Contract : h
   Contract ||--|{ WorkPlan : h
+  Employee }|--|| Position : h
+  
   Employee{
       int Id
       string Name
       string Surname
-      string Position
+      int PositionId
       int ContractId
   }
 
@@ -30,5 +32,10 @@ erDiagram
       DataTime DataStart
       DataTime DataFinish
       int ContractId
+  }
+  
+  Position{
+      int Id
+      string Name
   }
   ```

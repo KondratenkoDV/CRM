@@ -1,6 +1,6 @@
 ```mermaid
 erDiagram
-  Employee }|--|{ Client : has
+  Employee }|--|{ Contract : has
   Client ||--|{ Contract : has
   Contract ||--|| WorkPlan : contains
   Employee{

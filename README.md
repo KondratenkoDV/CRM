@@ -2,7 +2,6 @@
 erDiagram
   Employee }|--|{ Client : has
   Client ||--|{ Contract : has
-  Employee }|--|{ Contract : has
   Contract ||--|| WorkPlan : contains
   Employee{
       int Id

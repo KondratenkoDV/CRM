@@ -1,9 +1,9 @@
 ```mermaid
 erDiagram
-  Employee }|--|{ Contract : h
-  Client ||--|{ Contract : h
-  Contract ||--|{ WorkPlan : h
-  Employee }|--|| Position : h
+  Employee }|--|{ Contract : ""
+  Client ||--|{ Contract : ""
+  Contract ||--|{ WorkPlan : ""
+  Employee }|--|| Position : ""
   
   Employee{
       int Id

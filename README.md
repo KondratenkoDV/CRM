@@ -10,6 +10,7 @@ erDiagram
       string Name
       string Surname
       int PositionId
+      Position Position
       int ContractId
   }
 

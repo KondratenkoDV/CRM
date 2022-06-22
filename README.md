@@ -22,6 +22,7 @@ erDiagram
   Contract{
       int Id
       string Subject
+      string Address
       decimal Price
       int ClientId
       int EmployeeId

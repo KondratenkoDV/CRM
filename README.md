@@ -39,5 +39,6 @@ erDiagram
   Position{
       int Id
       string Name
+      List~Employee~ Employees
   }
   ```

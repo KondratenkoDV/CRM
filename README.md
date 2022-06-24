@@ -7,8 +7,7 @@ erDiagram
   
   Employee{
       int Id
-      string Name
-      string Surname
+      string Name "[Unique]"
       int PositionId
       int ContractId
   }

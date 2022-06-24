@@ -16,7 +16,7 @@ erDiagram
 
   Client{
       int Id
-      string Name
+      string Name "[Unique]"
       int ContactPhonNumber
   }
 
@@ -31,13 +31,13 @@ erDiagram
 
   WorkPlan{
       int Id
-      DataTime DataStart
-      DataTime DataFinish
+      DataTime DataStart "[Unique]"
+      DataTime DataFinish "[Unique]"
       int ContractId
   }
   
   Position{
       int Id
-      string Name
+      string Name "[Unique]"
   }
   ```

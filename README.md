@@ -29,8 +29,8 @@ erDiagram
 
   WorkPlan{
       int Id
-      DataTime DataStart "[Unique]"
-      DataTime DataFinish "[Unique]"
+      DateTime DateStart "[Unique]"
+      DateTime DateFinish "[Unique]"
       int ContractId
   }
   

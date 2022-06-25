@@ -15,7 +15,7 @@ erDiagram
   Client{
       int Id
       string Name "[Unique]"
-      int ContactPhonNumber
+      int PhonNumber
   }
 
   Contract{

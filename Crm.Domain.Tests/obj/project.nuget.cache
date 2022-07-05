@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "yv/kILZ6yVF/RSVyWb5mknixrtDs3lA36pMZLReMx29/QW4R806vajthdT1L6kNPsfJDyzIZdxP9Laui+TtR5w==",
+  "dgSpecHash": "L3mdM+DjelFyOexGLZCRDmmTBzMAnZtu5qQegBU8l0vsNa9WpKVlGc+jS8QVzOD9wPPVxPYXiT8m1fGNpKM/cg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Andrew\\source\\Repos\\KondratenkoDV\\CRM\\Crm.Domain\\Crm.Domain.Tests\\Crm.Domain.Tests.csproj",
+  "projectFilePath": "C:\\Users\\Andrew\\source\\Repos\\KondratenkoDV\\CRM\\Crm.Domain.Tests\\Crm.Domain.Tests.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Andrew\\.nuget\\packages\\microsoft.codecoverage\\17.2.0\\microsoft.codecoverage.17.2.0.nupkg.sha512",
     "C:\\Users\\Andrew\\.nuget\\packages\\microsoft.csharp\\4.0.1\\microsoft.csharp.4.0.1.nupkg.sha512",

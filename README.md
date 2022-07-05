@@ -7,8 +7,7 @@ erDiagram
   
   Employee{
       int Id
-      string Name
-      string Surname
+      string Name "[Unique]"
       int PositionId
       int ContractId
   }
@@ -16,7 +15,7 @@ erDiagram
   Client{
       int Id
       string Name "[Unique]"
-      int ContactPhonNumber
+      int PhonNumber
   }
 
   Contract{
@@ -30,8 +29,8 @@ erDiagram
 
   WorkPlan{
       int Id
-      DataTime DataStart "[Unique]"
-      DataTime DataFinish "[Unique]"
+      DateTime DateStart "[Unique]"
+      DateTime DateFinish "[Unique]"
       int ContractId
   }
   

@@ -24,7 +24,6 @@ erDiagram
       string Address
       decimal Price
       int ClientId
-      int EmployeeId
   }
 
   WorkPlan{

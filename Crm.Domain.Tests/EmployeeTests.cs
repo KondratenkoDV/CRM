@@ -10,36 +10,21 @@ namespace Crm.Domain.Tests
         {
             // Arrenge
 
-            var positionId = 1;
+            var name = "name";
+
+            var surname = "surname";
+
+            var positionId = 0;
+
+            var expected = "surname name";
 
             // Act
 
-            var employee = new Employee(positionId);
+            var employee = new Employee(name, surname, positionId);
 
             // Assert
 
             Assert.Equal(positionId, employee.PositionId);
-        }
-
-        [Fact]
-        public void When_AddName_Expect_NameWasAddedToEmployee()
-        {
-            // Arrenge
-
-            var name = "test";
-
-            var surname = "test2";
-
-            var expected = $"{surname} {name}";
-
-            // Act
-
-            var employee = new Employee(1);
-
-            employee.AddName(name, surname);
-
-            // Assert
-
             Assert.Equal(expected, employee.Name);
         }
 
@@ -48,11 +33,25 @@ namespace Crm.Domain.Tests
         {
             // Arrenge
 
-            var contract = new Contract("test", null!, 0, 1);
+            var subject = "subject";
+
+            var address = "address";
+
+            var price = 0;
+
+            var clientId = 0;
+
+            var contract = new Contract(subject, address, price, clientId);
+
+            var name = "name";
+
+            var surname = "surname";
+
+            var positionId = 0;
+
+            var employee = new Employee(name, surname, positionId);
 
             // Act
-
-            var employee = new Employee(1);
 
             employee.AddContract(contract);
 

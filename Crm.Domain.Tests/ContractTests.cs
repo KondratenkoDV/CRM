@@ -14,9 +14,9 @@ namespace Crm.Domain.Tests
 
             var address = "address";
 
-            var price = 0m;
+            var price = 0;
 
-            var clientId = 1;
+            var clientId = 0;
 
             // Act
 
@@ -35,11 +35,25 @@ namespace Crm.Domain.Tests
         {
             // Arrenge
 
-            var employee = new Employee(1);
+            var name = "name";
+
+            var surname = "surname";
+
+            var positionId = 0;
+
+            var employee = new Employee(name, surname, positionId);
+
+            var subject = "subject";
+
+            var address = "address";
+
+            var price = 0;
+
+            var clientId = 0;
+
+            var contract = new Contract(subject, address, price, clientId);
 
             // Act
-
-            var contract = new Contract(null!, null!, 0, 1);
 
             contract.AddEmployee(employee);
 
@@ -53,11 +67,25 @@ namespace Crm.Domain.Tests
         {
             // Arrenge
 
-            var workPlan = new WorkPlan(DateTime.Now, DateTime.Now, 1);
+            var dateStart = DateTime.Now;
+
+            var dateFinish = DateTime.UtcNow;
+
+            var contractId = 0;
+
+            var workPlan = new WorkPlan(dateStart, dateFinish, contractId);
+
+            var subject = "subject";
+
+            var address = "address";
+
+            var price = 0;
+
+            var clientId = 0;
+
+            var contract = new Contract(subject, address, price, clientId);
 
             // Act
-
-            var contract = new Contract(null!, null!, 0, 1);
 
             contract.AddWorkPlan(workPlan);
 

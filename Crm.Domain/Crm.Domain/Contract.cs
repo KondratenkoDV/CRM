@@ -1,28 +1,20 @@
-﻿
+﻿using System;
 
 namespace Crm.Domain
 {
-    public class Contract : IContract
+    public class Contract
     {
-        private string? _subject;
-
-        private string? _address;
-
-        private decimal _price;
-
-        private int _clientId;
-
         public int Id { get; }
 
-        public string? Subject { get => _subject; }
+        public string Subject { get; }
 
-        public string? Address { get => _address; }
+        public string Address { get; }
 
-        public decimal Price { get => _price; }
+        public decimal Price { get; }
 
-        public int ClientId { get => _clientId; }
+        public int ClientId { get; }
 
-        public Client? Client { get; }
+        public Client Client { get; }
 
         public ICollection<Employee> Employees { get; }
 
@@ -34,24 +26,37 @@ namespace Crm.Domain
             decimal price, 
             int clientId)
         {
-            _subject = subject;
-            _address = address;
-            _price = price;
-            _clientId = clientId;
+            if(string.IsNullOrEmpty(subject))
+            {
+                throw new ArgumentException(nameof(subject));
+            }
+
+            if(string.IsNullOrEmpty(address))
+            {
+                throw new ArgumentException(nameof(address));
+            }
+
+            Subject = subject;
+            Address = address;
+            Price = price;
+            ClientId = clientId;
 
             Employees = new List<Employee>();
 
             WorkPlans = new List<WorkPlan>();
         }
 
+        public Contract()
+        { }
+
         public void AddEmployee(Employee employee)
         {
-            Employees?.Add(employee);
+            Employees.Add(employee);
         }
 
         public void AddWorkPlan(WorkPlan workPlan)
         {
-            WorkPlans?.Add(workPlan);
+            WorkPlans.Add(workPlan);
         }
     }
 }

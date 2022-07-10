@@ -638,6 +638,9 @@
       "Crm.Domain/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v6.0",
+        "dependencies": {
+          "Microsoft.EntityFrameworkCore.SqlServer": "6.0.6"
+        },
         "compile": {
           "bin/placeholder/Crm.Domain.dll": {}
         },

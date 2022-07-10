@@ -12,36 +12,21 @@ namespace Crm.Domain.Tests
 
             var name = "name";
 
-            // Act
-
-            var client = new Client(name);
-
-            // Assert
-
-            Assert.Equal(name, client.Name);
-        }
-
-        [Fact]
-        public void When_AddPhonNumber_Expect_PhonNumberWasAddedToClient()
-        {
-            // Arrange
-
             var codeOfTheCountry = CodeOfTheCountry.Ukraine;
 
             var regionCode = "00";
 
-            var subscriberNumber = "0000000";
+            var subscriberNumbersubs = "0000000";
 
-            var expected = $"+{(int)codeOfTheCountry} ({int.Parse(regionCode)}) {int.Parse(subscriberNumber)}";
+            var expected = "+380 (00) 0000000";
 
             // Act
 
-            var client = new Client(null!);
-
-            client.AddPhonNumber((int)codeOfTheCountry, int.Parse(regionCode), int.Parse(subscriberNumber));
+            var client = new Client(name, codeOfTheCountry, regionCode, subscriberNumbersubs);
 
             // Assert
 
+            Assert.Equal(name, client.Name);
             Assert.Equal(expected, client.PhonNumber);
         }
 
@@ -50,13 +35,27 @@ namespace Crm.Domain.Tests
         {
             // Arrenge
 
-            var subject = "test";
+            var subject = "subject";
 
-            var contract = new Contract(subject, null!, 0, 1);
+            var address = "address";
+
+            var price = 0;
+
+            var clientId = 0;
+
+            var contract = new Contract(subject, address, price, clientId);
+
+            var name = "name";
+
+            var codeOfTheCountry = CodeOfTheCountry.Ukraine;
+
+            var regionCode = "00";
+
+            var subscriberNumbersubs = "0000000";
+
+            var client = new Client(name, codeOfTheCountry, regionCode, subscriberNumbersubs);
 
             // Act
-
-            var client = new Client(null!);
 
             client.AddContract(contract);
 

@@ -1,33 +1,30 @@
-﻿
+﻿using System;
 
 namespace Crm.Domain
 {
-    public class WorkPlan : IWorkPlan
+    public class WorkPlan
     {
-        private DateTime _dateStart;
-
-        private DateTime _dateFinish;
-
-        private int _contractId;
-
         public int Id { get; }
 
-        public DateTime DateStart { get => _dateStart; }
+        public DateTime DateStart { get; }
 
-        public DateTime DateFinish { get => _dateFinish; }
+        public DateTime DateFinish { get; }
 
-        public int ContractId { get => _contractId; }
+        public int ContractId { get; }
 
-        public Contract? Contract { get; }
+        public Contract Contract { get; }
 
         public WorkPlan(
             DateTime dateStart, 
             DateTime dateFinish, 
             int contractId)
         {
-            _dateStart = dateStart;
-            _dateFinish = dateFinish;
-            _contractId = contractId;
+            DateStart = dateStart;
+            DateFinish = dateFinish;
+            ContractId = contractId;
         }
+
+        public WorkPlan()
+        { }
     }
 }

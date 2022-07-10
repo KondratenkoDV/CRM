@@ -1,27 +1,30 @@
-﻿
+﻿using System;
 
 namespace Crm.Domain
 {
-    public class Position : IName, IPosition
+    public class Position
     {
-        private string? _name;
-
         public int Id { get; }
 
-        public string? Name { get => _name; }
+        public string Name { get; }
 
         public ICollection<Employee> Employees { get; }
 
         public Position(string name)
         {
-            _name = name;
+            if(string.IsNullOrEmpty(name))
+            {
+                throw new ArgumentException(nameof(name));
+            }
+
+            Name = name;
 
             Employees = new List<Employee>();
         }
 
         public void AddEmployee(Employee employee)
         {
-            Employees?.Add(employee);
+            Employees.Add(employee);
         }
     }
 }

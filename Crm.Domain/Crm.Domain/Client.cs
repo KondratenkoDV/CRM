@@ -1,36 +1,50 @@
-﻿
+﻿using System;
 
 namespace Crm.Domain
 {
-    public class Client : IName, IClient
+    public class Client
     {
-        private string? _name;
-
-        private string? _phonNumber;
-
         public int Id { get; }
 
-        public string? Name { get => _name; }
+        public string Name { get; }
 
-        public string? PhonNumber { get => _phonNumber; }
+        public string PhonNumber { get; }
 
         public ICollection<Contract> Contracts { get; }
 
-        public Client(string name)
+        public Client(
+            string name, 
+            CodeOfTheCountry codeOfTheCountry, 
+            string regionCode, 
+            string subscriberNumber)
         {
-            _name = name;
+            if(string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentException(nameof(name));
+            }
+
+            if(string.IsNullOrEmpty(regionCode) || !int.TryParse(regionCode, out int code) || regionCode.Length != 2)
+            {
+                throw new ArgumentException(nameof(regionCode));
+            }
+
+            if (string.IsNullOrEmpty(regionCode) || !int.TryParse(subscriberNumber, out int number) || subscriberNumber.Length != 7)
+            {
+                throw new ArgumentException(nameof(subscriberNumber));
+            }
+
+            Name = name;
+            PhonNumber = $"+{(int)codeOfTheCountry} ({regionCode}) {subscriberNumber}";
 
             Contracts = new List<Contract>();
         }
 
-        public void AddPhonNumber(int codeOfTheCountry, int regionCode, int subscriberNumber)
-        {
-            _phonNumber = $"+{codeOfTheCountry} ({regionCode}) {subscriberNumber}";
-        }
+        private Client()
+        { }
 
         public void AddContract(Contract contract)
         {
-            Contracts?.Add(contract);
+            Contracts.Add(contract);
         }
     }
 }

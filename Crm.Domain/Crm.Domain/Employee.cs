@@ -1,38 +1,46 @@
-﻿
+﻿using System;
 
 namespace Crm.Domain
 {
-    public class Employee : IName, IEmployee
+    public class Employee
     {
-        private string? _name;
+        public int Id { get; set; }
 
-        private int _positionId;
+        public string Name { get; }
 
-        public int Id { get; }
+        public int PositionId { get; }
 
-        public string? Name { get => _name; }
-
-        public int PositionId { get => _positionId; }
-
-        public Position? Position { get; }
+        public Position Position { get; }
 
         public ICollection<Contract> Contracts { get; }
 
-        public Employee(int positionId)
+        public Employee(
+            string name, 
+            string surname, 
+            int positionId)
         {
-            _positionId = positionId;
+            if(string.IsNullOrEmpty(name))
+            {
+                throw new ArgumentException(nameof(name));
+            }
+
+            if(string.IsNullOrEmpty(surname))
+            {
+                throw new ArgumentException(nameof(surname));
+            }
+
+            Name = $"{surname} {name}";
+            PositionId = positionId;
 
             Contracts = new List<Contract>();
         }
 
-        public void AddName(string name, string surname)
-        {
-            _name = $"{surname} {name}";
-        }
+        public Employee()
+        { }
 
         public void AddContract(Contract contract)
         {
-            Contracts?.Add(contract);
+            Contracts.Add(contract);
         }
     }
 }

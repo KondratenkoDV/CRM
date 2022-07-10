@@ -14,7 +14,7 @@ namespace Crm.Domain.Tests
 
             var dateFinish = DateTime.UtcNow;
 
-            var contractId = 1;
+            var contractId = 0;
 
             // Act
 
@@ -23,9 +23,7 @@ namespace Crm.Domain.Tests
             // Assert
 
             Assert.Equal(dateStart, workPlan.DateStart);
-
             Assert.Equal(dateFinish, workPlan.DateFinish);
-
             Assert.Equal(contractId, workPlan.ContractId);
         }
     }

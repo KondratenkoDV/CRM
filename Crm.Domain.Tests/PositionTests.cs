@@ -10,7 +10,7 @@ namespace Crm.Domain.Tests
         {
             // Arrenge
 
-            var name = "test";
+            var name = "name";
 
             // Act
 
@@ -26,11 +26,19 @@ namespace Crm.Domain.Tests
         {
             // Arrenge
 
-            var employee = new Employee(1);
+            var name = "name";
+
+            var surname = "surname";
+
+            var positionId = 0;
+
+            var employee = new Employee(name, surname, positionId);
+
+            var namePosition = "name";
+
+            var position = new Position(namePosition);
 
             // Act
-
-            var position = new Position(null!);
 
             position.AddEmployee(employee);
 

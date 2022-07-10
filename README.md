@@ -7,14 +7,13 @@ erDiagram
   
   Employee{
       int Id
-      string Name "[Unique]"
+      string Name
       int PositionId
-      int ContractId
   }
 
   Client{
       int Id
-      string Name "[Unique]"
+      string Name
       int PhonNumber
   }
 
@@ -24,18 +23,17 @@ erDiagram
       string Address
       decimal Price
       int ClientId
-      int EmployeeId
   }
 
   WorkPlan{
       int Id
-      DateTime DateStart "[Unique]"
-      DateTime DateFinish "[Unique]"
+      DateTime DateStart
+      DateTime DateFinish
       int ContractId
   }
   
   Position{
       int Id
-      string Name "[Unique]"
+      string Name
   }
   ```

@@ -29,6 +29,7 @@ erDiagram
       int Id
       DateTime DateStart
       DateTime DateFinish
+      int ContractId
   }
   
   Position{

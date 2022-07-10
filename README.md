@@ -9,7 +9,6 @@ erDiagram
       int Id
       string Name
       int PositionId
-      int ContractId
   }
 
   Client{

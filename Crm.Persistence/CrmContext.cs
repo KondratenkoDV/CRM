@@ -4,7 +4,7 @@ using Crm.Domain;
 
 namespace Crm.Persistence
 {
-    public class CrmContext : DbContext
+    public class CrmContext : DbContext, IDbContext
     {
         public DbSet<Client> Clients { get; set; } = null!;
 

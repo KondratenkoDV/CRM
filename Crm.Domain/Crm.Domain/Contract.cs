@@ -46,7 +46,7 @@ namespace Crm.Domain
             WorkPlans = new List<WorkPlan>();
         }
 
-        public Contract()
+        private Contract()
         { }
 
         public void AddEmployee(Employee employee)

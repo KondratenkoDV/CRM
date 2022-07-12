@@ -24,7 +24,7 @@ namespace Crm.Domain
             ContractId = contractId;
         }
 
-        public WorkPlan()
+        private WorkPlan()
         { }
     }
 }

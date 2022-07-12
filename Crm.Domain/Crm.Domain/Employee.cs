@@ -35,7 +35,7 @@ namespace Crm.Domain
             Contracts = new List<Contract>();
         }
 
-        public Employee()
+        private Employee()
         { }
 
         public void AddContract(Contract contract)

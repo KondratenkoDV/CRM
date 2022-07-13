@@ -22,7 +22,21 @@ namespace Crm.Persistence.Configurations
                 .IsRequired();
 
             builder
-                .Property(c => c.PhonNumber)
+                .Property(c => c.PhoneNumber)
+                .HasMaxLength(255)
+                .IsRequired();
+
+            builder
+                .Property(c => c.СodeOfTheCountry)
+                .IsRequired();
+
+            builder
+                .Property(c => c.RegionCode)
+                .HasMaxLength(255)
+                .IsRequired();
+
+            builder
+                .Property(c => c.SubscriberNumber)
                 .HasMaxLength(255)
                 .IsRequired();
         }

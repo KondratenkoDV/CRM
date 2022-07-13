@@ -93,5 +93,109 @@ namespace Crm.Domain.Tests
 
             Assert.NotEmpty(contract.WorkPlans);
         }
+
+        [Fact]
+        public void When_ChangeSubject_Expect_ChangeSubjectWasAddedToContract()
+        {
+            // Arrenge
+
+            var subject = "subject";
+
+            var address = "address";
+
+            var price = 0;
+
+            var clientId = 0;
+
+            var contract = new Contract(subject, address, price, clientId);
+
+            var newSubject = "newSubject";
+
+            // Act
+
+            contract.ChangeSubject(newSubject);
+
+            //Assert
+
+            Assert.Equal(newSubject, contract.Subject);
+        }
+
+        [Fact]
+        public void When_ChangeAddress_Expect_ChangeAddressWasAddedToContract()
+        {
+            // Arrenge
+
+            var subject = "subject";
+
+            var address = "address";
+
+            var price = 0;
+
+            var clientId = 0;
+
+            var contract = new Contract(subject, address, price, clientId);
+
+            var newAddress = "newAddress";
+
+            // Act
+
+            contract.ChangeAddress(newAddress);
+
+            //Assert
+
+            Assert.Equal(newAddress, contract.Address);
+        }
+
+        [Fact]
+        public void When_ChangePrice_Expect_ChangePriceWasAddedToContract()
+        {
+            // Arrenge
+
+            var subject = "subject";
+
+            var address = "address";
+
+            var price = 0;
+
+            var clientId = 0;
+
+            var contract = new Contract(subject, address, price, clientId);
+
+            var newPrice = 1;
+
+            // Act
+
+            contract.ChangePrice(newPrice);
+
+            //Assert
+
+            Assert.Equal(newPrice, contract.Price);
+        }
+
+        [Fact]
+        public void When_ChangeClientId_Expect_ChangeClientIdWasAddedToContract()
+        {
+            // Arrenge
+
+            var subject = "subject";
+
+            var address = "address";
+
+            var price = 0;
+
+            var clientId = 0;
+
+            var contract = new Contract(subject, address, price, clientId);
+
+            var newClientId = 1;
+
+            // Act
+
+            contract.ChangeClientId(newClientId);
+
+            //Assert
+
+            Assert.Equal(newClientId, contract.ClientId);
+        }
     }
 }

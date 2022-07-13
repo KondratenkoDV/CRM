@@ -6,31 +6,38 @@ namespace Crm.Domain
     {
         public int Id { get; set; }
 
-        public string Name { get; }
+        public string Name { get; private set; }
 
-        public int PositionId { get; }
+        public string FirstName { get; private set; }
+
+        public string LastName { get; private set; }
+
+        public int PositionId { get; private set; }
 
         public Position Position { get; }
 
         public ICollection<Contract> Contracts { get; }
 
         public Employee(
-            string name, 
-            string surname, 
+            string firstName, 
+            string lastName, 
             int positionId)
         {
-            if(string.IsNullOrEmpty(name))
+            if(string.IsNullOrEmpty(firstName))
             {
-                throw new ArgumentException(nameof(name));
+                throw new ArgumentException(nameof(firstName));
             }
 
-            if(string.IsNullOrEmpty(surname))
+            if(string.IsNullOrEmpty(lastName))
             {
-                throw new ArgumentException(nameof(surname));
+                throw new ArgumentException(nameof(lastName));
             }
 
-            Name = $"{surname} {name}";
+            FirstName = firstName;
+            LastName = lastName;
             PositionId = positionId;
+
+            AddName();
 
             Contracts = new List<Contract>();
         }
@@ -41,6 +48,28 @@ namespace Crm.Domain
         public void AddContract(Contract contract)
         {
             Contracts.Add(contract);
+        }
+
+        public void AddName()
+        {
+            Name = $"{LastName} {FirstName}";
+        }
+
+        public void ChangeName(string lastName, string firstName)
+        {
+            if (lastName != null && firstName != null)
+            {
+                LastName = lastName;
+
+                FirstName = firstName;
+
+                AddName();
+            }
+        }
+
+        public void ChangePositionId(int positionId)
+        {
+            PositionId = positionId;
         }
     }
 }

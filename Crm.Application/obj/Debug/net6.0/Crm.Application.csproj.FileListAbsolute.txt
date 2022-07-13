@@ -10,3 +10,8 @@ C:\Users\Andrew\source\Repos\KondratenkoDV\CRM\Crm.Application\obj\Debug\net6.0\
 C:\Users\Andrew\source\Repos\KondratenkoDV\CRM\Crm.Application\obj\Debug\net6.0\refint\Crm.Application.dll
 C:\Users\Andrew\source\Repos\KondratenkoDV\CRM\Crm.Application\obj\Debug\net6.0\Crm.Application.pdb
 C:\Users\Andrew\source\Repos\KondratenkoDV\CRM\Crm.Application\obj\Debug\net6.0\ref\Crm.Application.dll
+C:\Users\Andrew\source\Repos\KondratenkoDV\CRM\Crm.Application\bin\Debug\net6.0\Crm.Domain.dll
+C:\Users\Andrew\source\Repos\KondratenkoDV\CRM\Crm.Application\bin\Debug\net6.0\Crm.Persistence.dll
+C:\Users\Andrew\source\Repos\KondratenkoDV\CRM\Crm.Application\bin\Debug\net6.0\Crm.Domain.pdb
+C:\Users\Andrew\source\Repos\KondratenkoDV\CRM\Crm.Application\bin\Debug\net6.0\Crm.Persistence.pdb
+C:\Users\Andrew\source\Repos\KondratenkoDV\CRM\Crm.Application\obj\Debug\net6.0\Crm.Application.csproj.CopyComplete

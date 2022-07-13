@@ -6,13 +6,13 @@ namespace Crm.Domain
     {
         public int Id { get; }
 
-        public string Subject { get; }
+        public string Subject { get; private set; }
 
-        public string Address { get; }
+        public string Address { get; private set; }
 
-        public decimal Price { get; }
+        public decimal Price { get; private set; }
 
-        public int ClientId { get; }
+        public int ClientId { get; private set; }
 
         public Client Client { get; }
 
@@ -57,6 +57,32 @@ namespace Crm.Domain
         public void AddWorkPlan(WorkPlan workPlan)
         {
             WorkPlans.Add(workPlan);
+        }
+
+        public void ChangeSubject(string subject)
+        {
+            if(subject != null)
+            {
+                Subject = subject;
+            }
+        }
+
+        public void ChangeAddress(string address)
+        {
+            if (address != null)
+            {
+                Address = address;
+            }
+        }
+
+        public void ChangePrice(decimal price)
+        {
+            Price = price;        
+        }
+
+        public void ChangeClientId(int clientId)
+        {
+            ClientId = clientId;
         }
     }
 }

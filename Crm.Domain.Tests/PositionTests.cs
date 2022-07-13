@@ -46,5 +46,25 @@ namespace Crm.Domain.Tests
 
             Assert.NotEmpty(position.Employees);
         }
+
+        [Fact]
+        public void When_ChangeName_Expect_ChangeNameWasAddedToPosition()
+        {
+            // Arrenge
+
+            var name = "name";
+
+            var position = new Position(name);
+
+            var newName = "newName";
+
+            // Act
+
+            position.ChangeName(newName);
+
+            // Assert
+
+            Assert.Equal(newName, position.Name);
+        }
     }
 }

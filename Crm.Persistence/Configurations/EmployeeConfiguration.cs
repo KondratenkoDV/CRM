@@ -22,6 +22,16 @@ namespace Crm.Persistence.Configurations
                 .IsRequired();
 
             builder
+                .Property(e => e.FirstName)
+                .HasMaxLength(255)
+                .IsRequired();
+
+            builder
+                .Property(e => e.LastName)
+                .HasMaxLength(255)
+                .IsRequired();
+
+            builder
                 .HasOne(e => e.Position)
                 .WithMany(p => p.Employees)
                 .HasForeignKey(e => e.PositionId);

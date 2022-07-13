@@ -6,7 +6,7 @@ namespace Crm.Domain
     {
         public int Id { get; }
 
-        public string Name { get; }
+        public string Name { get; private set; }
 
         public ICollection<Employee> Employees { get; }
 
@@ -25,6 +25,13 @@ namespace Crm.Domain
         public void AddEmployee(Employee employee)
         {
             Employees.Add(employee);
+        }
+        public void ChangeName(string name)
+        {
+            if (name != null)
+            {
+                Name = name;
+            }
         }
     }
 }

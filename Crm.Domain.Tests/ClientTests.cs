@@ -18,8 +18,6 @@ namespace Crm.Domain.Tests
 
             var subscriberNumbersubs = "0000000";
 
-            var expected = "+380 (00) 0000000";
-
             // Act
 
             var client = new Client(name, codeOfTheCountry, regionCode, subscriberNumbersubs);
@@ -27,7 +25,9 @@ namespace Crm.Domain.Tests
             // Assert
 
             Assert.Equal(name, client.Name);
-            Assert.Equal(expected, client.PhonNumber);
+            Assert.Equal(codeOfTheCountry, client.СodeOfTheCountry);
+            Assert.Equal(regionCode, client.RegionCode);
+            Assert.Equal(subscriberNumbersubs, client.SubscriberNumber);
         }
 
         [Fact]
@@ -62,6 +62,90 @@ namespace Crm.Domain.Tests
             // Assert
 
             Assert.NotEmpty(client.Contracts);
+        }
+
+        [Fact]
+        public void When_AddPhoneNumber_Expect_PhoneNumberWasAddedToClient()
+        {
+            // Arrenge
+
+            var name = "name";
+
+            var codeOfTheCountry = CodeOfTheCountry.Ukraine;
+
+            var regionCode = "00";
+
+            var subscriberNumbersubs = "0000000";
+
+            var expected = $"+380 (00) 0000000";
+
+            var client = new Client(name, codeOfTheCountry, regionCode, subscriberNumbersubs);
+
+            // Act
+
+            client.AddPhoneNumber();
+
+            // Assert
+
+            Assert.Equal(expected, client.PhoneNumber);
+        }
+
+        [Fact]
+        public void When_ChangeName_Expect_ChangeNameWasAddedToClient()
+        {
+            // Arrenge
+
+            var name = "name";
+
+            var codeOfTheCountry = CodeOfTheCountry.Ukraine;
+
+            var regionCode = "00";
+
+            var subscriberNumbersubs = "0000000";
+
+            var client = new Client(name, codeOfTheCountry, regionCode, subscriberNumbersubs);
+
+            var newName = "newName";
+
+            // Act
+
+            client.ChangeName(newName);
+
+            // Assert
+
+            Assert.Equal(newName, client.Name);
+        }
+
+        [Fact]
+        public void When_ChangePhoneNumber_Expect_ChangePhoneNumberWasAddedToClient()
+        {
+            // Arrenge
+
+            var name = "name";
+
+            var codeOfTheCountry = CodeOfTheCountry.Ukraine;
+
+            var regionCode = "00";
+
+            var subscriberNumbersubs = "0000000";
+
+            var client = new Client(name, codeOfTheCountry, regionCode, subscriberNumbersubs);
+
+            var newCodeOfTheCountry = CodeOfTheCountry.Ukraine;
+
+            var newRegionCode = "11";
+
+            var newSubscriberNumbersubs = "1111111";
+
+            var expected = $"+380 (11) 1111111";
+
+            // Act
+
+            client.ChangePhoneNumber(newCodeOfTheCountry, newRegionCode, newSubscriberNumbersubs);
+
+            // Assert
+
+            Assert.Equal(expected, client.PhoneNumber);
         }
     }
 }

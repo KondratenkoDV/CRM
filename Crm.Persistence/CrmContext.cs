@@ -2,6 +2,7 @@
 using Crm.Domain;
 using Crm.Persistence.Configurations;
 using Crm.Domain.Interfaces;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Crm.Persistence
 {
@@ -16,10 +17,10 @@ namespace Crm.Persistence
         public DbSet<Position> Positions { get; set; } = null!;
 
         public DbSet<WorkPlan> WorkPlans { get; set; } = null!;
-
-        public CrmContext()
+        
+        public CrmContext(DbContextOptions<CrmContext> options)
+            : base(options) 
         {
-
         }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken)
@@ -27,10 +28,15 @@ namespace Crm.Persistence
             return await base.SaveChangesAsync(cancellationToken);
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        public override EntityEntry Remove(object entity)
         {
-            optionsBuilder.UseSqlServer("Server = DESKTOP-TCAD93P; Database = crmdb; Trusted_Connection = True;", b => b.MigrationsAssembly("Crm.Persistence"));
+            return base.Remove(entity);
         }
+
+        ////protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        ////{
+        ////    optionsBuilder.UseSqlServer("Server = DESKTOP-TCAD93P; Database = crmdb; Trusted_Connection = True;", b => b.MigrationsAssembly("Crm.Persistence"));
+        ////}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -4,7 +4,7 @@ namespace Crm.Domain
 {
     public class Employee
     {
-        public int Id { get; set; }
+        public int Id { get; }
 
         public string Name { get; private set; }
 

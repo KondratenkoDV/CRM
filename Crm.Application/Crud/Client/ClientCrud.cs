@@ -16,33 +16,64 @@ namespace Crm.Application.Crud.Client
             _dbContext = dbContext;
         }
 
-        public async Task<int> AddNewClientToDb(
-            string name,
-            CodeOfTheCountry codeOfTheCountry,
-            string regionCode,
-            string subscriberNumber,
-            CancellationToken cancellationToken)
+        public async Task<int> AddToDbAsync(ClientParameters clientParameter, CancellationToken cancellationToken)
         {
-            var client = new Domain.Client(name, codeOfTheCountry, regionCode, subscriberNumber);
+            var client = new Domain.Client(
+                clientParameter.Name,
+                clientParameter.СodeOfTheCountry,
+                clientParameter.RegionCode,
+                clientParameter.SubscriberNumber);
 
             await _dbContext.Clients.AddAsync(client);
-
             await _dbContext.SaveChangesAsync(cancellationToken);
 
             return client.Id;
         }
 
-        public async Task<SelectedClient> SelectingClientFromTheDb(int id)
+        public async Task<ClientParameters> SelectingFromTheDbAsync(int id)
         {
             _client = await _dbContext.Clients.SingleAsync(c => c.Id == id);
 
-            return new SelectedClient() { Id = _client.Id, Name = _client.Name, PhonNumber = _client.PhoneNumber };
+            return new ClientParameters() 
+            { 
+                Id = _client.Id, 
+                Name = _client.Name, 
+                СodeOfTheCountry = _client.СodeOfTheCountry, 
+                RegionCode = _client.RegionCode, 
+                SubscriberNumber = _client.SubscriberNumber 
+            };
         }
 
-        public async Task UpdateClientDb(SelectedClient selectedClient)
+        public async Task UpdateInTheDbAsync(ClientParameters newSelectedClient, int id, CancellationToken cancellationToken)
         {
-            _client.ChangeName(selectedClient.Name);
-            _client.ChangePhoneNumber()
+            await SelectingFromTheDbAsync(id);
+
+            if (_client != null)
+            {
+                await Task.Run(() =>
+                {
+                    _client.ChangeName(newSelectedClient.Name);
+
+                    _client.ChangePhoneNumber(
+                    newSelectedClient.СodeOfTheCountry,
+                    newSelectedClient.RegionCode,
+                    newSelectedClient.SubscriberNumber);
+                });                
+
+                await _dbContext.SaveChangesAsync(cancellationToken);
+            }
+        }
+
+        public async Task DeleteInTheDbAsync(int id, CancellationToken cancellationToken)
+        {
+            await SelectingFromTheDbAsync(id);
+
+            if (_client != null)
+            {
+                _dbContext.Clients.Remove(_client);
+
+                await _dbContext.SaveChangesAsync(cancellationToken);
+            }
         }
     }
 }

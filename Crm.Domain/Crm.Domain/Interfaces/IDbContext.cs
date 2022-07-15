@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Crm.Domain.Interfaces
 {
@@ -16,5 +17,7 @@ namespace Crm.Domain.Interfaces
         DbSet<WorkPlan> WorkPlans { get; set; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
+
+        EntityEntry Remove(object entity);
     }
 }

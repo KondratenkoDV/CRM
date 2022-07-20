@@ -15,7 +15,7 @@ erDiagram
   Client{
       int Id
       string Name
-      СodeOfTheCountry СodeOfTheCountry
+      enum CodeOfTheCountry
       string RegionCode
       strin SubscriberNumber
   }

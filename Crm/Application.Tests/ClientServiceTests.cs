@@ -11,7 +11,7 @@ namespace Application.Tests
         [Fact]
         public async void Task_When_AddToDb_Expect_ClientWasAddedToDb()
         {
-            // Arrenge
+            // Arrange
 
             CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
 

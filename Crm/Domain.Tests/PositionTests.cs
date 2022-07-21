@@ -8,7 +8,7 @@ namespace Domain.Tests
         [Fact]
         public void When_CreatingNewPosition_Expect_Successfully()
         {
-            // Arrenge
+            // Arrange
 
             var name = "name";
 

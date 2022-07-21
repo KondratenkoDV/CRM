@@ -8,7 +8,7 @@ namespace Domain.Tests
         [Fact]
         public void When_CreatingNewWorkPlan_Expect_Successfully()
         {
-            // Arrenge
+            // Arrange
 
             var dateStart = DateTime.Now.AddDays(-10);
 

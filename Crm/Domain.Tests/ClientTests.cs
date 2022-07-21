@@ -9,7 +9,7 @@ namespace Domain.Tests
         [Fact]
         public void When_CreatingNewClient_Expect_Successfully()
         {
-            // Arrenge
+            // Arrange
 
             var name = "name";
 

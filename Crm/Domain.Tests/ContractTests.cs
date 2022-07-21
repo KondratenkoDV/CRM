@@ -8,7 +8,7 @@ namespace Domain.Tests
         [Fact]
         public void When_CreatingNewContract_Expect_Successfully()
         {
-            // Arrenge
+            // Arrange
 
             var subject = "subject";
 

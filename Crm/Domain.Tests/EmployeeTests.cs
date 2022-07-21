@@ -8,7 +8,7 @@ namespace Domain.Tests
         [Fact]
         public void When_CreatingNewEmployee_Expect_Successfully()
         {
-            // Arrenge
+            // Arrange
 
             var firstName = "firstName";
 

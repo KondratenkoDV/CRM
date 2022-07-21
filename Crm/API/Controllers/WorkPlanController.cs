@@ -1,34 +1,37 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Application.Services.WorkPlan;
-using API.Helpers;
-using API.Models;
+using Domain.Interfaces;
+using API.DTOs.WorkPlan;
 
 namespace API.Controllers
 {
     public class WorkPlanController : Controller
     {
-        [HttpPost]
-        public async Task<int> CreateNewWorkPlan(
-            WorkPlanModel workPlanModel,
-            CancellationToken cancellationToken)
-        {
-            var workPlanService = new WorkPlanService(CompoundDb.Compound());
+        private readonly WorkPlanService _workPlanService;
 
-            return await workPlanService.AddAsync(
-                workPlanModel.DateStart,
-                workPlanModel.DateFinish,
-                workPlanModel.ContractId,
-                cancellationToken);
+        public WorkPlanController(IDbContext dbContext)
+        {
+            _workPlanService = new WorkPlanService(dbContext);
         }
 
         [HttpPost]
-        public async Task<WorkPlanModel> SelectingWorkPlan(int id)
+        public async Task<ActionResult<int>> CreateNewWorkPlan(
+            CreateWorkPlanDto createWorkPlanDto,
+            CancellationToken cancellationToken)
         {
-            var workPlanService = new WorkPlanService(CompoundDb.Compound());
+            return await _workPlanService.AddAsync(
+                createWorkPlanDto.DateStart,
+                createWorkPlanDto.DateFinish,
+                createWorkPlanDto.ContractId,
+                cancellationToken);
+        }
 
-            var workPlan = await workPlanService.SelectingAsync(id);
+        [HttpGet]
+        public async Task<ActionResult<SelectingWorkPlanDto>> SelectingWorkPlan(int id)
+        {
+            var workPlan = await _workPlanService.SelectingAsync(id);
 
-            return new WorkPlanModel()
+            return new SelectingWorkPlanDto()
             {
                 Id = workPlan.Id,
                 DateStart = workPlan.DateStart,
@@ -37,32 +40,28 @@ namespace API.Controllers
             };
         }
 
-        [HttpPost]
+        [HttpPut]
         public async Task UpdateWorkPlan(
-            WorkPlanModel workPlanModel,
+            UpdateWorkPlanDto updateWorkPlanDto,
             int id,
             CancellationToken cancellationToken)
         {
-            var workPlanService = new WorkPlanService(CompoundDb.Compound());
+            var workPlan = await _workPlanService.SelectingAsync(id);
 
-            var workPlan = await workPlanService.SelectingAsync(id);
-
-            await workPlanService.UpdateAsync(
+            await _workPlanService.UpdateAsync(
                 workPlan,
-                workPlanModel.DateStart,
-                workPlanModel.DateFinish,
-                workPlanModel.ContractId,
+                updateWorkPlanDto.NewDateStart,
+                updateWorkPlanDto.NewDateFinish,
+                updateWorkPlanDto.NewContractId,
                 cancellationToken);
         }
 
-        [HttpPost]
+        [HttpDelete]
         public async Task DeleteWorkPlan(int id, CancellationToken cancellationToken)
         {
-            var workPlanService = new WorkPlanService(CompoundDb.Compound());
+            var workPlan = await _workPlanService.SelectingAsync(id);
 
-            var workPlan = await workPlanService.SelectingAsync(id);
-
-            await workPlanService.DeleteAsync(workPlan, cancellationToken);
+            await _workPlanService.DeleteAsync(workPlan, cancellationToken);
         }
     }
 }

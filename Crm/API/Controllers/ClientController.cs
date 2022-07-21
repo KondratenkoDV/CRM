@@ -1,71 +1,70 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Application.Services.Client;
-using API.Helpers;
-using API.Models;
+using Domain.Interfaces;
+using API.DTOs.Client;
 
 namespace API.Controllers
 {
     public class ClientController : Controller
     {
-        [HttpPost]
-        public async Task<int> CreateNewClient(
-            ClientModel clientModel,
-            CancellationToken cancellationToken)
-        {
-            var clientService = new ClientService(CompoundDb.Compound());
+        private readonly ClientService _clientService;
 
-            return await clientService.AddAsync(
-                clientModel.Name,
-                clientModel.СodeOfTheCountry,
-                clientModel.RegionCode,
-                clientModel.SubscriberNumber,
-                cancellationToken);
+        public ClientController(IDbContext dbContext)
+        {
+            _clientService = new ClientService(dbContext);
         }
 
         [HttpPost]
-        public async Task<ClientModel> SelectingClient(int id)
+        public async Task<ActionResult<int>> CreateNewClient(
+            CreateClientDto createClientDto,
+            CancellationToken cancellationToken)
         {
-            var clientService = new ClientService(CompoundDb.Compound());
+            return await _clientService.AddAsync(
+                createClientDto.Name,
+                createClientDto.СodeOfTheCountry,
+                createClientDto.RegionCode,
+                createClientDto.SubscriberNumber,
+                cancellationToken);
+        }
 
-            var client = await clientService.SelectingAsync(id);
+        [HttpGet]
+        public async Task<ActionResult<SelectingClientDto>> SelectingClient(int id)
+        {
+            var client = await _clientService.SelectingAsync(id);
 
-            return new ClientModel()
-            {                
-                Id = client.Id,
+            return new SelectingClientDto()
+            {
+                Id = id,
                 Name = client.Name,
                 СodeOfTheCountry = client.СodeOfTheCountry,
                 RegionCode = client.RegionCode,
-                SubscriberNumber = client.SubscriberNumber,
+                SubscriberNumber = client.SubscriberNumber
             };
         }
 
-        [HttpPost]
+        [HttpPut]
         public async Task UpdateClient(
-            ClientModel clientModel,
+            UpdateClientDto updateClientDto,
             int id,
             CancellationToken cancellationToken)
         {
-            var clientService = new ClientService(CompoundDb.Compound());
+            var client = await _clientService.SelectingAsync(id);
 
-            var client = await clientService.SelectingAsync(id);
-
-            await clientService.UpdateAsync(
+            await _clientService.UpdateAsync(
                 client,
-                clientModel.Name,
-                clientModel.СodeOfTheCountry,
-                clientModel.RegionCode,
-                clientModel.SubscriberNumber,
+                updateClientDto.NewName,
+                updateClientDto.NewСodeOfTheCountry,
+                updateClientDto.NewRegionCode,
+                updateClientDto.NewSubscriberNumber,
                 cancellationToken);
         }
 
-        [HttpPost]
+        [HttpDelete]
         public async Task DeleteClient(int id, CancellationToken cancellationToken)
         {
-            var clientService = new ClientService(CompoundDb.Compound());
+            var client = await _clientService.SelectingAsync(id);
 
-            var client = await clientService.SelectingAsync(id);
-
-            await clientService.DeleteAsync(client, cancellationToken);
+            await _clientService.DeleteAsync(client, cancellationToken);
         }
     }
 }

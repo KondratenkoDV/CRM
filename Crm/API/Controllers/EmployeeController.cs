@@ -1,34 +1,37 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Application.Services.Employee;
-using API.Helpers;
-using API.Models;
+using Domain.Interfaces;
+using API.DTOs.Employee;
 
 namespace API.Controllers
 {
     public class EmployeeController : Controller
     {
-        [HttpPost]
-        public async Task<int> CreateNewEmployee(
-            EmployeeModel employeeModel,
-            CancellationToken cancellationToken)
-        {
-            var employeeService = new EmployeeService(CompoundDb.Compound());
+        private readonly EmployeeService _employeeService;
 
-            return await employeeService.AddAsync(
-                employeeModel.FirstName,
-                employeeModel.LastName,
-                employeeModel.PositionId,
-                cancellationToken);
+        public EmployeeController(IDbContext dbContext)
+        {
+            _employeeService = new EmployeeService(dbContext);
         }
 
         [HttpPost]
-        public async Task<EmployeeModel> SelectingEmployee(int id)
+        public async Task<ActionResult<int>> CreateNewEmployee(
+            CreateEmployeeDto createEmployeeDto,
+            CancellationToken cancellationToken)
         {
-            var employeeService = new EmployeeService(CompoundDb.Compound());
+            return await _employeeService.AddAsync(
+                createEmployeeDto.FirstName,
+                createEmployeeDto.LastName,
+                createEmployeeDto.PositionId,
+                cancellationToken);
+        }
 
-            var employee = await employeeService.SelectingAsync(id);
+        [HttpGet]
+        public async Task<ActionResult<SelectingEmployeeDto>> SelectingEmployee(int id)
+        {
+            var employee = await _employeeService.SelectingAsync(id);
 
-            return new EmployeeModel()
+            return new SelectingEmployeeDto()
             {
                 Id = employee.Id,
                 FirstName = employee.FirstName,
@@ -37,32 +40,28 @@ namespace API.Controllers
             };
         }
 
-        [HttpPost]
+        [HttpPut]
         public async Task UpdateEmployee(
-            EmployeeModel employeeModel,
+            UpdateEmployeeDto updateEmployeeDto,
             int id,
             CancellationToken cancellationToken)
         {
-            var employeeService = new EmployeeService(CompoundDb.Compound());
+            var employee = await _employeeService.SelectingAsync(id);
 
-            var employee = await employeeService.SelectingAsync(id);
-
-            await employeeService.UpdateAsync(
+            await _employeeService.UpdateAsync(
                 employee,
-                employeeModel.FirstName,
-                employeeModel.LastName,
-                employeeModel.PositionId,
+                updateEmployeeDto.NewFirstName,
+                updateEmployeeDto.NewLastName,
+                updateEmployeeDto.NewPositionId,
                 cancellationToken);
         }
 
-        [HttpPost]
+        [HttpDelete]
         public async Task DeleteEmployee(int id, CancellationToken cancellationToken)
         {
-            var employeeService = new EmployeeService(CompoundDb.Compound());
+            var employee = await _employeeService.SelectingAsync(id);
 
-            var employee = await employeeService.SelectingAsync(id);
-
-            await employeeService.DeleteAsync(employee, cancellationToken);
+            await _employeeService.DeleteAsync(employee, cancellationToken);
         }
     }
 }

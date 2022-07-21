@@ -1,9 +1,7 @@
-﻿namespace API.Models
+﻿namespace API.DTOs.Employee
 {
-    public class EmployeeModel
+    public class CreateEmployeeDto
     {
-        public int Id { get; set; }
-
         public string FirstName { get; set; }
 
         public string LastName { get; set; }

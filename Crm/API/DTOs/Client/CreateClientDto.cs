@@ -1,11 +1,9 @@
 ﻿using Domain.Enum;
 
-namespace API.Models
+namespace API.DTOs.Client
 {
-    public class ClientModel
+    public class CreateClientDto
     {
-        public int Id { get; set; }
-
         public string Name { get; set; }
 
         public CodeOfTheCountry СodeOfTheCountry { get; set; }

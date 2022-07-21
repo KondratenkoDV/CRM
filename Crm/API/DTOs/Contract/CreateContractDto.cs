@@ -1,9 +1,7 @@
-﻿namespace API.Models
+﻿namespace API.DTOs.Contract
 {
-    public class ContractModel
+    public class CreateContractDto
     {
-        public int Id { get; set; }
-
         public string Subject { get; set; }
 
         public string Address { get; set; }

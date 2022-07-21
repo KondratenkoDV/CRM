@@ -1,35 +1,38 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Application.Services.Contract;
-using API.Helpers;
-using API.Models;
+using Domain.Interfaces;
+using API.DTOs.Contract;
 
 namespace API.Controllers
 {
     public class ContractController : Controller
     {
-        [HttpPost]
-        public async Task<int> CreateNewContract(
-            ContractModel contractModel,
-            CancellationToken cancellationToken)
-        {
-            var contractService = new ContractService(CompoundDb.Compound());
+        private readonly ContractService _contractService;
 
-            return await contractService.AddAsync(
-                contractModel.Subject,
-                contractModel.Address,
-                contractModel.Price,
-                contractModel.ClientId,
-                cancellationToken);
+        public ContractController(IDbContext dbContext)
+        {
+            _contractService = new ContractService(dbContext);
         }
 
         [HttpPost]
-        public async Task<ContractModel> SelectingContract(int id)
+        public async Task<ActionResult<int>> CreateNewContract(
+            CreateContractDto createContractDto,
+            CancellationToken cancellationToken)
         {
-            var contractService = new ContractService(CompoundDb.Compound());
+            return await _contractService.AddAsync(
+                createContractDto.Subject,
+                createContractDto.Address,
+                createContractDto.Price,
+                createContractDto.ClientId,
+                cancellationToken);
+        }
 
-            var contract = await contractService.SelectingAsync(id);
+        [HttpGet]
+        public async Task<ActionResult<SelectingContractDto>> SelectingContract(int id)
+        {
+            var contract = await _contractService.SelectingAsync(id);
 
-            return new ContractModel()
+            return new SelectingContractDto()
             {
                 Id = contract.Id,
                 Subject = contract.Subject,
@@ -39,33 +42,29 @@ namespace API.Controllers
             };
         }
 
-        [HttpPost]
+        [HttpPut]
         public async Task UpdateContract(
-            ContractModel contractModel,
+            UpdateContractDto updateContractDto,
             int id,
             CancellationToken cancellationToken)
         {
-            var contractService = new ContractService(CompoundDb.Compound());
+            var contract = await _contractService.SelectingAsync(id);
 
-            var contract = await contractService.SelectingAsync(id);
-
-            await contractService.UpdateAsync(
+            await _contractService.UpdateAsync(
                 contract,
-                contractModel.Subject,
-                contractModel.Address,
-                contractModel.Price,
-                contractModel.ClientId,
+                updateContractDto.NewSubject,
+                updateContractDto.NewAddress,
+                updateContractDto.NewPrice,
+                updateContractDto.NewClientId,
                 cancellationToken);
         }
 
-        [HttpPost]
+        [HttpDelete]
         public async Task DeleteContract(int id, CancellationToken cancellationToken)
         {
-            var contractService = new ContractService(CompoundDb.Compound());
+            var contract = await _contractService.SelectingAsync(id);
 
-            var contract = await contractService.SelectingAsync(id);
-
-            await contractService.DeleteAsync(contract, cancellationToken);
+            await _contractService.DeleteAsync(contract, cancellationToken);
         }
     }
 }

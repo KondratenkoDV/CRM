@@ -1,9 +1,7 @@
-﻿namespace API.Models
+﻿namespace API.DTOs.WorkPlan
 {
-    public class WorkPlanModel
+    public class CreateWorkPlanDto
     {
-        public int Id { get; set; }
-
         public DateTime DateStart { get; set; }
 
         public DateTime DateFinish { get; set; }

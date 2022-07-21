@@ -1,62 +1,61 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Application.Services.Position;
-using API.Helpers;
-using API.Models;
+using Domain.Interfaces;
+using API.DTOs.Position;
 
 namespace API.Controllers
 {
     public class PositionController : Controller
     {
-        [HttpPost]
-        public async Task<int> CreateNewPosition(
-            PositionModel positionModel,
-            CancellationToken cancellationToken)
-        {
-            var positionService = new PositionService(CompoundDb.Compound());
+        private readonly PositionService _positionService;
 
-            return await positionService.AddAsync(
-                positionModel.Name,
-                cancellationToken);
+        public PositionController(IDbContext dbContext)
+        {
+            _positionService = new PositionService(dbContext);
         }
 
         [HttpPost]
-        public async Task<PositionModel> SelectingPosition(int id)
+        public async Task<ActionResult<int>> CreateNewPosition(
+            CreatePositionDto createPositionDto,
+            CancellationToken cancellationToken)
         {
-            var positionService = new PositionService(CompoundDb.Compound());
+            return await _positionService.AddAsync(
+                createPositionDto.Name,
+                cancellationToken);
+        }
 
-            var position = await positionService.SelectingAsync(id);
+        [HttpGet]
+        public async Task<ActionResult<SelectingPositionDto>> SelectingPosition(int id)
+        {
+            var position = await _positionService.SelectingAsync(id);
 
-            return new PositionModel()
+            return new SelectingPositionDto()
             {
                 Id = position.Id,
                 Name = position.Name
             };
         }
 
-        [HttpPost]
+        [HttpPut]
         public async Task UpdatePosition(
-            PositionModel positionModel,
+            UpdatePositionDto updatePositionDto,
             int id,
             CancellationToken cancellationToken)
         {
-            var positionService = new PositionService(CompoundDb.Compound());
+            var position = await _positionService.SelectingAsync(id);
 
-            var position = await positionService.SelectingAsync(id);
-
-            await positionService.UpdateAsync(
+            await _positionService.UpdateAsync(
                 position,
-                positionModel.Name,
+                updatePositionDto.NewName,
                 cancellationToken);
         }
 
-        [HttpPost]
+        [HttpDelete]
         public async Task DeletePosition(int id, CancellationToken cancellationToken)
         {
-            var positionService = new PositionService(CompoundDb.Compound());
+            var position = await _positionService.SelectingAsync(id);
 
-            var position = await positionService.SelectingAsync(id);
-
-            await positionService.DeleteAsync(position, cancellationToken);
+            await _positionService.DeleteAsync(position, cancellationToken);
         }
     }
 }

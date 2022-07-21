@@ -7,14 +7,17 @@ erDiagram
   
   Employee{
       int Id
-      string Name
+      string FirstName
+      string LastName
       int PositionId
   }
 
   Client{
       int Id
       string Name
-      int PhonNumber
+      enum CodeOfTheCountry
+      string RegionCode
+      strin SubscriberNumber
   }
 
   Contract{

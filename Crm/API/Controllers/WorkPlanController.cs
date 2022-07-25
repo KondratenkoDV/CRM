@@ -5,7 +5,9 @@ using API.DTOs.WorkPlan;
 
 namespace API.Controllers
 {
-    public class WorkPlanController : Controller
+    [ApiController]
+    [Route("API/[controller]")]
+    public class WorkPlanController : ControllerBase
     {
         private readonly WorkPlanService _workPlanService;
 
@@ -26,7 +28,7 @@ namespace API.Controllers
                 cancellationToken);
         }
 
-        [HttpGet]
+        [HttpGet("{id}")]
         public async Task<ActionResult<SelectingWorkPlanDto>> SelectingWorkPlan(int id)
         {
             var workPlan = await _workPlanService.SelectingAsync(id);
@@ -40,7 +42,7 @@ namespace API.Controllers
             };
         }
 
-        [HttpPut]
+        [HttpPut("{id}")]
         public async Task UpdateWorkPlan(
             UpdateWorkPlanDto updateWorkPlanDto,
             int id,
@@ -56,7 +58,7 @@ namespace API.Controllers
                 cancellationToken);
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task DeleteWorkPlan(int id, CancellationToken cancellationToken)
         {
             var workPlan = await _workPlanService.SelectingAsync(id);

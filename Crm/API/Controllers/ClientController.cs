@@ -5,7 +5,9 @@ using API.DTOs.Client;
 
 namespace API.Controllers
 {
-    public class ClientController : Controller
+    [ApiController]
+    [Route("API/[controller]")]
+    public class ClientController : ControllerBase
     {
         private readonly ClientService _clientService;
 
@@ -27,7 +29,7 @@ namespace API.Controllers
                 cancellationToken);
         }
 
-        [HttpGet]
+        [HttpGet("{id}")]
         public async Task<ActionResult<SelectingClientDto>> SelectingClient(int id)
         {
             var client = await _clientService.SelectingAsync(id);
@@ -42,7 +44,7 @@ namespace API.Controllers
             };
         }
 
-        [HttpPut]
+        [HttpPut("{id}")]
         public async Task UpdateClient(
             UpdateClientDto updateClientDto,
             int id,
@@ -59,7 +61,7 @@ namespace API.Controllers
                 cancellationToken);
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task DeleteClient(int id, CancellationToken cancellationToken)
         {
             var client = await _clientService.SelectingAsync(id);

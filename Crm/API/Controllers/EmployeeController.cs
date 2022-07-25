@@ -5,7 +5,9 @@ using API.DTOs.Employee;
 
 namespace API.Controllers
 {
-    public class EmployeeController : Controller
+    [ApiController]
+    [Route("API/[controller]")]
+    public class EmployeeController : ControllerBase
     {
         private readonly EmployeeService _employeeService;
 
@@ -26,7 +28,7 @@ namespace API.Controllers
                 cancellationToken);
         }
 
-        [HttpGet]
+        [HttpGet("{id}")]
         public async Task<ActionResult<SelectingEmployeeDto>> SelectingEmployee(int id)
         {
             var employee = await _employeeService.SelectingAsync(id);
@@ -40,7 +42,7 @@ namespace API.Controllers
             };
         }
 
-        [HttpPut]
+        [HttpPut("{id}")]
         public async Task UpdateEmployee(
             UpdateEmployeeDto updateEmployeeDto,
             int id,
@@ -56,7 +58,7 @@ namespace API.Controllers
                 cancellationToken);
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task DeleteEmployee(int id, CancellationToken cancellationToken)
         {
             var employee = await _employeeService.SelectingAsync(id);

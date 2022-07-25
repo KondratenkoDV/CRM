@@ -5,7 +5,9 @@ using API.DTOs.Position;
 
 namespace API.Controllers
 {
-    public class PositionController : Controller
+    [ApiController]
+    [Route("API/[controller]")]
+    public class PositionController : ControllerBase
     {
         private readonly PositionService _positionService;
 
@@ -24,7 +26,7 @@ namespace API.Controllers
                 cancellationToken);
         }
 
-        [HttpGet]
+        [HttpGet("{id}")]
         public async Task<ActionResult<SelectingPositionDto>> SelectingPosition(int id)
         {
             var position = await _positionService.SelectingAsync(id);
@@ -36,7 +38,7 @@ namespace API.Controllers
             };
         }
 
-        [HttpPut]
+        [HttpPut("{id}")]
         public async Task UpdatePosition(
             UpdatePositionDto updatePositionDto,
             int id,
@@ -50,7 +52,7 @@ namespace API.Controllers
                 cancellationToken);
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task DeletePosition(int id, CancellationToken cancellationToken)
         {
             var position = await _positionService.SelectingAsync(id);

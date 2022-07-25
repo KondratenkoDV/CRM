@@ -5,7 +5,9 @@ using API.DTOs.Contract;
 
 namespace API.Controllers
 {
-    public class ContractController : Controller
+    [ApiController]
+    [Route("API/[controller]")]
+    public class ContractController : ControllerBase
     {
         private readonly ContractService _contractService;
 
@@ -27,7 +29,7 @@ namespace API.Controllers
                 cancellationToken);
         }
 
-        [HttpGet]
+        [HttpGet("{id}")]
         public async Task<ActionResult<SelectingContractDto>> SelectingContract(int id)
         {
             var contract = await _contractService.SelectingAsync(id);
@@ -42,7 +44,7 @@ namespace API.Controllers
             };
         }
 
-        [HttpPut]
+        [HttpPut("{id}")]
         public async Task UpdateContract(
             UpdateContractDto updateContractDto,
             int id,
@@ -59,7 +61,7 @@ namespace API.Controllers
                 cancellationToken);
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task DeleteContract(int id, CancellationToken cancellationToken)
         {
             var contract = await _contractService.SelectingAsync(id);

@@ -35,7 +35,7 @@ namespace Application.Services.Client
 
         public async Task<Domain.Client> SelectingAsync(int id)
         {
-            return await _dbContext.Clients.SingleAsync(c => c.Id == id);                        
+            return await _dbContext.Clients.FirstOrDefaultAsync(c => c.Id == id);                        
         }
 
         public async Task UpdateAsync(

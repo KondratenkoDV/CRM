@@ -21,11 +21,11 @@ namespace API.Controllers
             CreateEmployeeDto createEmployeeDto,
             CancellationToken cancellationToken)
         {
-            return await _employeeService.AddAsync(
+            return Ok(await _employeeService.AddAsync(
                 createEmployeeDto.FirstName,
                 createEmployeeDto.LastName,
                 createEmployeeDto.PositionId,
-                cancellationToken);
+                cancellationToken));
         }
 
         [HttpGet("{id}")]
@@ -33,17 +33,17 @@ namespace API.Controllers
         {
             var employee = await _employeeService.SelectingAsync(id);
 
-            return new SelectingEmployeeDto()
+            return Ok(new SelectingEmployeeDto()
             {
                 Id = employee.Id,
                 FirstName = employee.FirstName,
                 LastName = employee.LastName,
                 PositionId = employee.PositionId,
-            };
+            });
         }
 
         [HttpPut("{id}")]
-        public async Task UpdateEmployee(
+        public async Task<IActionResult> UpdateEmployee(
             UpdateEmployeeDto updateEmployeeDto,
             int id,
             CancellationToken cancellationToken)
@@ -56,14 +56,18 @@ namespace API.Controllers
                 updateEmployeeDto.NewLastName,
                 updateEmployeeDto.NewPositionId,
                 cancellationToken);
+
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public async Task DeleteEmployee(int id, CancellationToken cancellationToken)
+        public async Task<IActionResult> DeleteEmployee(int id, CancellationToken cancellationToken)
         {
             var employee = await _employeeService.SelectingAsync(id);
 
             await _employeeService.DeleteAsync(employee, cancellationToken);
+
+            return NoContent();
         }
     }
 }

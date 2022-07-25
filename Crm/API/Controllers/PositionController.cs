@@ -21,9 +21,9 @@ namespace API.Controllers
             CreatePositionDto createPositionDto,
             CancellationToken cancellationToken)
         {
-            return await _positionService.AddAsync(
+            return Ok(await _positionService.AddAsync(
                 createPositionDto.Name,
-                cancellationToken);
+                cancellationToken));
         }
 
         [HttpGet("{id}")]
@@ -31,15 +31,15 @@ namespace API.Controllers
         {
             var position = await _positionService.SelectingAsync(id);
 
-            return new SelectingPositionDto()
+            return Ok(new SelectingPositionDto()
             {
                 Id = position.Id,
                 Name = position.Name
-            };
+            });
         }
 
         [HttpPut("{id}")]
-        public async Task UpdatePosition(
+        public async Task<IActionResult> UpdatePosition(
             UpdatePositionDto updatePositionDto,
             int id,
             CancellationToken cancellationToken)
@@ -50,14 +50,18 @@ namespace API.Controllers
                 position,
                 updatePositionDto.NewName,
                 cancellationToken);
+
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public async Task DeletePosition(int id, CancellationToken cancellationToken)
+        public async Task<IActionResult> DeletePosition(int id, CancellationToken cancellationToken)
         {
             var position = await _positionService.SelectingAsync(id);
 
             await _positionService.DeleteAsync(position, cancellationToken);
+
+            return NoContent();
         }
     }
 }

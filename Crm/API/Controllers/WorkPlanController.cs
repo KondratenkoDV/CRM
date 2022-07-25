@@ -21,11 +21,11 @@ namespace API.Controllers
             CreateWorkPlanDto createWorkPlanDto,
             CancellationToken cancellationToken)
         {
-            return await _workPlanService.AddAsync(
+            return Ok(await _workPlanService.AddAsync(
                 createWorkPlanDto.DateStart,
                 createWorkPlanDto.DateFinish,
                 createWorkPlanDto.ContractId,
-                cancellationToken);
+                cancellationToken));
         }
 
         [HttpGet("{id}")]
@@ -33,17 +33,17 @@ namespace API.Controllers
         {
             var workPlan = await _workPlanService.SelectingAsync(id);
 
-            return new SelectingWorkPlanDto()
+            return Ok(new SelectingWorkPlanDto()
             {
                 Id = workPlan.Id,
                 DateStart = workPlan.DateStart,
                 DateFinish = workPlan.DateFinish,
                 ContractId = workPlan.ContractId
-            };
+            });
         }
 
         [HttpPut("{id}")]
-        public async Task UpdateWorkPlan(
+        public async Task<IActionResult> UpdateWorkPlan(
             UpdateWorkPlanDto updateWorkPlanDto,
             int id,
             CancellationToken cancellationToken)
@@ -56,14 +56,18 @@ namespace API.Controllers
                 updateWorkPlanDto.NewDateFinish,
                 updateWorkPlanDto.NewContractId,
                 cancellationToken);
+
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public async Task DeleteWorkPlan(int id, CancellationToken cancellationToken)
+        public async Task<IActionResult> DeleteWorkPlan(int id, CancellationToken cancellationToken)
         {
             var workPlan = await _workPlanService.SelectingAsync(id);
 
             await _workPlanService.DeleteAsync(workPlan, cancellationToken);
+
+            return NoContent();
         }
     }
 }

@@ -21,12 +21,12 @@ namespace API.Controllers
             CreateClientDto createClientDto,
             CancellationToken cancellationToken)
         {
-            return await _clientService.AddAsync(
+            return Ok(await _clientService.AddAsync(
                 createClientDto.Name,
                 createClientDto.СodeOfTheCountry,
                 createClientDto.RegionCode,
                 createClientDto.SubscriberNumber,
-                cancellationToken);
+                cancellationToken));
         }
 
         [HttpGet("{id}")]
@@ -34,18 +34,18 @@ namespace API.Controllers
         {
             var client = await _clientService.SelectingAsync(id);
 
-            return new SelectingClientDto()
+            return Ok(new SelectingClientDto()
             {
-                Id = id,
+                Id = client.Id,
                 Name = client.Name,
                 СodeOfTheCountry = client.СodeOfTheCountry,
                 RegionCode = client.RegionCode,
                 SubscriberNumber = client.SubscriberNumber
-            };
+            });
         }
 
         [HttpPut("{id}")]
-        public async Task UpdateClient(
+        public async Task<IActionResult> UpdateClient(
             UpdateClientDto updateClientDto,
             int id,
             CancellationToken cancellationToken)
@@ -59,14 +59,18 @@ namespace API.Controllers
                 updateClientDto.NewRegionCode,
                 updateClientDto.NewSubscriberNumber,
                 cancellationToken);
+
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public async Task DeleteClient(int id, CancellationToken cancellationToken)
+        public async Task<IActionResult> DeleteClient(int id, CancellationToken cancellationToken)
         {
             var client = await _clientService.SelectingAsync(id);
 
             await _clientService.DeleteAsync(client, cancellationToken);
+
+            return NoContent();
         }
     }
 }

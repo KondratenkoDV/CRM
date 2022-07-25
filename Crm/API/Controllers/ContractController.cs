@@ -21,12 +21,12 @@ namespace API.Controllers
             CreateContractDto createContractDto,
             CancellationToken cancellationToken)
         {
-            return await _contractService.AddAsync(
+            return Ok(await _contractService.AddAsync(
                 createContractDto.Subject,
                 createContractDto.Address,
                 createContractDto.Price,
                 createContractDto.ClientId,
-                cancellationToken);
+                cancellationToken));
         }
 
         [HttpGet("{id}")]
@@ -34,18 +34,18 @@ namespace API.Controllers
         {
             var contract = await _contractService.SelectingAsync(id);
 
-            return new SelectingContractDto()
+            return Ok(new SelectingContractDto()
             {
                 Id = contract.Id,
                 Subject = contract.Subject,
                 Address = contract.Address,
                 Price = contract.Price,
                 ClientId = contract.ClientId
-            };
+            });
         }
 
         [HttpPut("{id}")]
-        public async Task UpdateContract(
+        public async Task<IActionResult> UpdateContract(
             UpdateContractDto updateContractDto,
             int id,
             CancellationToken cancellationToken)
@@ -59,14 +59,18 @@ namespace API.Controllers
                 updateContractDto.NewPrice,
                 updateContractDto.NewClientId,
                 cancellationToken);
+
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public async Task DeleteContract(int id, CancellationToken cancellationToken)
+        public async Task<IActionResult> DeleteContract(int id, CancellationToken cancellationToken)
         {
             var contract = await _contractService.SelectingAsync(id);
 
             await _contractService.DeleteAsync(contract, cancellationToken);
+
+            return NoContent();
         }
     }
 }

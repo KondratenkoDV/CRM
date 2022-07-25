@@ -3,6 +3,7 @@ using Xunit;
 using API.Controllers;
 using API.Tests.Connection;
 using API.DTOs.Employee;
+using Microsoft.AspNetCore.Mvc;
 
 namespace API.Tests.Controllers
 {
@@ -57,15 +58,23 @@ namespace API.Tests.Controllers
                 PositionId = 0
             };
 
-            var id = await employeeController.CreateNewEmployee(createEmployeeDto, cancellationToken);
+            var value = await employeeController.CreateNewEmployee(createEmployeeDto, cancellationToken);
+
+            var result = value.Result as OkObjectResult;
+
+            int id = (int)result.Value;
 
             // Act
 
-            var employee = await employeeController.SelectingEmployee(id.Value);
+            var employeeResult = await employeeController.SelectingEmployee(id);
+
+            var employeeValue = employeeResult.Result as OkObjectResult;
+
+            var employee = (SelectingEmployeeDto)employeeValue.Value;
 
             // Assert
 
-            Assert.Equal(id, employee.Value.Id);
+            Assert.Equal(id, employee.Id);
         }
 
         [Fact]
@@ -95,17 +104,21 @@ namespace API.Tests.Controllers
                 NewPositionId = 1
             };
 
-            var id = await employeeController.CreateNewEmployee(createEmployeeDto, cancellationToken);
+            var value = await employeeController.CreateNewEmployee(createEmployeeDto, cancellationToken);
+
+            var result = value.Result as OkObjectResult;
+
+            int id = (int)result.Value;
 
             // Act
 
-            await employeeController.UpdateEmployee(updateEmployeeDto, id.Value, cancellationToken);
+            await employeeController.UpdateEmployee(updateEmployeeDto, id, cancellationToken);
 
             // Assert
 
-            Assert.Equal(updateEmployeeDto.NewFirstName, context.Employees.Single(c => c.Id == id.Value).FirstName);
-            Assert.Equal(updateEmployeeDto.NewLastName, context.Employees.Single(c => c.Id == id.Value).LastName);
-            Assert.Equal(updateEmployeeDto.NewPositionId, context.Employees.Single(c => c.Id == id.Value).PositionId);
+            Assert.Equal(updateEmployeeDto.NewFirstName, context.Employees.Single(c => c.Id == id).FirstName);
+            Assert.Equal(updateEmployeeDto.NewLastName, context.Employees.Single(c => c.Id == id).LastName);
+            Assert.Equal(updateEmployeeDto.NewPositionId, context.Employees.Single(c => c.Id == id).PositionId);
         }
 
         [Fact]
@@ -128,11 +141,15 @@ namespace API.Tests.Controllers
                 PositionId = 0
             };
 
-            var id = await employeeController.CreateNewEmployee(createEmployeeDto, cancellationToken);
+            var value = await employeeController.CreateNewEmployee(createEmployeeDto, cancellationToken);
+
+            var result = value.Result as OkObjectResult;
+
+            int id = (int)result.Value;
 
             // Act
 
-            await employeeController.DeleteEmployee(id.Value, cancellationToken);
+            await employeeController.DeleteEmployee(id, cancellationToken);
 
             // Assert
 

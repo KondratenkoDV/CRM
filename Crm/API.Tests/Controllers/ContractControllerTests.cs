@@ -3,6 +3,7 @@ using API.Tests.Connection;
 using API.Controllers;
 using API.DTOs.Contract;
 using Xunit;
+using Microsoft.AspNetCore.Mvc;
 
 namespace API.Tests.Controllers
 {
@@ -59,15 +60,23 @@ namespace API.Tests.Controllers
                 ClientId = 0
             };
 
-            var id = await contractController.CreateNewContract(createContractDto, cancellationToken);
+            var value = await contractController.CreateNewContract(createContractDto, cancellationToken);
+
+            var result = value.Result as OkObjectResult;
+
+            int id = (int)result.Value;
 
             // Act
 
-            var contract = await contractController.SelectingContract(id.Value);
+            var contractValue = await contractController.SelectingContract(id);
+
+            var contractResult = contractValue.Result as OkObjectResult;
+
+            var contract = (SelectingContractDto)contractResult.Value;
 
             // Assert
 
-            Assert.Equal(id, contract.Value.Id);
+            Assert.Equal(id, contract.Id);
         }
 
         [Fact]
@@ -99,18 +108,22 @@ namespace API.Tests.Controllers
                 NewClientId = 1
             };
 
-            var id = await contractController.CreateNewContract(createContractDto, cancellationToken);
+            var value = await contractController.CreateNewContract(createContractDto, cancellationToken);
+
+            var result = value.Result as OkObjectResult;
+
+            int id = (int)result.Value;
 
             // Act
 
-            await contractController.UpdateContract(updateContractDto, id.Value, cancellationToken);
+            await contractController.UpdateContract(updateContractDto, id, cancellationToken);
 
             // Assert
 
-            Assert.Equal(updateContractDto.NewSubject, context.Contracts.Single(c => c.Id == id.Value).Subject);
-            Assert.Equal(updateContractDto.NewAddress, context.Contracts.Single(c => c.Id == id.Value).Address);
-            Assert.Equal(updateContractDto.NewPrice, context.Contracts.Single(c => c.Id == id.Value).Price);
-            Assert.Equal(updateContractDto.NewClientId, context.Contracts.Single(c => c.Id == id.Value).ClientId);
+            Assert.Equal(updateContractDto.NewSubject, context.Contracts.Single(c => c.Id == id).Subject);
+            Assert.Equal(updateContractDto.NewAddress, context.Contracts.Single(c => c.Id == id).Address);
+            Assert.Equal(updateContractDto.NewPrice, context.Contracts.Single(c => c.Id == id).Price);
+            Assert.Equal(updateContractDto.NewClientId, context.Contracts.Single(c => c.Id == id).ClientId);
         }
 
         [Fact]
@@ -134,11 +147,15 @@ namespace API.Tests.Controllers
                 ClientId = 0
             };
 
-            var id = await contractController.CreateNewContract(createContractDto, cancellationToken);
+            var value = await contractController.CreateNewContract(createContractDto, cancellationToken);
+
+            var result = value.Result as OkObjectResult;
+
+            int id = (int)result.Value;
 
             // Act
 
-            await contractController.DeleteContract(id.Value, cancellationToken);
+            await contractController.DeleteContract(id, cancellationToken);
 
             // Assert
 

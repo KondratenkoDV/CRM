@@ -61,15 +61,23 @@ namespace API.Tests.Controllers
                 SubscriberNumber = "0000000"
             };
 
-            var id = await clientController.CreateNewClient(createClientDto, cancellationToken);
+            var value = await clientController.CreateNewClient(createClientDto, cancellationToken);
 
+            var result = value.Result as OkObjectResult;
+                        
+            int id = (int)result.Value;
+         
             // Act
 
-            var client = await clientController.SelectingClient(id.Value);
+            var clientValue = await clientController.SelectingClient(id);
+
+            var clientResult = clientValue.Result as OkObjectResult;
+
+            var client = (SelectingClientDto)clientResult.Value;
 
             // Assert
 
-            Assert.Equal(id.Value, client.Value.Id);
+            Assert.Equal(id, client.Id);
         }
 
         [Fact]
@@ -101,17 +109,21 @@ namespace API.Tests.Controllers
                 NewSubscriberNumber = "0000000"
             };
 
-            var id = await clientController.CreateNewClient(createClientDto, cancellationToken);
+            var value = await clientController.CreateNewClient(createClientDto, cancellationToken);
+
+            var result = value.Result as OkObjectResult;
+
+            int id = (int)result.Value;
 
             // Act
 
-            await clientController.UpdateClient(updateClientDto, id.Value, cancellationToken);
+            await clientController.UpdateClient(updateClientDto, id, cancellationToken);
 
             // Assert
 
-            Assert.Equal(updateClientDto.NewName, context.Clients.Single(c => c.Id == id.Value).Name);
-            Assert.Equal(updateClientDto.NewRegionCode, context.Clients.Single(c => c.Id == id.Value).RegionCode);
-            Assert.Equal(updateClientDto.NewSubscriberNumber, context.Clients.Single(c => c.Id == id.Value).SubscriberNumber);
+            Assert.Equal(updateClientDto.NewName, context.Clients.Single(c => c.Id == id).Name);
+            Assert.Equal(updateClientDto.NewRegionCode, context.Clients.Single(c => c.Id == id).RegionCode);
+            Assert.Equal(updateClientDto.NewSubscriberNumber, context.Clients.Single(c => c.Id == id).SubscriberNumber);
         }
 
         [Fact]
@@ -135,11 +147,15 @@ namespace API.Tests.Controllers
                 SubscriberNumber = "0000000"
             };
 
-            var id = await clientController.CreateNewClient(createClientDto, cancellationToken);
+            var value = await clientController.CreateNewClient(createClientDto, cancellationToken);
+
+            var result = value.Result as OkObjectResult;
+
+            int id = (int)result.Value;
 
             // Act
 
-            await clientController.DeleteClient(id.Value, cancellationToken);
+            await clientController.DeleteClient(id, cancellationToken);
 
             // Assert
 

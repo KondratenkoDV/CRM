@@ -3,6 +3,7 @@ using Xunit;
 using API.Tests.Connection;
 using API.Controllers;
 using API.DTOs.Position;
+using Microsoft.AspNetCore.Mvc;
 
 namespace API.Tests.Controllers
 {
@@ -53,15 +54,23 @@ namespace API.Tests.Controllers
                 Name = "Name"
             };
 
-            var id = await positionController.CreateNewPosition(createPositionDto, cancellationToken);
+            var value = await positionController.CreateNewPosition(createPositionDto, cancellationToken);
+
+            var result = value.Result as OkObjectResult;
+
+            int id = (int)result.Value;
 
             // Act
 
-            var position = await positionController.SelectingPosition(id.Value);
+            var positionValue = await positionController.SelectingPosition(id);
+
+            var positionResult = positionValue.Result as OkObjectResult;
+
+            var position = (SelectingPositionDto)positionResult.Value;
 
             // Assert
 
-            Assert.Equal(id, position.Value.Id);
+            Assert.Equal(id, position.Id);
         }
 
         [Fact]
@@ -87,15 +96,19 @@ namespace API.Tests.Controllers
                 NewName = "NewName"
             };
 
-            var id = await positionController.CreateNewPosition(createPositionDto, cancellationToken);
+            var value = await positionController.CreateNewPosition(createPositionDto, cancellationToken);
+
+            var result = value.Result as OkObjectResult;
+
+            int id = (int)result.Value;
 
             // Act
 
-            await positionController.UpdatePosition(updatePositionDto, id.Value, cancellationToken);
+            await positionController.UpdatePosition(updatePositionDto, id, cancellationToken);
 
             // Assert
 
-            Assert.Equal(updatePositionDto.NewName, context.Positions.Single(p => p.Id == id.Value).Name);
+            Assert.Equal(updatePositionDto.NewName, context.Positions.Single(p => p.Id == id).Name);
         }
 
         [Fact]
@@ -116,11 +129,15 @@ namespace API.Tests.Controllers
                 Name = "Name"
             };
 
-            var id = await positionController.CreateNewPosition(createPositionDto, cancellationToken);
+            var value = await positionController.CreateNewPosition(createPositionDto, cancellationToken);
+
+            var result = value.Result as OkObjectResult;
+
+            int id = (int)result.Value;
 
             // Act
 
-            await positionController.DeletePosition(id.Value, cancellationToken);
+            await positionController.DeletePosition(id, cancellationToken);
 
             // Assert
 

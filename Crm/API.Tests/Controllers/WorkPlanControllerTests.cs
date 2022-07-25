@@ -3,6 +3,7 @@ using Xunit;
 using API.Tests.Connection;
 using API.Controllers;
 using API.DTOs.WorkPlan;
+using Microsoft.AspNetCore.Mvc;
 
 namespace API.Tests.Controllers
 {
@@ -57,15 +58,23 @@ namespace API.Tests.Controllers
                 ContractId = 0
             };
 
-            var id = await workPlanController.CreateNewWorkPlan(createWorkPlanDto, cancellationToken);
+            var value = await workPlanController.CreateNewWorkPlan(createWorkPlanDto, cancellationToken);
+
+            var result = value.Result as OkObjectResult;
+
+            int id = (int)result.Value;
 
             // Act
 
-            var workPlan = await workPlanController.SelectingWorkPlan(id.Value);
+            var workPlanValue = await workPlanController.SelectingWorkPlan(id);
+
+            var workPlanResult = workPlanValue.Result as OkObjectResult;
+
+            var workPlan = (SelectingWorkPlanDto)workPlanResult.Value;
 
             // Assert
 
-            Assert.Equal(id, workPlan.Value.Id);
+            Assert.Equal(id, workPlan.Id);
         }
 
         [Fact]
@@ -95,17 +104,21 @@ namespace API.Tests.Controllers
                 NewContractId = 1
             };
 
-            var id = await workPlanController.CreateNewWorkPlan(createWorkPlanDto, cancellationToken);
+            var value = await workPlanController.CreateNewWorkPlan(createWorkPlanDto, cancellationToken);
+
+            var result = value.Result as OkObjectResult;
+
+            int id = (int)result.Value;
 
             // Act
 
-            await workPlanController.UpdateWorkPlan(updateWorkPlanDto, id.Value, cancellationToken);
+            await workPlanController.UpdateWorkPlan(updateWorkPlanDto, id, cancellationToken);
 
             // Assert
 
-            Assert.Equal(updateWorkPlanDto.NewDateStart, context.WorkPlans.Single(w => w.Id == id.Value).DateStart);
-            Assert.Equal(updateWorkPlanDto.NewDateFinish, context.WorkPlans.Single(w => w.Id == id.Value).DateFinish);
-            Assert.Equal(updateWorkPlanDto.NewContractId, context.WorkPlans.Single(w => w.Id == id.Value).ContractId);
+            Assert.Equal(updateWorkPlanDto.NewDateStart, context.WorkPlans.Single(w => w.Id == id).DateStart);
+            Assert.Equal(updateWorkPlanDto.NewDateFinish, context.WorkPlans.Single(w => w.Id == id).DateFinish);
+            Assert.Equal(updateWorkPlanDto.NewContractId, context.WorkPlans.Single(w => w.Id == id).ContractId);
         }
 
         [Fact]
@@ -128,11 +141,15 @@ namespace API.Tests.Controllers
                 ContractId = 0
             };
 
-            var id = await workPlanController.CreateNewWorkPlan(createWorkPlanDto, cancellationToken);
+            var value = await workPlanController.CreateNewWorkPlan(createWorkPlanDto, cancellationToken);
+
+            var result = value.Result as OkObjectResult;
+
+            int id = (int)result.Value;
 
             // Act
 
-            await workPlanController.DeleteWorkPlan(id.Value, cancellationToken);
+            await workPlanController.DeleteWorkPlan(id, cancellationToken);
 
             // Assert
 

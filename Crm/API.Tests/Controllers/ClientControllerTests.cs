@@ -11,7 +11,7 @@ namespace API.Tests.Controllers
     public class ClientControllerTests
     {
         [Fact]
-        public async void Task_When_CreateNewClient_Expect_CreateNewClientWasAddedToDb()
+        public async void Task_When_CreateNewClient_Expect_ClientWasCreated()
         {
             // Arrange
 
@@ -41,7 +41,7 @@ namespace API.Tests.Controllers
         }
 
         [Fact]
-        public async void Task_When_SelectingClient_Expect_SelectingClientWasAddedFromDb()
+        public async void Task_When_SelectingClient_Expect_ClientWasSelected()
         {
             // Arrange
 
@@ -81,7 +81,7 @@ namespace API.Tests.Controllers
         }
 
         [Fact]
-        public async void Task_When_UpdateClient_Expect_UpdateClientWasAddedInDb()
+        public async void Task_When_UpdateClient_Expect_ClientWasUpdate()
         {
             // Arrange
 
@@ -127,7 +127,7 @@ namespace API.Tests.Controllers
         }
 
         [Fact]
-        public async void Task_When_DeleteClient_Expect_DeleteClientWasAddedFromDb()
+        public async void Task_When_DeleteClient_Expect_ClientWasDeleted()
         {
             // Arrange
 

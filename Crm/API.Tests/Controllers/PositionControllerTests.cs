@@ -10,7 +10,7 @@ namespace API.Tests.Controllers
     public class PositionControllerTests
     {
         [Fact]
-        public async void Task_When_CreateNewPosition_Expect_CreateNewPositionWasAddedToDb()
+        public async void Task_When_CreateNewPosition_Expect_PositionWasCreated()
         {
             // Arrange
 
@@ -37,7 +37,7 @@ namespace API.Tests.Controllers
         }
 
         [Fact]
-        public async void Task_When_SelectingPosition_Expect_SelectingPositionWasAddedFromDb()
+        public async void Task_When_SelectingPosition_Expect_PositionWasSelected()
         {
             // Arrange
 
@@ -74,7 +74,7 @@ namespace API.Tests.Controllers
         }
 
         [Fact]
-        public async void Task_When_UpdatePosition_Expect_UpdatePositionWasAddedInDb()
+        public async void Task_When_UpdatePosition_Expect_PositionWasUpdate()
         {
             // Arrange
 
@@ -112,7 +112,7 @@ namespace API.Tests.Controllers
         }
 
         [Fact]
-        public async void Task_When_DeletePosition_Expect_DeletePositionWasAddedFromDb()
+        public async void Task_When_DeletePosition_Expect_PositionWasDeleted()
         {
             // Arrange
 

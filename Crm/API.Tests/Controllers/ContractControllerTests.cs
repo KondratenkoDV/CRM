@@ -10,7 +10,7 @@ namespace API.Tests.Controllers
     public class ContractControllerTests
     {
         [Fact]
-        public async void Task_When_CreateNewContract_Expect_CreateNewContractWasAddedToDb()
+        public async void Task_When_CreateNewContract_Expect_ContractWasCreated()
         {
             // Arrange
 
@@ -40,7 +40,7 @@ namespace API.Tests.Controllers
         }
 
         [Fact]
-        public async void Task_When_SelectingContract_Expect_SelectingContractWasAddedFromDb()
+        public async void Task_When_SelectingContract_Expect_ContractWasSelected()
         {
             // Arrange
 
@@ -80,7 +80,7 @@ namespace API.Tests.Controllers
         }
 
         [Fact]
-        public async void Task_When_UpdateContract_Expect_UpdateContractWasAddedInDb()
+        public async void Task_When_UpdateContract_Expect_ContractWasUpdate()
         {
             // Arrange
 
@@ -127,7 +127,7 @@ namespace API.Tests.Controllers
         }
 
         [Fact]
-        public async void Task_When_DeleteContract_Expect_DeleteContractWasAddedFromDb()
+        public async void Task_When_DeleteContract_Expect_ContractWasDeleted()
         {
             // Arrange
 

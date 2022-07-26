@@ -10,7 +10,7 @@ namespace API.Tests.Controllers
     public class EmployeeControllerTests
     {
         [Fact]
-        public async void Task_When_CreateNewEmployee_Expect_CreateNewEmployeeWasAddedToDb()
+        public async void Task_When_CreateNewEmployee_Expect_EmployeeWasCreated()
         {
             // Arrange
 
@@ -39,7 +39,7 @@ namespace API.Tests.Controllers
         }
 
         [Fact]
-        public async void Task_When_SelectingEmployee_Expect_SelectingEmployeeWasAddedFromDb()
+        public async void Task_When_SelectingEmployee_Expect_EmployeeWasSelected()
         {
             // Arrange
 
@@ -78,7 +78,7 @@ namespace API.Tests.Controllers
         }
 
         [Fact]
-        public async void Task_When_UpdateEmployee_Expect_UpdateEmployeeWasAddedInDb()
+        public async void Task_When_UpdateEmployee_Expect_EmployeeWasUpdate()
         {
             // Arrange
 
@@ -122,7 +122,7 @@ namespace API.Tests.Controllers
         }
 
         [Fact]
-        public async void Task_When_DeleteEmployee_Expect_DeleteEmployeeWasAddedFromDb()
+        public async void Task_When_DeleteEmployee_Expect_EmployeeWasDeleted()
         {
             // Arrange
 

@@ -10,7 +10,7 @@ namespace API.Tests.Controllers
     public class WorkPlanControllerTests
     {
         [Fact]
-        public async void Task_When_CreateNewWorkPlan_Expect_CreateNewWorkPlanWasAddedToDb()
+        public async void Task_When_CreateNewWorkPlan_Expect_WorkPlanWasCreated()
         {
             // Arrange
 
@@ -39,7 +39,7 @@ namespace API.Tests.Controllers
         }
 
         [Fact]
-        public async void Task_When_SelectingWorkPlan_Expect_SelectingWorkPlanWasAddedFromDb()
+        public async void Task_When_SelectingWorkPlan_Expect_WorkPlanWasSelected()
         {
             // Arrange
 
@@ -78,7 +78,7 @@ namespace API.Tests.Controllers
         }
 
         [Fact]
-        public async void Task_When_UpdateWorkPlan_Expect_UpdateWorkPlanWasAddedInDb()
+        public async void Task_When_UpdateWorkPlan_Expect_WorkPlanWasUpdate()
         {
             // Arrange
 
@@ -122,7 +122,7 @@ namespace API.Tests.Controllers
         }
 
         [Fact]
-        public async void Task_When_DeleteWorkPlan_Expect_DeleteWorkPlanWasAddedFromDb()
+        public async void Task_When_DeleteWorkPlan_Expect_WorkPlanWasDeleted()
         {
             // Arrange
 

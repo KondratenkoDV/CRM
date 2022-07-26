@@ -40,3 +40,11 @@ erDiagram
       string Name
   }
   ```
+  ## Domain
+ >The domain layer contains entity definitions:
+  >* Сlient
+  >* Contract
+  >* Employee
+  >* Position
+  >* WorkPlan
+ >as well as their relationship with each other.

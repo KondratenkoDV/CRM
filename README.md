@@ -50,12 +50,36 @@ erDiagram
    >* WorkPlan
    >#### The relationship of entities to each other.
   ## 2. Persistence
-   >* Performs mediation tasks between model layers and data display.
-   >* Used by ORM Entity Framework Core.
-   >* The method was used code first.
+   >* Performs mediation tasks between model layers and data display
+   >* Used by ORM Entity Framework Core
+   >* The method was used code first
    >* A model was built using Fluent API methods.
   ## 3. Application
-   >* Translating between external requests from the API(4) and Domain(1) logic (back and forth).
+   >* Translating between external requests from the API(4) and Domain(1) logic (back and forth)
    >* Implementation of basic data operations (СRUD).
   ## 4. API
-   >*
+   >* Working with the database
+   >* It provides a web interface.
+```mermaid
+flowchart LR
+subgraph " "
+    direction TB
+    subgraph " "
+        A0[User] --> A1[API]
+        A1[API] --> A2[Aplication]
+        A2[Application] --> A4[Persistence]
+        A2[Application] --> A3[Domain]    
+        A4[Persistence] --> A3[Domain]
+    end
+    subgraph " "        
+        B[(Database)]   
+    end
+    A4[Persistence] --> B[(Database)]  
+end
+```
+ ## Tests
+>#### - Type used test XUnit Testing
+>#### - Test layers:
+>* Domain.Tests tests the layer Domain(1)
+>* Application.Tests tests the layer Application(3)
+>* API.Tests tests the layer API(4)

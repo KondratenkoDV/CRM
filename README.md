@@ -40,11 +40,22 @@ erDiagram
       string Name
   }
   ```
-  ## Domain
- >The domain layer contains entity definitions:
-  >* Сlient
-  >* Contract
-  >* Employee
-  >* Position
-  >* WorkPlan
- >as well as their relationship with each other.
+  --------------------------------------------------
+  ## 1. Domain
+   >#### The domain layer contains entity definitions:
+   >* Сlient
+   >* Contract
+   >* Employee
+   >* Position
+   >* WorkPlan
+   >#### The relationship of entities to each other.
+  ## 2. Persistence
+   >* Performs mediation tasks between model layers and data display.
+   >* Used by ORM Entity Framework Core.
+   >* The method was used code first.
+   >* A model was built using Fluent API methods.
+  ## 3. Application
+   >* Translating between external requests from the API(4) and Domain(1) logic (back and forth).
+   >* Implementation of basic data operations (СRUD).
+  ## 4. API
+   >*

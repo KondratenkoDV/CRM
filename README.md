@@ -83,3 +83,23 @@ end
 >* Domain.Tests tests the layer Domain(1)
 >* Application.Tests tests the layer Application(3)
 >* API.Tests tests the layer API(4)
+```mermaid
+flowchart LR
+subgraph " "
+    direction TB
+    subgraph " "
+        A1[API] --> A2[Aplication]
+        A2[Application] --> A4[Persistence]
+        A2[Application] --> A3[Domain]    
+        A4[Persistence] --> A3[Domain]
+    end
+    subgraph " "
+        B1[API.Tests]
+        B2[Application.Tests]
+        B3[Domain.Tests]  
+    end
+    B1[API.Tests] --> A1[API]
+    B2[Application.Tests] --> A2[Aplication]
+    B3[Domain.Tests] --> A3[Domain]    
+end
+```

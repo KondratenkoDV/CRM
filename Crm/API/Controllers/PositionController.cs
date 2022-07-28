@@ -6,7 +6,7 @@ using API.DTOs.Position;
 namespace API.Controllers
 {
     [ApiController]
-    [Route("API/[controller]")]
+    [Route("api/[controller]")]
     public class PositionController : ControllerBase
     {
         private readonly PositionService _positionService;

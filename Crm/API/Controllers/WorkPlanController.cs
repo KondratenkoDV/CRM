@@ -6,7 +6,7 @@ using API.DTOs.WorkPlan;
 namespace API.Controllers
 {
     [ApiController]
-    [Route("API/[controller]")]
+    [Route("api/[controller]")]
     public class WorkPlanController : ControllerBase
     {
         private readonly WorkPlanService _workPlanService;

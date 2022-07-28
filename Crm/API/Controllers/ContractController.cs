@@ -6,7 +6,7 @@ using API.DTOs.Contract;
 namespace API.Controllers
 {
     [ApiController]
-    [Route("API/[controller]")]
+    [Route("api/[controller]")]
     public class ContractController : ControllerBase
     {
         private readonly ContractService _contractService;

@@ -6,7 +6,7 @@ using API.DTOs.Employee;
 namespace API.Controllers
 {
     [ApiController]
-    [Route("API/[controller]")]
+    [Route("api/[controller]")]
     public class EmployeeController : ControllerBase
     {
         private readonly EmployeeService _employeeService;

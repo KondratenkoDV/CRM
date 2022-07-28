@@ -32,7 +32,7 @@ namespace Application.Services.WorkPlan
 
         public async Task<Domain.WorkPlan> SelectingAsync(int id)
         {
-            return await _dbContext.WorkPlans.SingleAsync(w => w.Id == id);
+            return await _dbContext.WorkPlans.SingleOrDefaultAsync(w => w.Id == id);
         }
 
         public async Task UpdateAsync(

@@ -6,7 +6,7 @@ using API.DTOs.Client;
 namespace API.Controllers
 {
     [ApiController]
-    [Route("API/[controller]")]
+    [Route("api/[controller]")]
     public class ClientController : ControllerBase
     {
         private readonly ClientService _clientService;

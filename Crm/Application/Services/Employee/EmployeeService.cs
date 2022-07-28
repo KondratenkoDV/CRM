@@ -32,7 +32,7 @@ namespace Application.Services.Employee
 
         public async Task<Domain.Employee> SelectingAsync(int id)
         {
-            return await _dbContext.Employees.SingleAsync(e => e.Id == id);
+            return await _dbContext.Employees.SingleOrDefaultAsync(e => e.Id == id);
         }
 
         public async Task UpdateAsync(

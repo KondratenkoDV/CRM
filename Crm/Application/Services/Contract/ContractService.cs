@@ -34,7 +34,7 @@ namespace Application.Services.Contract
 
         public async Task<Domain.Contract> SelectingAsync(int id)
         {
-            return await _dbContext.Contracts.SingleAsync(c => c.Id == id);
+            return await _dbContext.Contracts.SingleOrDefaultAsync(c => c.Id == id);
         }
 
         public async Task UpdateAsync(

@@ -7,16 +7,22 @@ namespace API
     {
         public static void Main(string[] args)
         {
+            WebBuilder(args).Run();
+        }
+        public static WebApplication WebBuilder(string[] args)
+        {
             var builder = WebApplication.CreateBuilder(args);
+
+            builder.Services.AddControllers();
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
 
-            
-            if (builder.Environment.IsDevelopment())
+            if (app.Environment.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
-                //app.UseSwagger();
-                //app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "TodoApi v1"));
+                app.UseSwagger();
+                app.UseSwaggerUI();
             }
 
             app.UseHttpsRedirection();
@@ -25,19 +31,19 @@ namespace API
 
             app.MapControllers();
 
-            app.Run();
+            return app;
         }
 
-        public DbContextOptions<CrmContext> ConnectionString()
+        public static DbContextOptions<CrmContext> ConnectionString()
         {
             var builder = new ConfigurationBuilder();
-            
+
             builder.SetBasePath(Directory.GetCurrentDirectory());
-            
+
             builder.AddJsonFile("appsettings.json");
-            
+
             var config = builder.Build();
-            
+
             string connectionString = config.GetConnectionString("DefaultConnection");
 
             var optionsBuilder = new DbContextOptionsBuilder<CrmContext>();

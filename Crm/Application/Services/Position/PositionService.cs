@@ -25,7 +25,7 @@ namespace Application.Services.Position
 
         public async Task<Domain.Position> SelectingAsync(int id)
         {
-            return await _dbContext.Positions.SingleAsync(p => p.Id == id);
+            return await _dbContext.Positions.SingleOrDefaultAsync(p => p.Id == id);
         }
 
         public async Task UpdateAsync(

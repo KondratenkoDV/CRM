@@ -1,3 +1,5 @@
+using API.Controllers;
+using Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
@@ -7,15 +9,21 @@ namespace API
     {
         public static void Main(string[] args)
         {
-            WebBuilder(args).Run();
+            WebBuilder(args);
         }
-        public static WebApplication WebBuilder(string[] args)
+        public static void WebBuilder(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddControllers();
+
+            ConfigureServices(builder);
+
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            var services = builder.Services;
+
 
             var app = builder.Build();
 
@@ -26,31 +34,17 @@ namespace API
             }
 
             app.UseHttpsRedirection();
-
             app.UseAuthorization();
-
             app.MapControllers();
-
-            return app;
+            app.Run();
         }
 
-        public static DbContextOptions<CrmContext> ConnectionString()
+        public static void ConfigureServices(WebApplicationBuilder builder)
         {
-            var builder = new ConfigurationBuilder();
-
-            builder.SetBasePath(Directory.GetCurrentDirectory());
-
-            builder.AddJsonFile("appsettings.json");
-
-            var config = builder.Build();
-
-            string connectionString = config.GetConnectionString("DefaultConnection");
-
-            var optionsBuilder = new DbContextOptionsBuilder<CrmContext>();
-
-            var options = optionsBuilder.UseSqlServer(connectionString).Options;
-
-            return options;
+            builder.Services.AddDbContext<IDbContext, CrmContext>(options =>
+            {
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+            });
         }
     }
 }

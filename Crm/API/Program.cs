@@ -2,6 +2,11 @@ using API.Controllers;
 using Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
+using Application.Services.Client;
+using Application.Services.Contract;
+using Application.Services.Employee;
+using Application.Services.Position;
+using Application.Services.WorkPlan;
 
 namespace API
 {
@@ -45,6 +50,12 @@ namespace API
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
+
+            builder.Services.AddScoped<ClientService>();
+            builder.Services.AddScoped<ContractService>();
+            builder.Services.AddScoped<EmployeeService>();
+            builder.Services.AddScoped<PositionService>();
+            builder.Services.AddScoped<WorkPlanService>();
         }
     }
 }

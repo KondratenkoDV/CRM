@@ -1,41 +1,43 @@
 ﻿using System;
 using Xunit;
 using API.Controllers;
-using API.Tests.Connection;
 using API.DTOs.Employee;
 using Microsoft.AspNetCore.Mvc;
+using Moq;
+using Application.Services.Employee;
 
 namespace API.Tests.Controllers
 {
-    public class EmployeeControllerTests
+    public class EmployeeControllerTests : TestCommandBase
     {
-        [Fact]
-        public async void Task_When_CreateNewEmployee_Expect_EmployeeWasCreated()
+        private CreateEmployeeDto GetCreateEmployeeDto()
         {
-            // Arrange
-
-            CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
-
-            CancellationToken cancellationToken = cancelTokenSource.Token;
-
-            var context = ConnectionFactory.Generate();
-
-            var employeeController = new EmployeeController(context);
-
-            var createEmployeeDto = new CreateEmployeeDto()
+            return new CreateEmployeeDto()
             {
                 FirstName = "FirstName",
                 LastName = "LastName",
                 PositionId = 0
             };
+        }
+
+        [Fact]
+        public async void Task_When_CreateNewEmployee_Expect_EmployeeWasCreated()
+        {
+            // Arrange
+
+            var mock = new Mock<EmployeeService>(Context);
+
+            var employeeController = new EmployeeController(mock.Object);
+
+            var createEmployeeDto = GetCreateEmployeeDto();
 
             // Act
 
-            await employeeController.CreateNewEmployee(createEmployeeDto, cancellationToken);
+            await employeeController.CreateNewEmployee(createEmployeeDto, CancellationToken.None);
 
             // Assert
 
-            Assert.NotNull(context.Employees);
+            Assert.NotNull(Context.Employees);
         }
 
         [Fact]
@@ -43,22 +45,13 @@ namespace API.Tests.Controllers
         {
             // Arrange
 
-            CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
+            var mock = new Mock<EmployeeService>(Context);
 
-            CancellationToken cancellationToken = cancelTokenSource.Token;
+            var employeeController = new EmployeeController(mock.Object);
 
-            var context = ConnectionFactory.Generate();
+            var createEmployeeDto = GetCreateEmployeeDto();
 
-            var employeeController = new EmployeeController(context);
-
-            var createEmployeeDto = new CreateEmployeeDto()
-            {
-                FirstName = "FirstName",
-                LastName = "LastName",
-                PositionId = 0
-            };
-
-            var value = await employeeController.CreateNewEmployee(createEmployeeDto, cancellationToken);
+            var value = await employeeController.CreateNewEmployee(createEmployeeDto, CancellationToken.None);
 
             var result = value.Result as OkObjectResult;
 
@@ -82,20 +75,11 @@ namespace API.Tests.Controllers
         {
             // Arrange
 
-            CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
+            var mock = new Mock<EmployeeService>(Context);
 
-            CancellationToken cancellationToken = cancelTokenSource.Token;
+            var employeeController = new EmployeeController(mock.Object);
 
-            var context = ConnectionFactory.Generate();
-
-            var employeeController = new EmployeeController(context);
-
-            var createEmployeeDto = new CreateEmployeeDto()
-            {
-                FirstName = "FirstName",
-                LastName = "LastName",
-                PositionId = 0
-            };
+            var createEmployeeDto = GetCreateEmployeeDto();
 
             var updateEmployeeDto = new UpdateEmployeeDto()
             {
@@ -104,7 +88,7 @@ namespace API.Tests.Controllers
                 NewPositionId = 1
             };
 
-            var value = await employeeController.CreateNewEmployee(createEmployeeDto, cancellationToken);
+            var value = await employeeController.CreateNewEmployee(createEmployeeDto, CancellationToken.None);
 
             var result = value.Result as OkObjectResult;
 
@@ -112,13 +96,13 @@ namespace API.Tests.Controllers
 
             // Act
 
-            await employeeController.UpdateEmployee(updateEmployeeDto, id, cancellationToken);
+            await employeeController.UpdateEmployee(updateEmployeeDto, id, CancellationToken.None);
 
             // Assert
 
-            Assert.Equal(updateEmployeeDto.NewFirstName, context.Employees.Single(c => c.Id == id).FirstName);
-            Assert.Equal(updateEmployeeDto.NewLastName, context.Employees.Single(c => c.Id == id).LastName);
-            Assert.Equal(updateEmployeeDto.NewPositionId, context.Employees.Single(c => c.Id == id).PositionId);
+            Assert.Equal(updateEmployeeDto.NewFirstName, Context.Employees.Single(c => c.Id == id).FirstName);
+            Assert.Equal(updateEmployeeDto.NewLastName, Context.Employees.Single(c => c.Id == id).LastName);
+            Assert.Equal(updateEmployeeDto.NewPositionId, Context.Employees.Single(c => c.Id == id).PositionId);
         }
 
         [Fact]
@@ -126,22 +110,13 @@ namespace API.Tests.Controllers
         {
             // Arrange
 
-            CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
+            var mock = new Mock<EmployeeService>(Context);
 
-            CancellationToken cancellationToken = cancelTokenSource.Token;
+            var employeeController = new EmployeeController(mock.Object);
 
-            var context = ConnectionFactory.Generate();
+            var createEmployeeDto = GetCreateEmployeeDto();
 
-            var employeeController = new EmployeeController(context);
-
-            var createEmployeeDto = new CreateEmployeeDto()
-            {
-                FirstName = "FirstName",
-                LastName = "LastName",
-                PositionId = 0
-            };
-
-            var value = await employeeController.CreateNewEmployee(createEmployeeDto, cancellationToken);
+            var value = await employeeController.CreateNewEmployee(createEmployeeDto, CancellationToken.None);
 
             var result = value.Result as OkObjectResult;
 
@@ -149,11 +124,11 @@ namespace API.Tests.Controllers
 
             // Act
 
-            await employeeController.DeleteEmployee(id, cancellationToken);
+            await employeeController.DeleteEmployee(id, CancellationToken.None);
 
             // Assert
 
-            Assert.Empty(context.Employees);
+            Assert.Empty(Context.Employees);
         }
     }
 }

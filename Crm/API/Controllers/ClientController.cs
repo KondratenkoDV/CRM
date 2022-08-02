@@ -11,9 +11,9 @@ namespace API.Controllers
     {
         private readonly ClientService _clientService;
 
-        public ClientController(IDbContext dbContext)
+        public ClientController(ClientService clientService)
         {
-            _clientService = new ClientService(dbContext);
+            _clientService = clientService;
         }
 
         [HttpPost]

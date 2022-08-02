@@ -11,9 +11,9 @@ namespace API.Controllers
     {
         private readonly EmployeeService _employeeService;
 
-        public EmployeeController(IDbContext dbContext)
+        public EmployeeController(EmployeeService employeeService)
         {
-            _employeeService = new EmployeeService(dbContext);
+            _employeeService = employeeService;
         }
 
         [HttpPost]

@@ -1,26 +1,14 @@
 ﻿using System;
 using Xunit;
-using Application.Tests.Connection;
 using Application.Services.Client;
 using Domain.Enum;
 
 namespace Application.Tests
 {
-    public class ClientServiceTests
+    public class ClientServiceTests : TestCommandBase
     {
-        [Fact]
-        public async void Task_When_AddToDb_Expect_ClientWasAddedToDb()
+        private (string, CodeOfTheCountry, string, string) GetParameters()
         {
-            // Arrange
-
-            CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
-
-            CancellationToken cancellationToken = cancelTokenSource.Token;
-
-            var context = ConnectionFactory.Generate();
-
-            var clientService = new ClientService(context);
-
             var name = "name";
 
             var codeOfTheCountry = CodeOfTheCountry.Ukraine;
@@ -29,18 +17,28 @@ namespace Application.Tests
 
             var subscriberNumber = "0000000";
 
+            return (name, codeOfTheCountry, regionCode, subscriberNumber);
+        }
+
+        [Fact]
+        public async void Task_When_AddToDb_Expect_ClientWasAddedToDb()
+        {
+            // Arrange
+
+            var clientService = new ClientService(Context);
+
             // Act
 
             await clientService.AddAsync(
-                name,
-                codeOfTheCountry,
-                regionCode,
-                subscriberNumber,
-                cancellationToken);
+                GetParameters().Item1,
+                GetParameters().Item2,
+                GetParameters().Item3,
+                GetParameters().Item4,
+                CancellationToken.None);
 
             // Assert
 
-            Assert.NotNull(context.Clients);
+            Assert.NotNull(Context.Clients);
         }
 
         [Fact]
@@ -48,28 +46,14 @@ namespace Application.Tests
         {
             // Arrenge
 
-            CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
-
-            CancellationToken cancellationToken = cancelTokenSource.Token;
-
-            var context = ConnectionFactory.Generate();
-
-            var clientService = new ClientService(context);
-
-            var name = "name";
-
-            var codeOfTheCountry = CodeOfTheCountry.Ukraine;
-
-            var regionCode = "00";
-
-            var subscriberNumber = "0000000";
+            var clientService = new ClientService(Context);
 
             int id = await clientService.AddAsync(
-                name,
-                codeOfTheCountry,
-                regionCode,
-                subscriberNumber,
-                cancellationToken);
+                GetParameters().Item1,
+                GetParameters().Item2,
+                GetParameters().Item3,
+                GetParameters().Item4,
+                CancellationToken.None);
 
             // Act
 
@@ -85,28 +69,14 @@ namespace Application.Tests
         {
             // Arrenge
 
-            CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
-
-            CancellationToken cancellationToken = cancelTokenSource.Token;
-
-            var context = ConnectionFactory.Generate();
-
-            var clientService = new ClientService(context);
-
-            var name = "name";
-
-            var codeOfTheCountry = CodeOfTheCountry.Ukraine;
-
-            var regionCode = "00";
-
-            var subscriberNumber = "0000000";
+            var clientService = new ClientService(Context);
 
             int id = await clientService.AddAsync(
-                name,
-                codeOfTheCountry,
-                regionCode,
-                subscriberNumber,
-                cancellationToken);
+                GetParameters().Item1,
+                GetParameters().Item2,
+                GetParameters().Item3,
+                GetParameters().Item4,
+                CancellationToken.None);
 
             var client = await clientService.SelectingAsync(id);
 
@@ -121,16 +91,16 @@ namespace Application.Tests
             await clientService.UpdateAsync(
                 client,
                 newName,
-                codeOfTheCountry,
+                GetParameters().Item2,
                 newRegionCode,
                 newSubscriberNumber,
-                cancellationToken);
+                CancellationToken.None);
 
             // Assert
 
-            Assert.Equal(newName, context.Clients.Single(c => c.Id == id).Name);
-            Assert.Equal(newRegionCode, context.Clients.Single(c => c.Id == id).RegionCode);
-            Assert.Equal(newSubscriberNumber, context.Clients.Single(c => c.Id == id).SubscriberNumber);
+            Assert.Equal(newName, Context.Clients.Single(c => c.Id == id).Name);
+            Assert.Equal(newRegionCode, Context.Clients.Single(c => c.Id == id).RegionCode);
+            Assert.Equal(newSubscriberNumber, Context.Clients.Single(c => c.Id == id).SubscriberNumber);
         }
 
         [Fact]
@@ -138,38 +108,24 @@ namespace Application.Tests
         {
             // Arrenge
 
-            CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
-
-            CancellationToken cancellationToken = cancelTokenSource.Token;
-
-            var context = ConnectionFactory.Generate();
-
-            var clientService = new ClientService(context);
-
-            var name = "name";
-
-            var codeOfTheCountry = CodeOfTheCountry.Ukraine;
-
-            var regionCode = "00";
-
-            var subscriberNumber = "0000000";
+            var clientService = new ClientService(Context);
 
             int id = await clientService.AddAsync(
-                name,
-                codeOfTheCountry,
-                regionCode,
-                subscriberNumber,
-                cancellationToken);
+                GetParameters().Item1,
+                GetParameters().Item2,
+                GetParameters().Item3,
+                GetParameters().Item4,
+                CancellationToken.None);
 
             var client = await clientService.SelectingAsync(id);
 
             // Act
 
-            await clientService.DeleteAsync(client, cancellationToken);
+            await clientService.DeleteAsync(client, CancellationToken.None);
 
             // Assert
 
-            Assert.Empty(context.Clients);
+            Assert.Empty(Context.Clients);
         }
     }
 }

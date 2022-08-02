@@ -1,43 +1,45 @@
 ﻿using System;
 using Xunit;
-using API.Tests.Connection;
 using API.Controllers;
 using API.DTOs.Client;
 using Domain.Enum;
 using Microsoft.AspNetCore.Mvc;
+using Moq;
+using Application.Services.Client;
 
 namespace API.Tests.Controllers
 {
-    public class ClientControllerTests
+    public class ClientControllerTests : TestCommandBase
     {
-        [Fact]
-        public async void Task_When_CreateNewClient_Expect_ClientWasCreated()
+        private CreateClientDto GetCreateClientDto()
         {
-            // Arrange
-
-            CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
-
-            CancellationToken cancellationToken = cancelTokenSource.Token;
-
-            var context = ConnectionFactory.Generate();
-
-            var clientController = new ClientController(context);
-
-            var createClientDto = new CreateClientDto()
+            return new CreateClientDto()
             {
                 Name = "Name",
                 СodeOfTheCountry = CodeOfTheCountry.Ukraine,
                 RegionCode = "00",
                 SubscriberNumber = "0000000"
             };
+        }
+
+        [Fact]
+        public async void Task_When_CreateNewClient_Expect_ClientWasCreated()
+        {
+            // Arrange
+
+            var mock = new Mock<ClientService>(Context);
+
+            var clientController = new ClientController(mock.Object);
+
+            var createClientDto = GetCreateClientDto();
 
             // Act
 
-            await clientController.CreateNewClient(createClientDto, cancellationToken);
+            await clientController.CreateNewClient(createClientDto, CancellationToken.None);
 
             // Assert
 
-            Assert.NotNull(context.Clients);
+            Assert.NotNull(Context.Clients);
         }
 
         [Fact]
@@ -45,23 +47,13 @@ namespace API.Tests.Controllers
         {
             // Arrange
 
-            CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
+            var mock = new Mock<ClientService>(Context);
 
-            CancellationToken cancellationToken = cancelTokenSource.Token;
+            var clientController = new ClientController(mock.Object);
 
-            var context = ConnectionFactory.Generate();
+            var createClientDto = GetCreateClientDto();
 
-            var clientController = new ClientController(context);
-
-            var createClientDto = new CreateClientDto()
-            {
-                Name = "Name",
-                СodeOfTheCountry = CodeOfTheCountry.Ukraine,
-                RegionCode = "00",
-                SubscriberNumber = "0000000"
-            };
-
-            var value = await clientController.CreateNewClient(createClientDto, cancellationToken);
+            var value = await clientController.CreateNewClient(createClientDto, CancellationToken.None);
 
             var result = value.Result as OkObjectResult;
                         
@@ -85,21 +77,11 @@ namespace API.Tests.Controllers
         {
             // Arrange
 
-            CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
+            var mock = new Mock<ClientService>(Context);
 
-            CancellationToken cancellationToken = cancelTokenSource.Token;
+            var clientController = new ClientController(mock.Object);
 
-            var context = ConnectionFactory.Generate();
-
-            var clientController = new ClientController(context);
-
-            var createClientDto = new CreateClientDto()
-            {
-                Name = "Name",
-                СodeOfTheCountry = CodeOfTheCountry.Ukraine,
-                RegionCode = "00",
-                SubscriberNumber = "0000000"
-            };
+            var createClientDto = GetCreateClientDto();
 
             var updateClientDto = new UpdateClientDto()
             {
@@ -109,7 +91,7 @@ namespace API.Tests.Controllers
                 NewSubscriberNumber = "0000000"
             };
 
-            var value = await clientController.CreateNewClient(createClientDto, cancellationToken);
+            var value = await clientController.CreateNewClient(createClientDto, CancellationToken.None);
 
             var result = value.Result as OkObjectResult;
 
@@ -117,13 +99,13 @@ namespace API.Tests.Controllers
 
             // Act
 
-            await clientController.UpdateClient(updateClientDto, id, cancellationToken);
+            await clientController.UpdateClient(updateClientDto, id, CancellationToken.None);
 
             // Assert
 
-            Assert.Equal(updateClientDto.NewName, context.Clients.Single(c => c.Id == id).Name);
-            Assert.Equal(updateClientDto.NewRegionCode, context.Clients.Single(c => c.Id == id).RegionCode);
-            Assert.Equal(updateClientDto.NewSubscriberNumber, context.Clients.Single(c => c.Id == id).SubscriberNumber);
+            Assert.Equal(updateClientDto.NewName, Context.Clients.Single(c => c.Id == id).Name);
+            Assert.Equal(updateClientDto.NewRegionCode, Context.Clients.Single(c => c.Id == id).RegionCode);
+            Assert.Equal(updateClientDto.NewSubscriberNumber, Context.Clients.Single(c => c.Id == id).SubscriberNumber);
         }
 
         [Fact]
@@ -131,23 +113,13 @@ namespace API.Tests.Controllers
         {
             // Arrange
 
-            CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
+            var mock = new Mock<ClientService>(Context);
 
-            CancellationToken cancellationToken = cancelTokenSource.Token;
+            var clientController = new ClientController(mock.Object);
 
-            var context = ConnectionFactory.Generate();
+            var createClientDto = GetCreateClientDto();
 
-            var clientController = new ClientController(context);
-
-            var createClientDto = new CreateClientDto()
-            {
-                Name = "Name",
-                СodeOfTheCountry = CodeOfTheCountry.Ukraine,
-                RegionCode = "00",
-                SubscriberNumber = "0000000"
-            };
-
-            var value = await clientController.CreateNewClient(createClientDto, cancellationToken);
+            var value = await clientController.CreateNewClient(createClientDto, CancellationToken.None);
 
             var result = value.Result as OkObjectResult;
 
@@ -155,11 +127,11 @@ namespace API.Tests.Controllers
 
             // Act
 
-            await clientController.DeleteClient(id, cancellationToken);
+            await clientController.DeleteClient(id, CancellationToken.None);
 
             // Assert
 
-            Assert.Empty(context.Clients);
+            Assert.Empty(Context.Clients);
         }
     }
 }

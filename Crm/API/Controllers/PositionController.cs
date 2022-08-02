@@ -11,9 +11,9 @@ namespace API.Controllers
     {
         private readonly PositionService _positionService;
 
-        public PositionController(IDbContext dbContext)
+        public PositionController(PositionService positionService)
         {
-            _positionService = new PositionService(dbContext);
+            _positionService = positionService;
         }
 
         [HttpPost]

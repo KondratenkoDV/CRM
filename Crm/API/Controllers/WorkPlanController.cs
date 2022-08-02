@@ -11,9 +11,9 @@ namespace API.Controllers
     {
         private readonly WorkPlanService _workPlanService;
 
-        public WorkPlanController(IDbContext dbContext)
+        public WorkPlanController(WorkPlanService workPlanService)
         {
-            _workPlanService = new WorkPlanService(dbContext);
+            _workPlanService = workPlanService;
         }
 
         [HttpPost]

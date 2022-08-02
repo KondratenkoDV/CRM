@@ -1,42 +1,44 @@
 ﻿using System;
-using API.Tests.Connection;
 using API.Controllers;
 using API.DTOs.Contract;
 using Xunit;
 using Microsoft.AspNetCore.Mvc;
+using Moq;
+using Application.Services.Contract;
 
 namespace API.Tests.Controllers
 {
-    public class ContractControllerTests
+    public class ContractControllerTests : TestCommandBase
     {
-        [Fact]
-        public async void Task_When_CreateNewContract_Expect_ContractWasCreated()
+        private CreateContractDto GetCreateContractDto()
         {
-            // Arrange
-
-            CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
-
-            CancellationToken cancellationToken = cancelTokenSource.Token;
-
-            var context = ConnectionFactory.Generate();
-
-            var contractController = new ContractController(context);
-
-            var createContractDto = new CreateContractDto()
+            return new CreateContractDto()
             {
                 Subject = "Subject",
                 Address = "Address",
                 Price = 0,
                 ClientId = 0
             };
+        }
+
+        [Fact]
+        public async void Task_When_CreateNewContract_Expect_ContractWasCreated()
+        {
+            // Arrange
+
+            var mock = new Mock<ContractService>(Context);
+
+            var contractController = new ContractController(mock.Object);
+
+            var createContractDto = GetCreateContractDto();
 
             // Act
 
-            await contractController.CreateNewContract(createContractDto, cancellationToken);
+            await contractController.CreateNewContract(createContractDto, CancellationToken.None);
 
             // Assert
 
-            Assert.NotNull(context.Contracts);
+            Assert.NotNull(Context.Contracts);
         }
 
         [Fact]
@@ -44,23 +46,13 @@ namespace API.Tests.Controllers
         {
             // Arrange
 
-            CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
+            var mock = new Mock<ContractService>(Context);
 
-            CancellationToken cancellationToken = cancelTokenSource.Token;
+            var contractController = new ContractController(mock.Object);
 
-            var context = ConnectionFactory.Generate();
+            var createContractDto = GetCreateContractDto();
 
-            var contractController = new ContractController(context);
-
-            var createContractDto = new CreateContractDto()
-            {
-                Subject = "Subject",
-                Address = "Address",
-                Price = 0,
-                ClientId = 0
-            };
-
-            var value = await contractController.CreateNewContract(createContractDto, cancellationToken);
+            var value = await contractController.CreateNewContract(createContractDto, CancellationToken.None);
 
             var result = value.Result as OkObjectResult;
 
@@ -84,21 +76,11 @@ namespace API.Tests.Controllers
         {
             // Arrange
 
-            CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
+            var mock = new Mock<ContractService>(Context);
 
-            CancellationToken cancellationToken = cancelTokenSource.Token;
+            var contractController = new ContractController(mock.Object);
 
-            var context = ConnectionFactory.Generate();
-
-            var contractController = new ContractController(context);
-
-            var createContractDto = new CreateContractDto()
-            {
-                Subject = "Subject",
-                Address = "Address",
-                Price = 0,
-                ClientId = 0
-            };
+            var createContractDto = GetCreateContractDto();
 
             var updateContractDto = new UpdateContractDto()
             {
@@ -108,7 +90,7 @@ namespace API.Tests.Controllers
                 NewClientId = 1
             };
 
-            var value = await contractController.CreateNewContract(createContractDto, cancellationToken);
+            var value = await contractController.CreateNewContract(createContractDto, CancellationToken.None);
 
             var result = value.Result as OkObjectResult;
 
@@ -116,14 +98,14 @@ namespace API.Tests.Controllers
 
             // Act
 
-            await contractController.UpdateContract(updateContractDto, id, cancellationToken);
+            await contractController.UpdateContract(updateContractDto, id, CancellationToken.None);
 
             // Assert
 
-            Assert.Equal(updateContractDto.NewSubject, context.Contracts.Single(c => c.Id == id).Subject);
-            Assert.Equal(updateContractDto.NewAddress, context.Contracts.Single(c => c.Id == id).Address);
-            Assert.Equal(updateContractDto.NewPrice, context.Contracts.Single(c => c.Id == id).Price);
-            Assert.Equal(updateContractDto.NewClientId, context.Contracts.Single(c => c.Id == id).ClientId);
+            Assert.Equal(updateContractDto.NewSubject, Context.Contracts.Single(c => c.Id == id).Subject);
+            Assert.Equal(updateContractDto.NewAddress, Context.Contracts.Single(c => c.Id == id).Address);
+            Assert.Equal(updateContractDto.NewPrice, Context.Contracts.Single(c => c.Id == id).Price);
+            Assert.Equal(updateContractDto.NewClientId, Context.Contracts.Single(c => c.Id == id).ClientId);
         }
 
         [Fact]
@@ -131,23 +113,13 @@ namespace API.Tests.Controllers
         {
             // Arrange
 
-            CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
+            var mock = new Mock<ContractService>(Context);
 
-            CancellationToken cancellationToken = cancelTokenSource.Token;
+            var contractController = new ContractController(mock.Object);
 
-            var context = ConnectionFactory.Generate();
+            var createContractDto = GetCreateContractDto();
 
-            var contractController = new ContractController(context);
-
-            var createContractDto = new CreateContractDto()
-            {
-                Subject = "Subject",
-                Address = "Address",
-                Price = 0,
-                ClientId = 0
-            };
-
-            var value = await contractController.CreateNewContract(createContractDto, cancellationToken);
+            var value = await contractController.CreateNewContract(createContractDto, CancellationToken.None);
 
             var result = value.Result as OkObjectResult;
 
@@ -155,11 +127,11 @@ namespace API.Tests.Controllers
 
             // Act
 
-            await contractController.DeleteContract(id, cancellationToken);
+            await contractController.DeleteContract(id, CancellationToken.None);
 
             // Assert
 
-            Assert.Empty(context.Contracts);
+            Assert.Empty(Context.Contracts);
         }
     }
 }

@@ -9,11 +9,11 @@ namespace API.Controllers
     [Route("api/[controller]")]
     public class ContractController : ControllerBase
     {
-        private readonly ContractService _contractService;
+        private readonly ContractService _сontractService;
 
-        public ContractController(IDbContext dbContext)
+        public ContractController(ContractService сontractService)
         {
-            _contractService = new ContractService(dbContext);
+            _сontractService = сontractService;
         }
 
         [HttpPost]
@@ -21,7 +21,7 @@ namespace API.Controllers
             CreateContractDto createContractDto,
             CancellationToken cancellationToken)
         {
-            return Ok(await _contractService.AddAsync(
+            return Ok(await _сontractService.AddAsync(
                 createContractDto.Subject,
                 createContractDto.Address,
                 createContractDto.Price,
@@ -32,7 +32,7 @@ namespace API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<SelectingContractDto>> SelectingContract(int id)
         {
-            var contract = await _contractService.SelectingAsync(id);
+            var contract = await _сontractService.SelectingAsync(id);
 
             return Ok(new SelectingContractDto()
             {
@@ -50,9 +50,9 @@ namespace API.Controllers
             int id,
             CancellationToken cancellationToken)
         {
-            var contract = await _contractService.SelectingAsync(id);
+            var contract = await _сontractService.SelectingAsync(id);
 
-            await _contractService.UpdateAsync(
+            await _сontractService.UpdateAsync(
                 contract,
                 updateContractDto.NewSubject,
                 updateContractDto.NewAddress,
@@ -66,9 +66,9 @@ namespace API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteContract(int id, CancellationToken cancellationToken)
         {
-            var contract = await _contractService.SelectingAsync(id);
+            var contract = await _сontractService.SelectingAsync(id);
 
-            await _contractService.DeleteAsync(contract, cancellationToken);
+            await _сontractService.DeleteAsync(contract, cancellationToken);
 
             return NoContent();
         }

@@ -1,42 +1,40 @@
 ﻿using System;
 using Xunit;
-using Application.Tests.Connection;
 using Application.Services.Employee;
 
 namespace Application.Tests
 {
-    public class EmployeeServiceTests
+    public class EmployeeServiceTests : TestCommandBase
     {
-        [Fact]
-        public async void Task_When_AddAsync_Expect_EmployeeWasAddedToDb()
+        private (string, string, int) GetParameters()
         {
-            // Arrange
-
-            CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
-
-            CancellationToken cancellationToken = cancelTokenSource.Token;
-
-            var context = ConnectionFactory.Generate();
-
-            var employeeService = new EmployeeService(context);
-
             var firstName = "firstName";
 
             var lastName = "lastName";
 
             var positionId = 0;
 
+            return (firstName, lastName, positionId);
+        }
+
+        [Fact]
+        public async void Task_When_AddAsync_Expect_EmployeeWasAddedToDb()
+        {
+            // Arrange
+
+            var employeeService = new EmployeeService(Context);
+
             // Act
 
             await employeeService.AddAsync(
-                firstName,
-                lastName,
-                positionId,
-                cancellationToken);
+                GetParameters().Item1,
+                GetParameters().Item2,
+                GetParameters().Item3,
+                CancellationToken.None);
 
             // Assert
 
-            Assert.NotNull(context.Employees);
+            Assert.NotNull(Context.Employees);
         }
 
         [Fact]
@@ -44,25 +42,13 @@ namespace Application.Tests
         {
             // Arrenge
 
-            CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
-
-            CancellationToken cancellationToken = cancelTokenSource.Token;
-
-            var context = ConnectionFactory.Generate();
-
-            var employeeService = new EmployeeService(context);
-
-            var firstName = "firstName";
-
-            var lastName = "lastName";
-
-            var positionId = 0;
+            var employeeService = new EmployeeService(Context);
 
             int id = await employeeService.AddAsync(
-                firstName,
-                lastName,
-                positionId,
-                cancellationToken);
+                GetParameters().Item1,
+                GetParameters().Item2,
+                GetParameters().Item3,
+                CancellationToken.None);
 
             // Act
 
@@ -78,25 +64,13 @@ namespace Application.Tests
         {
             // Arrenge
 
-            CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
-
-            CancellationToken cancellationToken = cancelTokenSource.Token;
-
-            var context = ConnectionFactory.Generate();
-
-            var employeeService = new EmployeeService(context);
-
-            var firstName = "firstName";
-
-            var lastName = "lastName";
-
-            var positionId = 0;
+            var employeeService = new EmployeeService(Context);
 
             int id = await employeeService.AddAsync(
-                firstName,
-                lastName,
-                positionId,
-                cancellationToken);
+                GetParameters().Item1,
+                GetParameters().Item2,
+                GetParameters().Item3,
+                CancellationToken.None);
                         
             var newFirstName = "newFirstName";
 
@@ -113,13 +87,13 @@ namespace Application.Tests
                 newFirstName,
                 newLastName,
                 newPositionId,
-                cancellationToken);
+                CancellationToken.None);
 
             // Assert
 
-            Assert.Equal(newFirstName, context.Employees.Single(c => c.Id == id).FirstName);
-            Assert.Equal(newLastName, context.Employees.Single(c => c.Id == id).LastName);
-            Assert.Equal(newPositionId, context.Employees.Single(c => c.Id == id).PositionId);
+            Assert.Equal(newFirstName, Context.Employees.Single(c => c.Id == id).FirstName);
+            Assert.Equal(newLastName, Context.Employees.Single(c => c.Id == id).LastName);
+            Assert.Equal(newPositionId, Context.Employees.Single(c => c.Id == id).PositionId);
         }
 
         [Fact]
@@ -127,35 +101,23 @@ namespace Application.Tests
         {
             // Arrenge
 
-            CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
-
-            CancellationToken cancellationToken = cancelTokenSource.Token;
-
-            var context = ConnectionFactory.Generate();
-
-            var employeeService = new EmployeeService(context);
-
-            var firstName = "firstName";
-
-            var lastName = "lastName";
-
-            var positionId = 0;
+            var employeeService = new EmployeeService(Context);
 
             int id = await employeeService.AddAsync(
-                firstName,
-                lastName,
-                positionId,
-                cancellationToken);
+                GetParameters().Item1,
+                GetParameters().Item2,
+                GetParameters().Item3,
+                CancellationToken.None);
 
             var employee = await employeeService.SelectingAsync(id);
 
             // Act
 
-            await employeeService.DeleteAsync(employee, cancellationToken);
+            await employeeService.DeleteAsync(employee, CancellationToken.None);
 
             // Assert
 
-            Assert.Empty(context.Employees);
+            Assert.Empty(Context.Employees);
         }
     }
 }

@@ -1,25 +1,13 @@
 ﻿using System;
 using Xunit;
-using Application.Tests.Connection;
 using Application.Services.Contract;
 
 namespace Application.Tests
 {
-    public class ContractServiceTests
+    public class ContractServiceTests : TestCommandBase
     {
-        [Fact]
-        public async void Task_When_AddAsync_Expect_ContractWasAddedToDb()
+        private (string, string, int, int) GetParameters()
         {
-            // Arrange
-
-            CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
-
-            CancellationToken cancellationToken = cancelTokenSource.Token;
-
-            var context = ConnectionFactory.Generate();
-
-            var contractService = new ContractService(context);
-
             var subject = "subject";
 
             var address = "address";
@@ -28,18 +16,28 @@ namespace Application.Tests
 
             var clientId = 0;
 
+            return (subject, address, price, clientId);
+        }
+
+        [Fact]
+        public async void Task_When_AddAsync_Expect_ContractWasAddedToDb()
+        {
+            // Arrange
+
+            var contractService = new ContractService(Context);
+
             // Act
 
             await contractService.AddAsync(
-                subject,
-                address,
-                price,
-                clientId,
-                cancellationToken);
+                GetParameters().Item1,
+                GetParameters().Item2,
+                GetParameters().Item3,
+                GetParameters().Item4,
+                CancellationToken.None);
 
             // Assert
 
-            Assert.NotNull(context.Contracts);
+            Assert.NotNull(Context.Contracts);
         }
 
         [Fact]
@@ -47,28 +45,14 @@ namespace Application.Tests
         {
             // Arrenge
 
-            CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
-
-            CancellationToken cancellationToken = cancelTokenSource.Token;
-
-            var context = ConnectionFactory.Generate();
-
-            var contractService = new ContractService(context);
-
-            var subject = "subject";
-
-            var address = "address";
-
-            var price = 0;
-
-            var clientId = 0;
+            var contractService = new ContractService(Context);
 
             int id = await contractService.AddAsync(
-                subject,
-                address,
-                price,
-                clientId,
-                cancellationToken);
+                GetParameters().Item1,
+                GetParameters().Item2,
+                GetParameters().Item3,
+                GetParameters().Item4,
+                CancellationToken.None);
 
             // Act
 
@@ -84,28 +68,14 @@ namespace Application.Tests
         {
             // Arrenge
 
-            CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
-
-            CancellationToken cancellationToken = cancelTokenSource.Token;
-
-            var context = ConnectionFactory.Generate();
-
-            var contractService = new ContractService(context);
-
-            var subject = "subject";
-
-            var address = "address";
-
-            var price = 0;
-
-            var clientId = 0;
+            var contractService = new ContractService(Context);
 
             int id = await contractService.AddAsync(
-                subject,
-                address,
-                price,
-                clientId,
-                cancellationToken);
+                GetParameters().Item1,
+                GetParameters().Item2,
+                GetParameters().Item3,
+                GetParameters().Item4,
+                CancellationToken.None);
 
             var contract = await contractService.SelectingAsync(id);
 
@@ -125,14 +95,14 @@ namespace Application.Tests
                 newAddress,
                 newPrice,
                 newClientId,
-                cancellationToken);
+                CancellationToken.None);
 
             // Assert
 
-            Assert.Equal(newSubject, context.Contracts.Single(c => c.Id == id).Subject);
-            Assert.Equal(newAddress, context.Contracts.Single(c => c.Id == id).Address);
-            Assert.Equal(newPrice, context.Contracts.Single(c => c.Id == id).Price);
-            Assert.Equal(newClientId, context.Contracts.Single(c => c.Id == id).ClientId);
+            Assert.Equal(newSubject, Context.Contracts.Single(c => c.Id == id).Subject);
+            Assert.Equal(newAddress, Context.Contracts.Single(c => c.Id == id).Address);
+            Assert.Equal(newPrice, Context.Contracts.Single(c => c.Id == id).Price);
+            Assert.Equal(newClientId, Context.Contracts.Single(c => c.Id == id).ClientId);
         }
 
         [Fact]
@@ -140,38 +110,24 @@ namespace Application.Tests
         {
             // Arrenge
 
-            CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
-
-            CancellationToken cancellationToken = cancelTokenSource.Token;
-
-            var context = ConnectionFactory.Generate();
-
-            var contractService = new ContractService(context);
-
-            var subject = "subject";
-
-            var address = "address";
-
-            var price = 0;
-
-            var clientId = 0;
+            var contractService = new ContractService(Context);
 
             int id = await contractService.AddAsync(
-                subject,
-                address,
-                price,
-                clientId,
-                cancellationToken);
+                GetParameters().Item1,
+                GetParameters().Item2,
+                GetParameters().Item3,
+                GetParameters().Item4,
+                CancellationToken.None);
 
             var contract = await contractService.SelectingAsync(id);
 
             // Act
 
-            await contractService.DeleteAsync(contract, cancellationToken);
+            await contractService.DeleteAsync(contract, CancellationToken.None);
 
             // Assert
 
-            Assert.Empty(context.Contracts);
+            Assert.Empty(Context.Contracts);
         }
     }
 }

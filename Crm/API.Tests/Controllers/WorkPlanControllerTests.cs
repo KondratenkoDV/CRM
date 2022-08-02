@@ -1,41 +1,43 @@
 ﻿using System;
 using Xunit;
-using API.Tests.Connection;
 using API.Controllers;
 using API.DTOs.WorkPlan;
 using Microsoft.AspNetCore.Mvc;
+using Moq;
+using Application.Services.WorkPlan;
 
 namespace API.Tests.Controllers
 {
-    public class WorkPlanControllerTests
+    public class WorkPlanControllerTests : TestCommandBase
     {
-        [Fact]
-        public async void Task_When_CreateNewWorkPlan_Expect_WorkPlanWasCreated()
+        private CreateWorkPlanDto GetCreateWorkPlanDto()
         {
-            // Arrange
-
-            CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
-
-            CancellationToken cancellationToken = cancelTokenSource.Token;
-
-            var context = ConnectionFactory.Generate();
-
-            var workPlanController = new WorkPlanController(context);
-
-            var createWorkPlanDto = new CreateWorkPlanDto()
+            return new CreateWorkPlanDto()
             {
                 DateStart = DateTime.Now.AddDays(-10),
                 DateFinish = DateTime.Now.AddDays(2),
                 ContractId = 0
             };
+        }
+
+        [Fact]
+        public async void Task_When_CreateNewWorkPlan_Expect_WorkPlanWasCreated()
+        {
+            // Arrange
+
+            var mock = new Mock<WorkPlanService>(Context);
+
+            var workPlanController = new WorkPlanController(mock.Object);
+
+            var createWorkPlanDto = GetCreateWorkPlanDto();
 
             // Act
 
-            await workPlanController.CreateNewWorkPlan(createWorkPlanDto, cancellationToken);
+            await workPlanController.CreateNewWorkPlan(createWorkPlanDto, CancellationToken.None);
 
             // Assert
 
-            Assert.NotNull(context.WorkPlans);
+            Assert.NotNull(Context.WorkPlans);
         }
 
         [Fact]
@@ -43,22 +45,13 @@ namespace API.Tests.Controllers
         {
             // Arrange
 
-            CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
+            var mock = new Mock<WorkPlanService>(Context);
 
-            CancellationToken cancellationToken = cancelTokenSource.Token;
+            var workPlanController = new WorkPlanController(mock.Object);
 
-            var context = ConnectionFactory.Generate();
+            var createWorkPlanDto = GetCreateWorkPlanDto();
 
-            var workPlanController = new WorkPlanController(context);
-
-            var createWorkPlanDto = new CreateWorkPlanDto()
-            {
-                DateStart = DateTime.Now.AddDays(-10),
-                DateFinish = DateTime.Now.AddDays(2),
-                ContractId = 0
-            };
-
-            var value = await workPlanController.CreateNewWorkPlan(createWorkPlanDto, cancellationToken);
+            var value = await workPlanController.CreateNewWorkPlan(createWorkPlanDto, CancellationToken.None);
 
             var result = value.Result as OkObjectResult;
 
@@ -82,20 +75,11 @@ namespace API.Tests.Controllers
         {
             // Arrange
 
-            CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
+            var mock = new Mock<WorkPlanService>(Context);
 
-            CancellationToken cancellationToken = cancelTokenSource.Token;
+            var workPlanController = new WorkPlanController(mock.Object);
 
-            var context = ConnectionFactory.Generate();
-
-            var workPlanController = new WorkPlanController(context);
-
-            var createWorkPlanDto = new CreateWorkPlanDto()
-            {
-                DateStart = DateTime.Now.AddDays(-10),
-                DateFinish = DateTime.Now.AddDays(2),
-                ContractId = 0
-            };
+            var createWorkPlanDto = GetCreateWorkPlanDto();
 
             var updateWorkPlanDto = new UpdateWorkPlanDto()
             {
@@ -104,7 +88,7 @@ namespace API.Tests.Controllers
                 NewContractId = 1
             };
 
-            var value = await workPlanController.CreateNewWorkPlan(createWorkPlanDto, cancellationToken);
+            var value = await workPlanController.CreateNewWorkPlan(createWorkPlanDto, CancellationToken.None);
 
             var result = value.Result as OkObjectResult;
 
@@ -112,13 +96,13 @@ namespace API.Tests.Controllers
 
             // Act
 
-            await workPlanController.UpdateWorkPlan(updateWorkPlanDto, id, cancellationToken);
+            await workPlanController.UpdateWorkPlan(updateWorkPlanDto, id, CancellationToken.None);
 
             // Assert
 
-            Assert.Equal(updateWorkPlanDto.NewDateStart, context.WorkPlans.Single(w => w.Id == id).DateStart);
-            Assert.Equal(updateWorkPlanDto.NewDateFinish, context.WorkPlans.Single(w => w.Id == id).DateFinish);
-            Assert.Equal(updateWorkPlanDto.NewContractId, context.WorkPlans.Single(w => w.Id == id).ContractId);
+            Assert.Equal(updateWorkPlanDto.NewDateStart, Context.WorkPlans.Single(w => w.Id == id).DateStart);
+            Assert.Equal(updateWorkPlanDto.NewDateFinish, Context.WorkPlans.Single(w => w.Id == id).DateFinish);
+            Assert.Equal(updateWorkPlanDto.NewContractId, Context.WorkPlans.Single(w => w.Id == id).ContractId);
         }
 
         [Fact]
@@ -126,22 +110,13 @@ namespace API.Tests.Controllers
         {
             // Arrange
 
-            CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
+            var mock = new Mock<WorkPlanService>(Context);
 
-            CancellationToken cancellationToken = cancelTokenSource.Token;
+            var workPlanController = new WorkPlanController(mock.Object);
 
-            var context = ConnectionFactory.Generate();
+            var createWorkPlanDto = GetCreateWorkPlanDto();
 
-            var workPlanController = new WorkPlanController(context);
-
-            var createWorkPlanDto = new CreateWorkPlanDto()
-            {
-                DateStart = DateTime.Now.AddDays(-10),
-                DateFinish = DateTime.Now.AddDays(2),
-                ContractId = 0
-            };
-
-            var value = await workPlanController.CreateNewWorkPlan(createWorkPlanDto, cancellationToken);
+            var value = await workPlanController.CreateNewWorkPlan(createWorkPlanDto, CancellationToken.None);
 
             var result = value.Result as OkObjectResult;
 
@@ -149,11 +124,11 @@ namespace API.Tests.Controllers
 
             // Act
 
-            await workPlanController.DeleteWorkPlan(id, cancellationToken);
+            await workPlanController.DeleteWorkPlan(id, CancellationToken.None);
 
             // Assert
 
-            Assert.Empty(context.WorkPlans);
+            Assert.Empty(Context.WorkPlans);
         }
         
     }

@@ -1,34 +1,27 @@
 ﻿using System;
 using Xunit;
-using Application.Tests.Connection;
 using Application.Services.Position;
 
 namespace Application.Tests
 {
-    public class PositionServiceTests
+    public class PositionServiceTests : TestCommandBase
     {
         [Fact]
         public async void Task_When_AddAsync_Expect_PositionWasAddedToDb()
         {
             // Arrange
 
-            CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
-
-            CancellationToken cancellationToken = cancelTokenSource.Token;
-
-            var context = ConnectionFactory.Generate();
-
-            var positionService = new PositionService(context);
+            var positionService = new PositionService(Context);
 
             var name = "name";
 
             // Act
 
-            await positionService.AddAsync(name, cancellationToken);
+            await positionService.AddAsync(name, CancellationToken.None);
 
             // Assert
 
-            Assert.NotNull(context.Positions);
+            Assert.NotNull(Context.Positions);
         }
 
         [Fact]
@@ -36,17 +29,11 @@ namespace Application.Tests
         {
             // Arrenge
 
-            CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
-
-            CancellationToken cancellationToken = cancelTokenSource.Token;
-
-            var context = ConnectionFactory.Generate();
-
-            var positionService = new PositionService(context);
+            var positionService = new PositionService(Context);
 
             var name = "name";
 
-            int id = await positionService.AddAsync(name, cancellationToken);
+            int id = await positionService.AddAsync(name, CancellationToken.None);
 
             // Act
 
@@ -62,17 +49,11 @@ namespace Application.Tests
         {
             // Arrenge
 
-            CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
-
-            CancellationToken cancellationToken = cancelTokenSource.Token;
-
-            var context = ConnectionFactory.Generate();
-
-            var positionService = new PositionService(context);
+            var positionService = new PositionService(Context);
 
             var name = "name";
 
-            int id = await positionService.AddAsync(name, cancellationToken);
+            int id = await positionService.AddAsync(name, CancellationToken.None);
 
             var position = await positionService.SelectingAsync(id);
 
@@ -80,11 +61,11 @@ namespace Application.Tests
 
             // Act
 
-            await positionService.UpdateAsync(position, newName, cancellationToken);
+            await positionService.UpdateAsync(position, newName, CancellationToken.None);
 
             // Assert
 
-            Assert.Equal(newName, context.Positions.Single(p => p.Id == id).Name);
+            Assert.Equal(newName, Context.Positions.Single(p => p.Id == id).Name);
         }
 
         [Fact]
@@ -92,27 +73,21 @@ namespace Application.Tests
         {
             // Arrenge
 
-            CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
-
-            CancellationToken cancellationToken = cancelTokenSource.Token;
-
-            var context = ConnectionFactory.Generate();
-
-            var positionService = new PositionService(context);
+            var positionService = new PositionService(Context);
 
             var name = "name";
 
-            int id = await positionService.AddAsync(name, cancellationToken);
+            int id = await positionService.AddAsync(name, CancellationToken.None);
 
             var position = await positionService.SelectingAsync(id);
 
             // Act
 
-            await positionService.DeleteAsync(position, cancellationToken);
+            await positionService.DeleteAsync(position, CancellationToken.None);
 
             // Assert
 
-            Assert.Empty(context.Positions);
+            Assert.Empty(Context.Positions);
         }
     }
 }

@@ -1,39 +1,41 @@
 ﻿using System;
 using Xunit;
-using API.Tests.Connection;
 using API.Controllers;
 using API.DTOs.Position;
 using Microsoft.AspNetCore.Mvc;
+using Moq;
+using Application.Services.Position;
 
 namespace API.Tests.Controllers
 {
-    public class PositionControllerTests
+    public class PositionControllerTests : TestCommandBase
     {
+        private CreatePositionDto GetCreatePositionDto()
+        {
+            return new CreatePositionDto()
+            {
+                Name = "Name"
+            };
+        }
+
         [Fact]
         public async void Task_When_CreateNewPosition_Expect_PositionWasCreated()
         {
             // Arrange
 
-            CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
+            var mock = new Mock<PositionService>(Context);
 
-            CancellationToken cancellationToken = cancelTokenSource.Token;
+            var positionController = new PositionController(mock.Object);
 
-            var context = ConnectionFactory.Generate();
-
-            var positionController = new PositionController(context);
-
-            var createPositionDto = new CreatePositionDto()
-            {
-                Name = "Name"
-            };
+            var createPositionDto = GetCreatePositionDto();
 
             // Act
 
-            await positionController.CreateNewPosition(createPositionDto, cancellationToken);
+            await positionController.CreateNewPosition(createPositionDto, CancellationToken.None);
 
             // Assert
 
-            Assert.NotNull(context.Positions);
+            Assert.NotNull(Context.Positions);
         }
 
         [Fact]
@@ -41,20 +43,13 @@ namespace API.Tests.Controllers
         {
             // Arrange
 
-            CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
+            var mock = new Mock<PositionService>(Context);
 
-            CancellationToken cancellationToken = cancelTokenSource.Token;
+            var positionController = new PositionController(mock.Object);
 
-            var context = ConnectionFactory.Generate();
+            var createPositionDto = GetCreatePositionDto();
 
-            var positionController = new PositionController(context);
-
-            var createPositionDto = new CreatePositionDto()
-            {
-                Name = "Name"
-            };
-
-            var value = await positionController.CreateNewPosition(createPositionDto, cancellationToken);
+            var value = await positionController.CreateNewPosition(createPositionDto, CancellationToken.None);
 
             var result = value.Result as OkObjectResult;
 
@@ -78,25 +73,18 @@ namespace API.Tests.Controllers
         {
             // Arrange
 
-            CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
+            var mock = new Mock<PositionService>(Context);
 
-            CancellationToken cancellationToken = cancelTokenSource.Token;
+            var positionController = new PositionController(mock.Object);
 
-            var context = ConnectionFactory.Generate();
-
-            var positionController = new PositionController(context);
-
-            var createPositionDto = new CreatePositionDto()
-            {
-                Name = "Name"
-            };
+            var createPositionDto = GetCreatePositionDto();
 
             var updatePositionDto = new UpdatePositionDto()
             {
                 NewName = "NewName"
             };
 
-            var value = await positionController.CreateNewPosition(createPositionDto, cancellationToken);
+            var value = await positionController.CreateNewPosition(createPositionDto, CancellationToken.None);
 
             var result = value.Result as OkObjectResult;
 
@@ -104,11 +92,11 @@ namespace API.Tests.Controllers
 
             // Act
 
-            await positionController.UpdatePosition(updatePositionDto, id, cancellationToken);
+            await positionController.UpdatePosition(updatePositionDto, id, CancellationToken.None);
 
             // Assert
 
-            Assert.Equal(updatePositionDto.NewName, context.Positions.Single(p => p.Id == id).Name);
+            Assert.Equal(updatePositionDto.NewName, Context.Positions.Single(p => p.Id == id).Name);
         }
 
         [Fact]
@@ -116,20 +104,13 @@ namespace API.Tests.Controllers
         {
             // Arrange
 
-            CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
+            var mock = new Mock<PositionService>(Context);
 
-            CancellationToken cancellationToken = cancelTokenSource.Token;
+            var positionController = new PositionController(mock.Object);
 
-            var context = ConnectionFactory.Generate();
+            var createPositionDto = GetCreatePositionDto();
 
-            var positionController = new PositionController(context);
-
-            var createPositionDto = new CreatePositionDto()
-            {
-                Name = "Name"
-            };
-
-            var value = await positionController.CreateNewPosition(createPositionDto, cancellationToken);
+            var value = await positionController.CreateNewPosition(createPositionDto, CancellationToken.None);
 
             var result = value.Result as OkObjectResult;
 
@@ -137,11 +118,11 @@ namespace API.Tests.Controllers
 
             // Act
 
-            await positionController.DeletePosition(id, cancellationToken);
+            await positionController.DeletePosition(id, CancellationToken.None);
 
             // Assert
 
-            Assert.Empty(context.Positions);
+            Assert.Empty(Context.Positions);
         }
         
     }

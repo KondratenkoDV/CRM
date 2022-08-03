@@ -1,0 +1,178 @@
+{
+	"info": {
+		"_postman_id": "fbdf06be-97e1-4eeb-b802-5452a1b32958",
+		"name": "CRM Client",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "22334458"
+	},
+	"item": [
+		{
+			"name": "CreateNewClient",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"Andrey\",\r\n  \"сodeOfTheCountry\": 380,\r\n  \"regionCode\": \"00\",\r\n  \"subscriberNumber\": \"0000000\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:44352/api/Client",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "44352",
+					"path": [
+						"api",
+						"Client"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "CreateNewClient",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Test\",\r\n  \"сodeOfTheCountry\": 380,\r\n  \"regionCode\": \"00\",\r\n  \"subscriberNumber\": \"0000000\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:44352/api/Client",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44352",
+							"path": [
+								"api",
+								"Client"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Server",
+							"value": "Microsoft-IIS/10.0"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "ASP.NET"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 29 Jul 2022 08:53:00 GMT"
+						}
+					],
+					"cookie": [],
+					"body": "5"
+				}
+			]
+		},
+		{
+			"name": "SelectingClient",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:44352/api/Client/8",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "44352",
+					"path": [
+						"api",
+						"Client",
+						"8"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UpdateClient",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"newName\": \"Update\",\r\n  \"newСodeOfTheCountry\": 380,\r\n  \"newRegionCode\": \"11\",\r\n  \"newSubscriberNumber\": \"1111111\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:44352/api/Client/8",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "44352",
+					"path": [
+						"api",
+						"Client",
+						"8"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DeleteClient",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:44352/api/Client/",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "44352",
+					"path": [
+						"api",
+						"Client",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

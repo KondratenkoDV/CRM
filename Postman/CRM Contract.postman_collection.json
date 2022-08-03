@@ -1,0 +1,109 @@
+{
+	"info": {
+		"_postman_id": "1aa1edd7-0304-428c-bbbc-4db11305e448",
+		"name": "CRM Contract",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "22334458"
+	},
+	"item": [
+		{
+			"name": "CreateNewContract",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"subject\": \"Test\",\r\n  \"address\": \"Test\",\r\n  \"price\": 0,\r\n  \"clientId\": 6\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:44352/api/Contract",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "44352",
+					"path": [
+						"api",
+						"Contract"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SelectingContract",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:44352/api/Contract/4",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "44352",
+					"path": [
+						"api",
+						"Contract",
+						"4"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UpdateContract",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"newSubject\": \"string\",\r\n  \"newAddress\": \"string\",\r\n  \"newPrice\": 0,\r\n  \"newClientId\": 0\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:44352/api/Contract",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "44352",
+					"path": [
+						"api",
+						"Contract"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DeleteContract",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:44352/api/Contract",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "44352",
+					"path": [
+						"api",
+						"Contract"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

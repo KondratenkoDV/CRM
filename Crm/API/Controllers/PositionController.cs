@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Application.Services.Position;
-using Domain.Interfaces;
 using API.DTOs.Position;
+using FluentValidation;
+using FluentValidation.Results;
 
 namespace API.Controllers
 {
@@ -11,9 +12,18 @@ namespace API.Controllers
     {
         private readonly PositionService _positionService;
 
-        public PositionController(PositionService positionService)
+        private readonly IValidator<CreatePositionDto> _createValidator;
+
+        private readonly IValidator<UpdatePositionDto> _updateValidator;
+
+        public PositionController(
+            PositionService positionService,
+            IValidator<CreatePositionDto> createValidator,
+            IValidator<UpdatePositionDto> updateValidator)
         {
             _positionService = positionService;
+            _createValidator = createValidator;
+            _updateValidator = updateValidator;
         }
 
         [HttpPost]
@@ -21,6 +31,13 @@ namespace API.Controllers
             CreatePositionDto createPositionDto,
             CancellationToken cancellationToken)
         {
+            ValidationResult result = await _createValidator.ValidateAsync(createPositionDto);
+
+            if (!result.IsValid)
+            {
+                return NotFound();
+            }
+
             return Ok(await _positionService.AddAsync(
                 createPositionDto.Name,
                 cancellationToken));
@@ -44,6 +61,13 @@ namespace API.Controllers
             int id,
             CancellationToken cancellationToken)
         {
+            ValidationResult result = await _updateValidator.ValidateAsync(updatePositionDto);
+
+            if (!result.IsValid)
+            {
+                return NotFound();
+            }
+
             var position = await _positionService.SelectingAsync(id);
 
             await _positionService.UpdateAsync(

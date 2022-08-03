@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Application.Services.Contract;
-using Domain.Interfaces;
+using FluentValidation;
 using API.DTOs.Contract;
+using FluentValidation.Results;
 
 namespace API.Controllers
 {
@@ -11,9 +12,18 @@ namespace API.Controllers
     {
         private readonly ContractService _сontractService;
 
-        public ContractController(ContractService сontractService)
+        private readonly IValidator<CreateContractDto> _createValidator;
+
+        private readonly IValidator<UpdateContractDto> _updateValidator;
+
+        public ContractController(
+            ContractService сontractService,
+            IValidator<CreateContractDto> createValidator,
+            IValidator<UpdateContractDto> updateValidator)
         {
             _сontractService = сontractService;
+            _createValidator = createValidator;
+            _updateValidator = updateValidator;
         }
 
         [HttpPost]
@@ -21,6 +31,13 @@ namespace API.Controllers
             CreateContractDto createContractDto,
             CancellationToken cancellationToken)
         {
+            ValidationResult result = await _createValidator.ValidateAsync(createContractDto);
+
+            if (!result.IsValid)
+            {
+                return NotFound();
+            }
+
             return Ok(await _сontractService.AddAsync(
                 createContractDto.Subject,
                 createContractDto.Address,
@@ -50,6 +67,13 @@ namespace API.Controllers
             int id,
             CancellationToken cancellationToken)
         {
+            ValidationResult result = await _updateValidator.ValidateAsync(updateContractDto);
+
+            if (!result.IsValid)
+            {
+                return NotFound();
+            }
+
             var contract = await _сontractService.SelectingAsync(id);
 
             await _сontractService.UpdateAsync(

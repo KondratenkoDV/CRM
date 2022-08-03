@@ -1,4 +1,3 @@
-using API.Controllers;
 using Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
@@ -7,6 +6,15 @@ using Application.Services.Contract;
 using Application.Services.Employee;
 using Application.Services.Position;
 using Application.Services.WorkPlan;
+using FluentValidation;
+using API.Helpers.Client;
+using API.DTOs.Client;
+using API.Helpers.Contract;
+using API.DTOs.Contract;
+using API.Helpers.Employee;
+using API.DTOs.Employee;
+using API.Helpers.Position;
+using API.DTOs.Position;
 
 namespace API
 {
@@ -23,6 +31,8 @@ namespace API
             builder.Services.AddControllers();
 
             ConfigureServices(builder);
+
+            Validator(builder);
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -56,6 +66,21 @@ namespace API
             builder.Services.AddScoped<EmployeeService>();
             builder.Services.AddScoped<PositionService>();
             builder.Services.AddScoped<WorkPlanService>();
+        }
+
+        public static void Validator(WebApplicationBuilder builder)
+        {
+            builder.Services.AddScoped<IValidator<CreateClientDto>, CreateClientDtoValidator>();
+            builder.Services.AddScoped<IValidator<UpdateClientDto>, UpdateClientDtoValidator>();
+
+            builder.Services.AddScoped<IValidator<CreateContractDto>, CreateContractDtoValidator>();
+            builder.Services.AddScoped<IValidator<UpdateContractDto>, UpdateContractDtoValidator>();
+
+            builder.Services.AddScoped<IValidator<CreateEmployeeDto>, CreateEmployeeDtoValidator>();
+            builder.Services.AddScoped<IValidator<UpdateEmployeeDto>, UpdateEmployeeDtoValidator>();
+
+            builder.Services.AddScoped<IValidator<CreatePositionDto>, CreatePositionDtoValidator>();
+            builder.Services.AddScoped<IValidator<UpdatePositionDto>, UpdatePositionDtoValidator>();
         }
     }
 }

@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Application.Services.Client;
-using Domain.Interfaces;
 using API.DTOs.Client;
+using FluentValidation;
+using FluentValidation.Results;
 
 namespace API.Controllers
 {
@@ -11,9 +12,18 @@ namespace API.Controllers
     {
         private readonly ClientService _clientService;
 
-        public ClientController(ClientService clientService)
+        private readonly IValidator<CreateClientDto> _createValidator;
+
+        private readonly IValidator<UpdateClientDto> _updateValidator;
+
+        public ClientController(
+            ClientService clientService,
+            IValidator<CreateClientDto> createValidator,
+            IValidator<UpdateClientDto> updateValidator)
         {
             _clientService = clientService;
+            _createValidator = createValidator;
+            _updateValidator = updateValidator;
         }
 
         [HttpPost]
@@ -21,7 +31,13 @@ namespace API.Controllers
             CreateClientDto createClientDto,
             CancellationToken cancellationToken)
         {
-            return Ok(await _clientService.AddAsync(
+            ValidationResult result = await _createValidator.ValidateAsync(createClientDto);
+
+            if (!result.IsValid)
+            {
+                return NotFound();
+            }
+                return Ok(await _clientService.AddAsync(
                 createClientDto.Name,
                 createClientDto.СodeOfTheCountry,
                 createClientDto.RegionCode,
@@ -50,6 +66,13 @@ namespace API.Controllers
             int id,
             CancellationToken cancellationToken)
         {
+            ValidationResult result = await _updateValidator.ValidateAsync(updateClientDto);
+
+            if (!result.IsValid)
+            {
+                return NotFound();
+            }
+
             var client = await _clientService.SelectingAsync(id);
 
             await _clientService.UpdateAsync(

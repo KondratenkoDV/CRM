@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Application.Services.Employee;
-using Domain.Interfaces;
 using API.DTOs.Employee;
+using FluentValidation;
+using FluentValidation.Results;
 
 namespace API.Controllers
 {
@@ -11,9 +12,18 @@ namespace API.Controllers
     {
         private readonly EmployeeService _employeeService;
 
-        public EmployeeController(EmployeeService employeeService)
+        private readonly IValidator<CreateEmployeeDto> _createValidator;
+
+        private readonly IValidator<UpdateEmployeeDto> _updateValidator;
+
+        public EmployeeController(
+            EmployeeService employeeService,
+            IValidator<CreateEmployeeDto> createValidator,
+            IValidator<UpdateEmployeeDto> updateValidator)
         {
             _employeeService = employeeService;
+            _createValidator = createValidator;
+            _updateValidator = updateValidator;
         }
 
         [HttpPost]
@@ -21,6 +31,13 @@ namespace API.Controllers
             CreateEmployeeDto createEmployeeDto,
             CancellationToken cancellationToken)
         {
+            ValidationResult result = await _createValidator.ValidateAsync(createEmployeeDto);
+
+            if (!result.IsValid)
+            {
+                return NotFound();
+            }
+
             return Ok(await _employeeService.AddAsync(
                 createEmployeeDto.FirstName,
                 createEmployeeDto.LastName,
@@ -48,6 +65,13 @@ namespace API.Controllers
             int id,
             CancellationToken cancellationToken)
         {
+            ValidationResult result = await _updateValidator.ValidateAsync(updateEmployeeDto);
+
+            if (!result.IsValid)
+            {
+                return NotFound();
+            }
+
             var employee = await _employeeService.SelectingAsync(id);
 
             await _employeeService.UpdateAsync(

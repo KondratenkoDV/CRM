@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Services.Position
 {
-    public class PositionService
+    public class PositionService : IPositionService
     {
         private readonly IDbContext _dbContext;
 

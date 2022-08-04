@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Application.Services.WorkPlan;
 using Domain.Interfaces;
 using API.DTOs.WorkPlan;
 
@@ -9,9 +8,9 @@ namespace API.Controllers
     [Route("api/[controller]")]
     public class WorkPlanController : ControllerBase
     {
-        private readonly WorkPlanService _workPlanService;
+        private readonly IWorkPlanService _workPlanService;
 
-        public WorkPlanController(WorkPlanService workPlanService)
+        public WorkPlanController(IWorkPlanService workPlanService)
         {
             _workPlanService = workPlanService;
         }

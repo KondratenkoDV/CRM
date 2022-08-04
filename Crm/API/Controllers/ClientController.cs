@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Application.Services.Client;
 using API.DTOs.Client;
 using FluentValidation;
 using FluentValidation.Results;
+using Domain.Interfaces;
 
 namespace API.Controllers
 {
@@ -10,14 +10,14 @@ namespace API.Controllers
     [Route("api/[controller]")]
     public class ClientController : ControllerBase
     {
-        private readonly ClientService _clientService;
+        private readonly IClientService _clientService;
 
         private readonly IValidator<CreateClientDto> _createValidator;
 
         private readonly IValidator<UpdateClientDto> _updateValidator;
 
         public ClientController(
-            ClientService clientService,
+            IClientService clientService,
             IValidator<CreateClientDto> createValidator,
             IValidator<UpdateClientDto> updateValidator)
         {

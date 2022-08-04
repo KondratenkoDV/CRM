@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Application.Services.Contract;
 using FluentValidation;
 using API.DTOs.Contract;
 using FluentValidation.Results;
+using Domain.Interfaces;
 
 namespace API.Controllers
 {
@@ -10,14 +10,14 @@ namespace API.Controllers
     [Route("api/[controller]")]
     public class ContractController : ControllerBase
     {
-        private readonly ContractService _сontractService;
+        private readonly IContractService _сontractService;
 
         private readonly IValidator<CreateContractDto> _createValidator;
 
         private readonly IValidator<UpdateContractDto> _updateValidator;
 
         public ContractController(
-            ContractService сontractService,
+            IContractService сontractService,
             IValidator<CreateContractDto> createValidator,
             IValidator<UpdateContractDto> updateValidator)
         {

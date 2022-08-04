@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Services.WorkPlan
 {
-    public class WorkPlanService
+    public class WorkPlanService : IWorkPlanService
     {
         private readonly IDbContext _dbContext;
 

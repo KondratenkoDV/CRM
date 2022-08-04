@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Application.Services.Position;
 using API.DTOs.Position;
 using FluentValidation;
 using FluentValidation.Results;
+using Domain.Interfaces;
 
 namespace API.Controllers
 {
@@ -10,14 +10,14 @@ namespace API.Controllers
     [Route("api/[controller]")]
     public class PositionController : ControllerBase
     {
-        private readonly PositionService _positionService;
+        private readonly IPositionService _positionService;
 
         private readonly IValidator<CreatePositionDto> _createValidator;
 
         private readonly IValidator<UpdatePositionDto> _updateValidator;
 
         public PositionController(
-            PositionService positionService,
+            IPositionService positionService,
             IValidator<CreatePositionDto> createValidator,
             IValidator<UpdatePositionDto> updateValidator)
         {

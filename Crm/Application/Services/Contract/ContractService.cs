@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Services.Contract
 {
-    public class ContractService
+    public class ContractService : IContractService
     {
         private readonly IDbContext _dbContext;
 

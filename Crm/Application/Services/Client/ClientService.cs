@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Services.Client
 {
-    public class ClientService
+    public class ClientService : IClientService
     {
         private readonly IDbContext _dbContext;
 

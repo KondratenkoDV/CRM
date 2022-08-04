@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Application.Services.Employee;
 using API.DTOs.Employee;
 using FluentValidation;
 using FluentValidation.Results;
+using Domain.Interfaces;
 
 namespace API.Controllers
 {
@@ -10,14 +10,14 @@ namespace API.Controllers
     [Route("api/[controller]")]
     public class EmployeeController : ControllerBase
     {
-        private readonly EmployeeService _employeeService;
+        private readonly IEmployeeService _employeeService;
 
         private readonly IValidator<CreateEmployeeDto> _createValidator;
 
         private readonly IValidator<UpdateEmployeeDto> _updateValidator;
 
         public EmployeeController(
-            EmployeeService employeeService,
+            IEmployeeService employeeService,
             IValidator<CreateEmployeeDto> createValidator,
             IValidator<UpdateEmployeeDto> updateValidator)
         {

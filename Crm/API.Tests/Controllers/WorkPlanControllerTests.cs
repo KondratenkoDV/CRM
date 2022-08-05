@@ -2,34 +2,34 @@
 using Xunit;
 using API.Controllers;
 using API.DTOs.WorkPlan;
-using Microsoft.AspNetCore.Mvc;
 using Moq;
-using Application.Services.WorkPlan;
+using Domain.Interfaces;
 
 namespace API.Tests.Controllers
 {
-    public class WorkPlanControllerTests : TestCommandBase
+    public class WorkPlanControllerTests
     {
-        private CreateWorkPlanDto GetCreateWorkPlanDto()
-        {
-            return new CreateWorkPlanDto()
-            {
-                DateStart = DateTime.Now.AddDays(-10),
-                DateFinish = DateTime.Now.AddDays(2),
-                ContractId = 0
-            };
-        }
-
         [Fact]
         public async void Task_When_CreateNewWorkPlan_Expect_WorkPlanWasCreated()
         {
             // Arrange
 
-            var mock = new Mock<WorkPlanService>(Context);
+            var mock = new Mock<IWorkPlanService>();
+
+            mock.Setup(w => w.AddAsync(
+                It.IsAny<DateTime>(),
+                It.IsAny<DateTime>(),
+                It.IsAny<int>(),
+                CancellationToken.None)).Returns(It.IsAny<Task<int>>());
 
             var workPlanController = new WorkPlanController(mock.Object);
 
-            var createWorkPlanDto = GetCreateWorkPlanDto();
+            var createWorkPlanDto = new CreateWorkPlanDto()
+            {
+                DateStart = DateTime.Now.AddDays(-10),
+                DateFinish = DateTime.Now.AddDays(2),
+                ContractId = 0
+            };
 
             // Act
 
@@ -37,7 +37,12 @@ namespace API.Tests.Controllers
 
             // Assert
 
-            Assert.NotNull(Context.WorkPlans);
+            mock.Verify(w => w.AddAsync(
+                It.IsAny<DateTime>(),
+                It.IsAny<DateTime>(),
+                It.IsAny<int>(),
+                CancellationToken.None),
+                Times.Once);
         }
 
         [Fact]
@@ -45,29 +50,20 @@ namespace API.Tests.Controllers
         {
             // Arrange
 
-            var mock = new Mock<WorkPlanService>(Context);
+            var mock = new Mock<IWorkPlanService>();
+
+            mock.Setup(w => w.SelectingAsync(It.IsAny<int>()))
+                .Returns(It.IsAny<Task<Domain.WorkPlan>>());
 
             var workPlanController = new WorkPlanController(mock.Object);
 
-            var createWorkPlanDto = GetCreateWorkPlanDto();
-
-            var value = await workPlanController.CreateNewWorkPlan(createWorkPlanDto, CancellationToken.None);
-
-            var result = value.Result as OkObjectResult;
-
-            int id = (int)result.Value;
-
             // Act
 
-            var workPlanValue = await workPlanController.SelectingWorkPlan(id);
-
-            var workPlanResult = workPlanValue.Result as OkObjectResult;
-
-            var workPlan = (SelectingWorkPlanDto)workPlanResult.Value;
+            var workPlanValue = await workPlanController.SelectingWorkPlan(It.IsAny<int>());
 
             // Assert
 
-            Assert.Equal(id, workPlan.Id);
+            mock.Verify(w => w.SelectingAsync(It.IsAny<int>()), Times.Once());
         }
 
         [Fact]
@@ -75,11 +71,16 @@ namespace API.Tests.Controllers
         {
             // Arrange
 
-            var mock = new Mock<WorkPlanService>(Context);
+            var mock = new Mock<IWorkPlanService>();
+
+            mock.Setup(w => w.UpdateAsync(
+                It.IsAny<Domain.WorkPlan>(),
+                It.IsAny<DateTime>(),
+                It.IsAny<DateTime>(),
+                It.IsAny<int>(),
+                CancellationToken.None));
 
             var workPlanController = new WorkPlanController(mock.Object);
-
-            var createWorkPlanDto = GetCreateWorkPlanDto();
 
             var updateWorkPlanDto = new UpdateWorkPlanDto()
             {
@@ -88,21 +89,19 @@ namespace API.Tests.Controllers
                 NewContractId = 1
             };
 
-            var value = await workPlanController.CreateNewWorkPlan(createWorkPlanDto, CancellationToken.None);
-
-            var result = value.Result as OkObjectResult;
-
-            int id = (int)result.Value;
-
             // Act
 
-            await workPlanController.UpdateWorkPlan(updateWorkPlanDto, id, CancellationToken.None);
+            await workPlanController.UpdateWorkPlan(updateWorkPlanDto, It.IsAny<int>(), CancellationToken.None);
 
             // Assert
 
-            Assert.Equal(updateWorkPlanDto.NewDateStart, Context.WorkPlans.Single(w => w.Id == id).DateStart);
-            Assert.Equal(updateWorkPlanDto.NewDateFinish, Context.WorkPlans.Single(w => w.Id == id).DateFinish);
-            Assert.Equal(updateWorkPlanDto.NewContractId, Context.WorkPlans.Single(w => w.Id == id).ContractId);
+            mock.Verify(w => w.UpdateAsync(
+                It.IsAny<Domain.WorkPlan>(),
+                It.IsAny<DateTime>(),
+                It.IsAny<DateTime>(),
+                It.IsAny<int>(),
+                CancellationToken.None),
+                Times.Once());
         }
 
         [Fact]
@@ -110,25 +109,22 @@ namespace API.Tests.Controllers
         {
             // Arrange
 
-            var mock = new Mock<WorkPlanService>(Context);
+            var mock = new Mock<IWorkPlanService>();
+
+            mock.Setup(w => w.DeleteAsync(It.IsAny<Domain.WorkPlan>(), CancellationToken.None));
 
             var workPlanController = new WorkPlanController(mock.Object);
 
-            var createWorkPlanDto = GetCreateWorkPlanDto();
-
-            var value = await workPlanController.CreateNewWorkPlan(createWorkPlanDto, CancellationToken.None);
-
-            var result = value.Result as OkObjectResult;
-
-            int id = (int)result.Value;
-
             // Act
 
-            await workPlanController.DeleteWorkPlan(id, CancellationToken.None);
+            await workPlanController.DeleteWorkPlan(It.IsAny<int>(), CancellationToken.None);
 
             // Assert
 
-            Assert.Empty(Context.WorkPlans);
+            mock.Verify(w => w.DeleteAsync(
+                It.IsAny<Domain.WorkPlan>(),
+                CancellationToken.None),
+                Times.Once());
         }
         
     }

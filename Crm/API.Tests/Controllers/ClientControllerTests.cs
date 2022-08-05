@@ -3,43 +3,50 @@ using Xunit;
 using API.Controllers;
 using API.DTOs.Client;
 using Domain.Enum;
-using Microsoft.AspNetCore.Mvc;
 using Moq;
-using Application.Services.Client;
+using Domain.Interfaces;
 
 namespace API.Tests.Controllers
 {
-    public class ClientControllerTests : TestCommandBase
+    public class ClientControllerTests
     {
-        private CreateClientDto GetCreateClientDto()
+        [Fact]
+        public async void Task_When_CreateNewClient_Expect_ClientWasCreated()
         {
-            return new CreateClientDto()
+            // Arrange
+
+            var mock = new Mock<IClientService>();
+
+            mock.Setup(c => c.AddAsync(
+                "Test",
+                CodeOfTheCountry.Ukraine,
+                "00",
+                "0000000",
+                CancellationToken.None)).Returns(It.IsAny<Task<int>>);
+
+            var createClientDto = new CreateClientDto()
             {
                 Name = "Name",
                 СodeOfTheCountry = CodeOfTheCountry.Ukraine,
                 RegionCode = "00",
                 SubscriberNumber = "0000000"
             };
-        }
-
-        [Fact]
-        public async void Task_When_CreateNewClient_Expect_ClientWasCreated()
-        {
-            // Arrange
-
-            var mock = new Mock<ClientService>(Context);
 
             var clientController = new ClientController(mock.Object);
-
-            var createClientDto = GetCreateClientDto();
-
+            
             // Act
 
             await clientController.CreateNewClient(createClientDto, CancellationToken.None);
 
             // Assert
 
-            Assert.NotNull(Context.Clients);
+            mock.Verify(c => c.AddAsync(
+                createClientDto.Name,
+                createClientDto.СodeOfTheCountry,
+                createClientDto.RegionCode,
+                createClientDto.SubscriberNumber,
+                CancellationToken.None),
+                Times.Once());
         }
 
         [Fact]
@@ -47,29 +54,20 @@ namespace API.Tests.Controllers
         {
             // Arrange
 
-            var mock = new Mock<ClientService>(Context);
+            var mock = new Mock<IClientService>();
+            
+            mock.Setup(c => c.SelectingAsync(It.IsAny<int>()))
+                .Returns(It.IsAny<Task<Domain.Client>>);
 
             var clientController = new ClientController(mock.Object);
 
-            var createClientDto = GetCreateClientDto();
-
-            var value = await clientController.CreateNewClient(createClientDto, CancellationToken.None);
-
-            var result = value.Result as OkObjectResult;
-                        
-            int id = (int)result.Value;
-         
             // Act
 
-            var clientValue = await clientController.SelectingClient(id);
-
-            var clientResult = clientValue.Result as OkObjectResult;
-
-            var client = (SelectingClientDto)clientResult.Value;
+            await clientController.SelectingClient(It.IsAny<int>());
 
             // Assert
 
-            Assert.Equal(id, client.Id);
+            mock.Verify(c => c.SelectingAsync(It.IsAny<int>()), Times.Once());
         }
 
         [Fact]
@@ -77,11 +75,17 @@ namespace API.Tests.Controllers
         {
             // Arrange
 
-            var mock = new Mock<ClientService>(Context);
+            var mock = new Mock<IClientService>();
+            
+            mock.Setup(c => c.UpdateAsync(
+                It.IsAny<Domain.Client>(),
+                It.IsAny<string>(),
+                It.IsAny<CodeOfTheCountry>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                CancellationToken.None));
 
             var clientController = new ClientController(mock.Object);
-
-            var createClientDto = GetCreateClientDto();
 
             var updateClientDto = new UpdateClientDto()
             {
@@ -91,21 +95,19 @@ namespace API.Tests.Controllers
                 NewSubscriberNumber = "0000000"
             };
 
-            var value = await clientController.CreateNewClient(createClientDto, CancellationToken.None);
-
-            var result = value.Result as OkObjectResult;
-
-            int id = (int)result.Value;
-
             // Act
 
-            await clientController.UpdateClient(updateClientDto, id, CancellationToken.None);
+            await clientController.UpdateClient(updateClientDto, It.IsAny<int>(), CancellationToken.None);
 
             // Assert
 
-            Assert.Equal(updateClientDto.NewName, Context.Clients.Single(c => c.Id == id).Name);
-            Assert.Equal(updateClientDto.NewRegionCode, Context.Clients.Single(c => c.Id == id).RegionCode);
-            Assert.Equal(updateClientDto.NewSubscriberNumber, Context.Clients.Single(c => c.Id == id).SubscriberNumber);
+            mock.Verify(c => c.UpdateAsync(
+                It.IsAny<Domain.Client>(),
+                It.IsAny<string>(),
+                It.IsAny<CodeOfTheCountry>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                CancellationToken.None), Times.Once());
         }
 
         [Fact]
@@ -113,25 +115,19 @@ namespace API.Tests.Controllers
         {
             // Arrange
 
-            var mock = new Mock<ClientService>(Context);
+            var mock = new Mock<IClientService>();
+
+            mock.Setup(c => c.DeleteAsync(It.IsAny<Domain.Client>(), CancellationToken.None));
 
             var clientController = new ClientController(mock.Object);
 
-            var createClientDto = GetCreateClientDto();
-
-            var value = await clientController.CreateNewClient(createClientDto, CancellationToken.None);
-
-            var result = value.Result as OkObjectResult;
-
-            int id = (int)result.Value;
-
             // Act
 
-            await clientController.DeleteClient(id, CancellationToken.None);
+            await clientController.DeleteClient(It.IsAny<int>(), CancellationToken.None);
 
             // Assert
 
-            Assert.Empty(Context.Clients);
+            mock.Verify(c => c.DeleteAsync(It.IsAny<Domain.Client>(), CancellationToken.None), Times.Once());
         }
     }
 }

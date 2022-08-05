@@ -12,18 +12,9 @@ namespace API.Controllers
     {
         private readonly IPositionService _positionService;
 
-        private readonly IValidator<CreatePositionDto> _createValidator;
-
-        private readonly IValidator<UpdatePositionDto> _updateValidator;
-
-        public PositionController(
-            IPositionService positionService,
-            IValidator<CreatePositionDto> createValidator,
-            IValidator<UpdatePositionDto> updateValidator)
+        public PositionController(IPositionService positionService)
         {
             _positionService = positionService;
-            _createValidator = createValidator;
-            _updateValidator = updateValidator;
         }
 
         [HttpPost]
@@ -31,28 +22,35 @@ namespace API.Controllers
             CreatePositionDto createPositionDto,
             CancellationToken cancellationToken)
         {
-            ValidationResult result = await _createValidator.ValidateAsync(createPositionDto);
-
-            if (!result.IsValid)
+            try
             {
-                return NotFound();
+                return Ok(await _positionService.AddAsync(
+                    createPositionDto.Name,
+                    cancellationToken));
             }
-
-            return Ok(await _positionService.AddAsync(
-                createPositionDto.Name,
-                cancellationToken));
+            catch
+            {
+                return StatusCodes.Status500InternalServerError;
+            }
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<SelectingPositionDto>> SelectingPosition(int id)
         {
-            var position = await _positionService.SelectingAsync(id);
-
-            return Ok(new SelectingPositionDto()
+            try
             {
-                Id = position.Id,
-                Name = position.Name
-            });
+                var position = await _positionService.SelectingAsync(id);
+
+                return Ok(new SelectingPositionDto()
+                {
+                    Id = position.Id,
+                    Name = position.Name
+                });
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPut("{id}")]
@@ -61,31 +59,38 @@ namespace API.Controllers
             int id,
             CancellationToken cancellationToken)
         {
-            ValidationResult result = await _updateValidator.ValidateAsync(updatePositionDto);
-
-            if (!result.IsValid)
+            try
             {
-                return NotFound();
+                var position = await _positionService.SelectingAsync(id);
+
+                await _positionService.UpdateAsync(
+                    position,
+                    updatePositionDto.NewName,
+                    cancellationToken);
+
+                return Ok();
             }
-
-            var position = await _positionService.SelectingAsync(id);
-
-            await _positionService.UpdateAsync(
-                position,
-                updatePositionDto.NewName,
-                cancellationToken);
-
-            return NoContent();
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePosition(int id, CancellationToken cancellationToken)
         {
-            var position = await _positionService.SelectingAsync(id);
+            try
+            {
+                var position = await _positionService.SelectingAsync(id);
 
-            await _positionService.DeleteAsync(position, cancellationToken);
+                await _positionService.DeleteAsync(position, cancellationToken);
 
-            return NoContent();
+                return Ok();
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

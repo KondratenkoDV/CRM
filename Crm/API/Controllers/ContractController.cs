@@ -12,18 +12,9 @@ namespace API.Controllers
     {
         private readonly IContractService _сontractService;
 
-        private readonly IValidator<CreateContractDto> _createValidator;
-
-        private readonly IValidator<UpdateContractDto> _updateValidator;
-
-        public ContractController(
-            IContractService сontractService,
-            IValidator<CreateContractDto> createValidator,
-            IValidator<UpdateContractDto> updateValidator)
+        public ContractController(IContractService сontractService)
         {
             _сontractService = сontractService;
-            _createValidator = createValidator;
-            _updateValidator = updateValidator;
         }
 
         [HttpPost]
@@ -31,34 +22,41 @@ namespace API.Controllers
             CreateContractDto createContractDto,
             CancellationToken cancellationToken)
         {
-            ValidationResult result = await _createValidator.ValidateAsync(createContractDto);
-
-            if (!result.IsValid)
+            try
             {
-                return NotFound();
+                return Ok(await _сontractService.AddAsync(
+                    createContractDto.Subject,
+                    createContractDto.Address,
+                    createContractDto.Price,
+                    createContractDto.ClientId,
+                    cancellationToken));
             }
-
-            return Ok(await _сontractService.AddAsync(
-                createContractDto.Subject,
-                createContractDto.Address,
-                createContractDto.Price,
-                createContractDto.ClientId,
-                cancellationToken));
+            catch
+            {
+                return StatusCodes.Status500InternalServerError;
+            }
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<SelectingContractDto>> SelectingContract(int id)
         {
-            var contract = await _сontractService.SelectingAsync(id);
-
-            return Ok(new SelectingContractDto()
+            try
             {
-                Id = contract.Id,
-                Subject = contract.Subject,
-                Address = contract.Address,
-                Price = contract.Price,
-                ClientId = contract.ClientId
-            });
+                var contract = await _сontractService.SelectingAsync(id);
+
+                return Ok(new SelectingContractDto()
+                {
+                    Id = contract.Id,
+                    Subject = contract.Subject,
+                    Address = contract.Address,
+                    Price = contract.Price,
+                    ClientId = contract.ClientId
+                });
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPut("{id}")]
@@ -67,34 +65,41 @@ namespace API.Controllers
             int id,
             CancellationToken cancellationToken)
         {
-            ValidationResult result = await _updateValidator.ValidateAsync(updateContractDto);
-
-            if (!result.IsValid)
+            try
             {
-                return NotFound();
+                var contract = await _сontractService.SelectingAsync(id);
+
+                await _сontractService.UpdateAsync(
+                    contract,
+                    updateContractDto.NewSubject,
+                    updateContractDto.NewAddress,
+                    updateContractDto.NewPrice,
+                    updateContractDto.NewClientId,
+                    cancellationToken);
+
+                return Ok();
             }
-
-            var contract = await _сontractService.SelectingAsync(id);
-
-            await _сontractService.UpdateAsync(
-                contract,
-                updateContractDto.NewSubject,
-                updateContractDto.NewAddress,
-                updateContractDto.NewPrice,
-                updateContractDto.NewClientId,
-                cancellationToken);
-
-            return NoContent();
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteContract(int id, CancellationToken cancellationToken)
         {
-            var contract = await _сontractService.SelectingAsync(id);
+            try
+            {
+                var contract = await _сontractService.SelectingAsync(id);
 
-            await _сontractService.DeleteAsync(contract, cancellationToken);
+                await _сontractService.DeleteAsync(contract, cancellationToken);
 
-            return NoContent();
+                return Ok();
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

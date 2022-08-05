@@ -2,34 +2,35 @@
 using Xunit;
 using API.Controllers;
 using API.DTOs.Employee;
-using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Application.Services.Employee;
+using Domain.Interfaces;
 
 namespace API.Tests.Controllers
 {
-    public class EmployeeControllerTests : TestCommandBase
+    public class EmployeeControllerTests
     {
-        private CreateEmployeeDto GetCreateEmployeeDto()
-        {
-            return new CreateEmployeeDto()
-            {
-                FirstName = "FirstName",
-                LastName = "LastName",
-                PositionId = 0
-            };
-        }
-
         [Fact]
         public async void Task_When_CreateNewEmployee_Expect_EmployeeWasCreated()
         {
             // Arrange
 
-            var mock = new Mock<EmployeeService>(Context);
+            var mock = new Mock<IEmployeeService>();
+
+            mock.Setup(e => e.AddAsync(
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<int>(),
+                CancellationToken.None)).Returns(It.IsAny<Task<int>>());
 
             var employeeController = new EmployeeController(mock.Object);
 
-            var createEmployeeDto = GetCreateEmployeeDto();
+            var createEmployeeDto = new CreateEmployeeDto()
+            {
+                FirstName = "FirstName",
+                LastName = "LastName",
+                PositionId = 0
+            };
 
             // Act
 
@@ -37,7 +38,12 @@ namespace API.Tests.Controllers
 
             // Assert
 
-            Assert.NotNull(Context.Employees);
+            mock.Verify(e => e.AddAsync(
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<int>(),
+                CancellationToken.None),
+                Times.Once());
         }
 
         [Fact]
@@ -45,29 +51,20 @@ namespace API.Tests.Controllers
         {
             // Arrange
 
-            var mock = new Mock<EmployeeService>(Context);
+            var mock = new Mock<IEmployeeService>();
+
+            mock.Setup(e => e.SelectingAsync(It.IsAny<int>()))
+                .Returns(It.IsAny<Task<Domain.Employee>>());
 
             var employeeController = new EmployeeController(mock.Object);
 
-            var createEmployeeDto = GetCreateEmployeeDto();
-
-            var value = await employeeController.CreateNewEmployee(createEmployeeDto, CancellationToken.None);
-
-            var result = value.Result as OkObjectResult;
-
-            int id = (int)result.Value;
-
             // Act
 
-            var employeeResult = await employeeController.SelectingEmployee(id);
-
-            var employeeValue = employeeResult.Result as OkObjectResult;
-
-            var employee = (SelectingEmployeeDto)employeeValue.Value;
+            await employeeController.SelectingEmployee(It.IsAny<int>());
 
             // Assert
 
-            Assert.Equal(id, employee.Id);
+            mock.Verify(e => e.SelectingAsync(It.IsAny<int>()), Times.Once);
         }
 
         [Fact]
@@ -75,11 +72,16 @@ namespace API.Tests.Controllers
         {
             // Arrange
 
-            var mock = new Mock<EmployeeService>(Context);
+            var mock = new Mock<IEmployeeService>();
+
+            mock.Setup(e => e.UpdateAsync(
+                It.IsAny<Domain.Employee>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<int>(),
+                CancellationToken.None));
 
             var employeeController = new EmployeeController(mock.Object);
-
-            var createEmployeeDto = GetCreateEmployeeDto();
 
             var updateEmployeeDto = new UpdateEmployeeDto()
             {
@@ -88,21 +90,19 @@ namespace API.Tests.Controllers
                 NewPositionId = 1
             };
 
-            var value = await employeeController.CreateNewEmployee(createEmployeeDto, CancellationToken.None);
-
-            var result = value.Result as OkObjectResult;
-
-            int id = (int)result.Value;
-
             // Act
 
-            await employeeController.UpdateEmployee(updateEmployeeDto, id, CancellationToken.None);
+            await employeeController.UpdateEmployee(updateEmployeeDto, It.IsAny<int>(), CancellationToken.None);
 
             // Assert
 
-            Assert.Equal(updateEmployeeDto.NewFirstName, Context.Employees.Single(c => c.Id == id).FirstName);
-            Assert.Equal(updateEmployeeDto.NewLastName, Context.Employees.Single(c => c.Id == id).LastName);
-            Assert.Equal(updateEmployeeDto.NewPositionId, Context.Employees.Single(c => c.Id == id).PositionId);
+            mock.Verify(e => e.UpdateAsync(
+                It.IsAny<Domain.Employee>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<int>(),
+                CancellationToken.None),
+                Times.Once());
         }
 
         [Fact]
@@ -110,25 +110,22 @@ namespace API.Tests.Controllers
         {
             // Arrange
 
-            var mock = new Mock<EmployeeService>(Context);
+            var mock = new Mock<IEmployeeService>();
+
+            mock.Setup(e => e.DeleteAsync(It.IsAny<Domain.Employee>(), CancellationToken.None));
 
             var employeeController = new EmployeeController(mock.Object);
 
-            var createEmployeeDto = GetCreateEmployeeDto();
-
-            var value = await employeeController.CreateNewEmployee(createEmployeeDto, CancellationToken.None);
-
-            var result = value.Result as OkObjectResult;
-
-            int id = (int)result.Value;
-
             // Act
 
-            await employeeController.DeleteEmployee(id, CancellationToken.None);
+            await employeeController.DeleteEmployee(It.IsAny<int>(), CancellationToken.None);
 
             // Assert
 
-            Assert.Empty(Context.Employees);
+            mock.Verify(e => e.DeleteAsync(
+                It.IsAny<Domain.Employee>(),
+                CancellationToken.None),
+                Times.Once);
         }
     }
 }

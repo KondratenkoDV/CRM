@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using API.DTOs.Client;
-using FluentValidation;
-using FluentValidation.Results;
 using Domain.Interfaces;
 
 namespace API.Controllers
@@ -12,18 +10,9 @@ namespace API.Controllers
     {
         private readonly IClientService _clientService;
 
-        private readonly IValidator<CreateClientDto> _createValidator;
-
-        private readonly IValidator<UpdateClientDto> _updateValidator;
-
-        public ClientController(
-            IClientService clientService,
-            IValidator<CreateClientDto> createValidator,
-            IValidator<UpdateClientDto> updateValidator)
+        public ClientController(IClientService clientService)
         {
             _clientService = clientService;
-            _createValidator = createValidator;
-            _updateValidator = updateValidator;
         }
 
         [HttpPost]
@@ -31,33 +20,41 @@ namespace API.Controllers
             CreateClientDto createClientDto,
             CancellationToken cancellationToken)
         {
-            ValidationResult result = await _createValidator.ValidateAsync(createClientDto);
-
-            if (!result.IsValid)
+            try
             {
-                return NotFound();
-            }
                 return Ok(await _clientService.AddAsync(
-                createClientDto.Name,
-                createClientDto.СodeOfTheCountry,
-                createClientDto.RegionCode,
-                createClientDto.SubscriberNumber,
-                cancellationToken));
+                    createClientDto.Name,
+                    createClientDto.СodeOfTheCountry,
+                    createClientDto.RegionCode,
+                    createClientDto.SubscriberNumber,
+                    cancellationToken));
+            }
+            catch
+            {
+                return StatusCodes.Status500InternalServerError;
+            }
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<SelectingClientDto>> SelectingClient(int id)
         {
-            var client = await _clientService.SelectingAsync(id);
-
-            return Ok(new SelectingClientDto()
+            try
             {
-                Id = client.Id,
-                Name = client.Name,
-                СodeOfTheCountry = client.СodeOfTheCountry,
-                RegionCode = client.RegionCode,
-                SubscriberNumber = client.SubscriberNumber
-            });
+                var client = await _clientService.SelectingAsync(id);
+
+                return Ok(new SelectingClientDto()
+                {
+                    Id = client.Id,
+                    Name = client.Name,
+                    СodeOfTheCountry = client.СodeOfTheCountry,
+                    RegionCode = client.RegionCode,
+                    SubscriberNumber = client.SubscriberNumber
+                });
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }            
         }
 
         [HttpPut("{id}")]
@@ -66,34 +63,41 @@ namespace API.Controllers
             int id,
             CancellationToken cancellationToken)
         {
-            ValidationResult result = await _updateValidator.ValidateAsync(updateClientDto);
-
-            if (!result.IsValid)
+            try
             {
-                return NotFound();
+                var client = await _clientService.SelectingAsync(id);
+
+                await _clientService.UpdateAsync(
+                    client,
+                    updateClientDto.NewName,
+                    updateClientDto.NewСodeOfTheCountry,
+                    updateClientDto.NewRegionCode,
+                    updateClientDto.NewSubscriberNumber,
+                    cancellationToken);
+
+                return Ok();
             }
-
-            var client = await _clientService.SelectingAsync(id);
-
-            await _clientService.UpdateAsync(
-                client,
-                updateClientDto.NewName,
-                updateClientDto.NewСodeOfTheCountry,
-                updateClientDto.NewRegionCode,
-                updateClientDto.NewSubscriberNumber,
-                cancellationToken);
-
-            return NoContent();
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteClient(int id, CancellationToken cancellationToken)
         {
-            var client = await _clientService.SelectingAsync(id);
+            try
+            {
+                var client = await _clientService.SelectingAsync(id);
 
-            await _clientService.DeleteAsync(client, cancellationToken);
+                await _clientService.DeleteAsync(client, cancellationToken);
 
-            return NoContent();
+                return Ok();
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

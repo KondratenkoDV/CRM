@@ -20,25 +20,39 @@ namespace API.Controllers
             CreateWorkPlanDto createWorkPlanDto,
             CancellationToken cancellationToken)
         {
-            return Ok(await _workPlanService.AddAsync(
-                createWorkPlanDto.DateStart,
-                createWorkPlanDto.DateFinish,
-                createWorkPlanDto.ContractId,
-                cancellationToken));
+            try
+            {
+                return Ok(await _workPlanService.AddAsync(
+                    createWorkPlanDto.DateStart,
+                    createWorkPlanDto.DateFinish,
+                    createWorkPlanDto.ContractId,
+                    cancellationToken));
+            }
+            catch
+            {
+                return StatusCodes.Status500InternalServerError;
+            }
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<SelectingWorkPlanDto>> SelectingWorkPlan(int id)
         {
-            var workPlan = await _workPlanService.SelectingAsync(id);
-
-            return Ok(new SelectingWorkPlanDto()
+            try
             {
-                Id = workPlan.Id,
-                DateStart = workPlan.DateStart,
-                DateFinish = workPlan.DateFinish,
-                ContractId = workPlan.ContractId
-            });
+                var workPlan = await _workPlanService.SelectingAsync(id);
+
+                return Ok(new SelectingWorkPlanDto()
+                {
+                    Id = workPlan.Id,
+                    DateStart = workPlan.DateStart,
+                    DateFinish = workPlan.DateFinish,
+                    ContractId = workPlan.ContractId
+                });
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPut("{id}")]
@@ -47,26 +61,40 @@ namespace API.Controllers
             int id,
             CancellationToken cancellationToken)
         {
-            var workPlan = await _workPlanService.SelectingAsync(id);
+            try
+            {
+                var workPlan = await _workPlanService.SelectingAsync(id);
 
-            await _workPlanService.UpdateAsync(
-                workPlan,
-                updateWorkPlanDto.NewDateStart,
-                updateWorkPlanDto.NewDateFinish,
-                updateWorkPlanDto.NewContractId,
-                cancellationToken);
+                await _workPlanService.UpdateAsync(
+                    workPlan,
+                    updateWorkPlanDto.NewDateStart,
+                    updateWorkPlanDto.NewDateFinish,
+                    updateWorkPlanDto.NewContractId,
+                    cancellationToken);
 
-            return NoContent();
+                return Ok();
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteWorkPlan(int id, CancellationToken cancellationToken)
         {
-            var workPlan = await _workPlanService.SelectingAsync(id);
+            try
+            {
+                var workPlan = await _workPlanService.SelectingAsync(id);
 
-            await _workPlanService.DeleteAsync(workPlan, cancellationToken);
+                await _workPlanService.DeleteAsync(workPlan, cancellationToken);
 
-            return NoContent();
+                return Ok();
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

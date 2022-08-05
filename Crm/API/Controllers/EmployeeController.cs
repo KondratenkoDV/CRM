@@ -12,18 +12,9 @@ namespace API.Controllers
     {
         private readonly IEmployeeService _employeeService;
 
-        private readonly IValidator<CreateEmployeeDto> _createValidator;
-
-        private readonly IValidator<UpdateEmployeeDto> _updateValidator;
-
-        public EmployeeController(
-            IEmployeeService employeeService,
-            IValidator<CreateEmployeeDto> createValidator,
-            IValidator<UpdateEmployeeDto> updateValidator)
+        public EmployeeController(IEmployeeService employeeService)
         {
             _employeeService = employeeService;
-            _createValidator = createValidator;
-            _updateValidator = updateValidator;
         }
 
         [HttpPost]
@@ -31,32 +22,39 @@ namespace API.Controllers
             CreateEmployeeDto createEmployeeDto,
             CancellationToken cancellationToken)
         {
-            ValidationResult result = await _createValidator.ValidateAsync(createEmployeeDto);
-
-            if (!result.IsValid)
+            try
             {
-                return NotFound();
+                return Ok(await _employeeService.AddAsync(
+                    createEmployeeDto.FirstName,
+                    createEmployeeDto.LastName,
+                    createEmployeeDto.PositionId,
+                    cancellationToken));
             }
-
-            return Ok(await _employeeService.AddAsync(
-                createEmployeeDto.FirstName,
-                createEmployeeDto.LastName,
-                createEmployeeDto.PositionId,
-                cancellationToken));
+            catch
+            {
+                return StatusCodes.Status500InternalServerError;
+            }
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<SelectingEmployeeDto>> SelectingEmployee(int id)
         {
-            var employee = await _employeeService.SelectingAsync(id);
-
-            return Ok(new SelectingEmployeeDto()
+            try
             {
-                Id = employee.Id,
-                FirstName = employee.FirstName,
-                LastName = employee.LastName,
-                PositionId = employee.PositionId,
-            });
+                var employee = await _employeeService.SelectingAsync(id);
+
+                return Ok(new SelectingEmployeeDto()
+                {
+                    Id = employee.Id,
+                    FirstName = employee.FirstName,
+                    LastName = employee.LastName,
+                    PositionId = employee.PositionId,
+                });
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPut("{id}")]
@@ -65,33 +63,40 @@ namespace API.Controllers
             int id,
             CancellationToken cancellationToken)
         {
-            ValidationResult result = await _updateValidator.ValidateAsync(updateEmployeeDto);
-
-            if (!result.IsValid)
+            try
             {
-                return NotFound();
+                var employee = await _employeeService.SelectingAsync(id);
+
+                await _employeeService.UpdateAsync(
+                    employee,
+                    updateEmployeeDto.NewFirstName,
+                    updateEmployeeDto.NewLastName,
+                    updateEmployeeDto.NewPositionId,
+                    cancellationToken);
+
+                return Ok();
             }
-
-            var employee = await _employeeService.SelectingAsync(id);
-
-            await _employeeService.UpdateAsync(
-                employee,
-                updateEmployeeDto.NewFirstName,
-                updateEmployeeDto.NewLastName,
-                updateEmployeeDto.NewPositionId,
-                cancellationToken);
-
-            return NoContent();
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEmployee(int id, CancellationToken cancellationToken)
         {
-            var employee = await _employeeService.SelectingAsync(id);
+            try
+            {
+                var employee = await _employeeService.SelectingAsync(id);
 
-            await _employeeService.DeleteAsync(employee, cancellationToken);
+                await _employeeService.DeleteAsync(employee, cancellationToken);
 
-            return NoContent();
+                return Ok();
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

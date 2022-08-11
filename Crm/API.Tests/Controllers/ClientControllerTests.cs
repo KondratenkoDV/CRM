@@ -10,19 +10,20 @@ namespace API.Tests.Controllers
 {
     public class ClientControllerTests
     {
+        private int CreateClient(Mock<IClientService> mock)
+        {
+            return mock.Object.AddAsync(
+                "Name",
+                CodeOfTheCountry.Ukraine,
+                "00",
+                "0000000",
+                CancellationToken.None).Result;
+        }
+
         [Fact]
         public async void Task_When_CreateNewClient_Expect_ClientWasCreated()
         {
             // Arrange
-
-            var mock = new Mock<IClientService>();
-
-            mock.Setup(c => c.AddAsync(
-                "Test",
-                CodeOfTheCountry.Ukraine,
-                "00",
-                "0000000",
-                CancellationToken.None)).Returns(It.IsAny<Task<int>>);
 
             var createClientDto = new CreateClientDto()
             {
@@ -31,6 +32,15 @@ namespace API.Tests.Controllers
                 RegionCode = "00",
                 SubscriberNumber = "0000000"
             };
+
+            var mock = new Mock<IClientService>();
+
+            mock.Setup(c => c.AddAsync(
+                createClientDto.Name,
+                createClientDto.СodeOfTheCountry,
+                createClientDto.RegionCode,
+                createClientDto.SubscriberNumber,
+                CancellationToken.None)).Returns(It.IsAny<Task<int>>);            
 
             var clientController = new ClientController(mock.Object);
             
@@ -55,19 +65,21 @@ namespace API.Tests.Controllers
             // Arrange
 
             var mock = new Mock<IClientService>();
-            
-            mock.Setup(c => c.SelectingAsync(It.IsAny<int>()))
+
+            var id = CreateClient(mock);
+
+            mock.Setup(c => c.SelectingAsync(id))
                 .Returns(It.IsAny<Task<Domain.Client>>);
 
             var clientController = new ClientController(mock.Object);
 
             // Act
 
-            await clientController.SelectingClient(It.IsAny<int>());
+            await clientController.SelectingClient(id);
 
             // Assert
 
-            mock.Verify(c => c.SelectingAsync(It.IsAny<int>()), Times.Once());
+            mock.Verify(c => c.SelectingAsync(id), Times.Once());
         }
 
         [Fact]
@@ -75,38 +87,44 @@ namespace API.Tests.Controllers
         {
             // Arrange
 
-            var mock = new Mock<IClientService>();
-            
-            mock.Setup(c => c.UpdateAsync(
-                It.IsAny<Domain.Client>(),
-                It.IsAny<string>(),
-                It.IsAny<CodeOfTheCountry>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                CancellationToken.None));
-
-            var clientController = new ClientController(mock.Object);
+            //var client = CreateClient();
 
             var updateClientDto = new UpdateClientDto()
             {
                 NewName = "NewName",
                 NewСodeOfTheCountry = CodeOfTheCountry.Ukraine,
-                NewRegionCode = "00",
-                NewSubscriberNumber = "0000000"
+                NewRegionCode = "11",
+                NewSubscriberNumber = "1111111"
             };
 
+            var mock = new Mock<IClientService>();
+
+            var id = CreateClient(mock);
+
+            var client = mock.Object.SelectingAsync(id).Result;
+
+            mock.Setup(c => c.UpdateAsync(
+                client,
+                updateClientDto.NewName,
+                updateClientDto.NewСodeOfTheCountry,
+                updateClientDto.NewRegionCode,
+                updateClientDto.NewSubscriberNumber,
+                CancellationToken.None));
+
+            var clientController = new ClientController(mock.Object);
+            
             // Act
 
-            await clientController.UpdateClient(updateClientDto, It.IsAny<int>(), CancellationToken.None);
+            await clientController.UpdateClient(updateClientDto, id, CancellationToken.None);
 
             // Assert
 
             mock.Verify(c => c.UpdateAsync(
-                It.IsAny<Domain.Client>(),
-                It.IsAny<string>(),
-                It.IsAny<CodeOfTheCountry>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
+                client,
+                updateClientDto.NewName,
+                updateClientDto.NewСodeOfTheCountry,
+                updateClientDto.NewRegionCode,
+                updateClientDto.NewSubscriberNumber,
                 CancellationToken.None), Times.Once());
         }
 
@@ -117,17 +135,21 @@ namespace API.Tests.Controllers
 
             var mock = new Mock<IClientService>();
 
-            mock.Setup(c => c.DeleteAsync(It.IsAny<Domain.Client>(), CancellationToken.None));
+            var id = CreateClient(mock);
+
+            var client = mock.Object.SelectingAsync(id).Result;
+
+            mock.Setup(c => c.DeleteAsync(client, CancellationToken.None));
 
             var clientController = new ClientController(mock.Object);
 
             // Act
 
-            await clientController.DeleteClient(It.IsAny<int>(), CancellationToken.None);
+            await clientController.DeleteClient(id, CancellationToken.None);
 
             // Assert
 
-            mock.Verify(c => c.DeleteAsync(It.IsAny<Domain.Client>(), CancellationToken.None), Times.Once());
+            mock.Verify(c => c.DeleteAsync(client, CancellationToken.None), Times.Once());
         }
     }
 }

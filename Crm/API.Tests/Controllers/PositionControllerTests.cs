@@ -9,23 +9,28 @@ namespace API.Tests.Controllers
 {
     public class PositionControllerTests
     {
+        private int CreatePosition(Mock<IPositionService> mock)
+        {
+            return mock.Object.AddAsync("Name", CancellationToken.None).Result;
+        }
+
         [Fact]
         public async void Task_When_CreateNewPosition_Expect_PositionWasCreated()
         {
             // Arrange
-
-            var mock = new Mock<IPositionService>();
-
-            mock.Setup(p => p.AddAsync(It.IsAny<string>(), CancellationToken.None))
-                .Returns(It.IsAny<Task<int>>());
-
-            var positionController = new PositionController(mock.Object);
 
             var createPositionDto = new CreatePositionDto()
             {
                 Name = "Name"
             };
 
+            var mock = new Mock<IPositionService>();
+
+            mock.Setup(p => p.AddAsync(createPositionDto.Name, CancellationToken.None))
+                .Returns(It.IsAny<Task<int>>());
+
+            var positionController = new PositionController(mock.Object);
+            
             // Act
 
             await positionController.CreateNewPosition(createPositionDto, CancellationToken.None);
@@ -33,7 +38,7 @@ namespace API.Tests.Controllers
             // Assert
 
             mock.Verify(p => p.AddAsync(
-                It.IsAny<string>(),
+                createPositionDto.Name,
                 CancellationToken.None),
                 Times.Once());
         }
@@ -45,18 +50,20 @@ namespace API.Tests.Controllers
 
             var mock = new Mock<IPositionService>();
 
-            mock.Setup(p => p.SelectingAsync(It.IsAny<int>()))
+            var id = CreatePosition(mock);
+
+            mock.Setup(p => p.SelectingAsync(id))
                 .Returns(It.IsAny<Task<Domain.Position>>());
 
             var positionController = new PositionController(mock.Object);
 
             // Act
 
-            await positionController.SelectingPosition(It.IsAny<int>());
+            await positionController.SelectingPosition(id);
 
             // Assert
 
-            mock.Verify(p => p.SelectingAsync(It.IsAny<int>()), Times.Once());
+            mock.Verify(p => p.SelectingAsync(id), Times.Once());
         }
 
         [Fact]
@@ -64,29 +71,33 @@ namespace API.Tests.Controllers
         {
             // Arrange
 
-            var mock = new Mock<IPositionService>();
-
-            mock.Setup(p => p.UpdateAsync(
-                It.IsAny<Domain.Position>(),
-                It.IsAny<string>(),
-                CancellationToken.None));
-
-            var positionController = new PositionController(mock.Object);
-
             var updatePositionDto = new UpdatePositionDto()
             {
                 NewName = "NewName"
             };
 
+            var mock = new Mock<IPositionService>();
+
+            var id = CreatePosition(mock);
+
+            var position = mock.Object.SelectingAsync(id).Result;
+
+            mock.Setup(p => p.UpdateAsync(
+                position,
+                updatePositionDto.NewName,
+                CancellationToken.None));
+
+            var positionController = new PositionController(mock.Object);
+
             // Act
 
-            await positionController.UpdatePosition(updatePositionDto, It.IsAny<int>(), CancellationToken.None);
+            await positionController.UpdatePosition(updatePositionDto, id, CancellationToken.None);
 
             // Assert
 
             mock.Verify(p => p.UpdateAsync(
-                It.IsAny<Domain.Position>(),
-                It.IsAny<string>(),
+                position,
+                updatePositionDto.NewName,
                 CancellationToken.None),
                 Times.Once());
         }
@@ -98,18 +109,22 @@ namespace API.Tests.Controllers
 
             var mock = new Mock<IPositionService>();
 
-            mock.Setup(p => p.DeleteAsync(It.IsAny<Domain.Position>(), CancellationToken.None));
+            var id = CreatePosition(mock);
+
+            var position = mock.Object.SelectingAsync(id).Result;
+
+            mock.Setup(p => p.DeleteAsync(position, CancellationToken.None));
 
             var positionController = new PositionController(mock.Object);
 
             // Act
 
-            await positionController.DeletePosition(It.IsAny<int>(), CancellationToken.None);
+            await positionController.DeletePosition(id, CancellationToken.None);
 
             // Assert
 
             mock.Verify(p => p.DeleteAsync(
-                It.IsAny<Domain.Position>(),
+                position,
                 CancellationToken.None),
                 Times.Once());
         }

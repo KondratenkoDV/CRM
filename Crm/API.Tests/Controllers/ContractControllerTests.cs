@@ -9,21 +9,20 @@ namespace API.Tests.Controllers
 {
     public class ContractControllerTests
     {
+        private int CreateContract(Mock<IContractService> mock)
+        {
+            return mock.Object.AddAsync(
+                "Subject",
+                "Address",
+                0,
+                0,
+                CancellationToken.None).Result;
+        }
+
         [Fact]
         public async void Task_When_CreateNewContract_Expect_ContractWasCreated()
         {
             // Arrange
-
-            var mock = new Mock<IContractService>();
-
-            mock.Setup(c => c.AddAsync(
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<decimal>(),
-                It.IsAny<int>(),
-                CancellationToken.None)).Returns(It.IsAny<Task<int>>());
-
-            var contractController = new ContractController(mock.Object);
 
             var createContractDto = new CreateContractDto()
             {
@@ -33,6 +32,17 @@ namespace API.Tests.Controllers
                 ClientId = 0
             };
 
+            var mock = new Mock<IContractService>();
+
+            mock.Setup(c => c.AddAsync(
+                createContractDto.Subject,
+                createContractDto.Address,
+                createContractDto.Price,
+                createContractDto.ClientId,
+                CancellationToken.None)).Returns(It.IsAny<Task<int>>());
+
+            var contractController = new ContractController(mock.Object);            
+
             // Act
 
             await contractController.CreateNewContract(createContractDto, CancellationToken.None);
@@ -40,10 +50,10 @@ namespace API.Tests.Controllers
             // Assert
 
             mock.Verify(c => c.AddAsync(
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<decimal>(),
-                It.IsAny<int>(),
+                createContractDto.Subject,
+                createContractDto.Address,
+                createContractDto.Price,
+                createContractDto.ClientId,
                 CancellationToken.None),
                 Times.Once());
         }
@@ -55,36 +65,26 @@ namespace API.Tests.Controllers
 
             var mock = new Mock<IContractService>();
 
-            mock.Setup(c => c.SelectingAsync(It.IsAny<int>()))
+            var id = CreateContract(mock);
+
+            mock.Setup(c => c.SelectingAsync(id))
                 .Returns(It.IsAny<Task<Domain.Contract>>());
 
             var contractController = new ContractController(mock.Object);
 
             // Act
 
-            await contractController.SelectingContract(It.IsAny<int>());
+            await contractController.SelectingContract(id);
 
             // Assert
 
-            mock.Verify(c => c.SelectingAsync(It.IsAny<int>()), Times.Once());
+            mock.Verify(c => c.SelectingAsync(id), Times.Once());
         }
 
         [Fact]
         public async void Task_When_UpdateContract_Expect_ContractWasUpdate()
         {
             // Arrange
-
-            var mock = new Mock<IContractService>();
-
-            mock.Setup(c => c.UpdateAsync(
-                It.IsAny<Domain.Contract>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<decimal>(),
-                It.IsAny<int>(),
-                CancellationToken.None));
-
-            var contractController = new ContractController(mock.Object);
 
             var updateContractDto = new UpdateContractDto()
             {
@@ -94,18 +94,34 @@ namespace API.Tests.Controllers
                 NewClientId = 1
             };
 
+            var mock = new Mock<IContractService>();
+
+            var id = CreateContract(mock);
+
+            var contract = mock.Object.SelectingAsync(id).Result;
+
+            mock.Setup(c => c.UpdateAsync(
+                contract,
+                updateContractDto.NewSubject,
+                updateContractDto.NewAddress,
+                updateContractDto.NewPrice,
+                updateContractDto.NewClientId,
+                CancellationToken.None));
+
+            var contractController = new ContractController(mock.Object);
+
             // Act
 
-            await contractController.UpdateContract(updateContractDto, It.IsAny<int>(), CancellationToken.None);
+            await contractController.UpdateContract(updateContractDto, id, CancellationToken.None);
 
             // Assert
 
             mock.Verify(c => c.UpdateAsync(
-                It.IsAny<Domain.Contract>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<decimal>(),
-                It.IsAny<int>(),
+                contract,
+                updateContractDto.NewSubject,
+                updateContractDto.NewAddress,
+                updateContractDto.NewPrice,
+                updateContractDto.NewClientId,
                 CancellationToken.None),
                 Times.Once());
         }
@@ -117,18 +133,22 @@ namespace API.Tests.Controllers
 
             var mock = new Mock<IContractService>();
 
-            mock.Setup(c => c.DeleteAsync(It.IsAny<Domain.Contract>(), CancellationToken.None));
+            var id = CreateContract(mock);
+
+            var contract = mock.Object.SelectingAsync(id).Result;
+
+            mock.Setup(c => c.DeleteAsync(contract, CancellationToken.None));
 
             var contractController = new ContractController(mock.Object);
 
             // Act
 
-            await contractController.DeleteContract(It.IsAny<int>(), CancellationToken.None);
+            await contractController.DeleteContract(7, CancellationToken.None);
 
             // Assert
 
             mock.Verify(c => c.DeleteAsync(
-                It.IsAny<Domain.Contract>(),
+                contract,
                 CancellationToken.None),
                 Times.Once());
         }

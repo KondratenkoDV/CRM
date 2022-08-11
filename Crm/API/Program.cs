@@ -7,6 +7,7 @@ using Application.Services.Employee;
 using Application.Services.Position;
 using Application.Services.WorkPlan;
 using FluentValidation;
+using FluentValidation.AspNetCore;
 using API.Helpers.Client;
 using API.DTOs.Client;
 using API.Helpers.Contract;
@@ -29,6 +30,8 @@ namespace API
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddControllers();
+
+            builder.Services.AddFluentValidationAutoValidation();
 
             ConfigureServices(builder);
 

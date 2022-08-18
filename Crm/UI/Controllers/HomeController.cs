@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using UI.Models;
 
-namespace WebApplication2.Controllers
+namespace UI.Controllers
 {
     public class HomeController : Controller
     {

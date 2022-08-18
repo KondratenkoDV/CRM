@@ -121,7 +121,7 @@ namespace API.Controllers
                     });
                 }
 
-                return Ok(clients);
+                return Ok(clientsDto);
             }
             catch(Exception ex)
             {

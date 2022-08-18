@@ -68,5 +68,10 @@ namespace Application.Services.Client
                 await _dbContext.SaveChangesAsync(cancellationToken);
             }
         }
+
+        public async Task<IEnumerable<Domain.Client>> AllClientsAsync()
+        {
+            return await _dbContext.Clients.ToListAsync();
+        }
     }
 }

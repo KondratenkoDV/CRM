@@ -37,18 +37,11 @@ namespace API
 
             Validator(builder);
 
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
-
-            var services = builder.Services;
-
-
             var app = builder.Build();
 
-            if (app.Environment.IsDevelopment())
+            if (builder.Environment.IsDevelopment())
             {
-                app.UseSwagger();
-                app.UseSwaggerUI();
+                app.UseDeveloperExceptionPage();
             }
 
             app.UseHttpsRedirection();

@@ -99,5 +99,35 @@ namespace API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<SelectingClientDto>>> GetClients()
+        {
+            try
+            {
+                var clients = await _clientService.AllClientsAsync();
+
+                var clientsDto = new List<SelectingClientDto>();
+
+                foreach(var client in clients)
+                {
+                    clientsDto.Add(new SelectingClientDto()
+                    {
+                        Id = client.Id,
+                        Name = client.Name,
+                        СodeOfTheCountry = client.СodeOfTheCountry,
+                        RegionCode = client.RegionCode,
+                        SubscriberNumber = client.SubscriberNumber
+                    });
+                }
+
+                return Ok(clients);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
     }
 }

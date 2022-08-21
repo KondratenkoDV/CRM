@@ -1,0 +1,32 @@
+﻿@model UI.Models.Client
+@{
+}
+<div class="form-horizontal">
+    <hr />
+    <div class="form-group">
+        <table class="table table-responsive" style="width:400px">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Id)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Number)
+                </th>
+            </tr>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => Model.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => Model.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => Model.Number)
+                </td>
+            </tr>            
+        </table>
+    </div>
+</div>

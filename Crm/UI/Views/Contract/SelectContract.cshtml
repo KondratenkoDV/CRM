@@ -1,0 +1,46 @@
+﻿@using UI.Models.Contract
+
+@model Contract
+@{
+}
+<div class="form-horizontal">
+    <hr />
+    <div class="form-group">
+        <table class="table table-responsive" style="width:400px">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Id)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Subject)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Address)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Price)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ClientId)
+                </th>
+            </tr>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => Model.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => Model.Subject)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => Model.Address)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => Model.Price)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => Model.ClientId)
+                </td>
+            </tr>            
+        </table>
+    </div>
+</div>

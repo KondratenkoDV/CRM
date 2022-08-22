@@ -1,6 +1,6 @@
-﻿@using UI.Models.Client
+﻿@using UI.Models.Employee
 
-@model Client
+@model Employee
 @{
 }
 <div class="form-horizontal">
@@ -12,10 +12,13 @@
                     @Html.DisplayNameFor(model => model.Id)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Name)
+                    @Html.DisplayNameFor(model => model.FirstName)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Number)
+                    @Html.DisplayNameFor(model => model.LastName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.PositionId)
                 </th>
             </tr>
             <tr>
@@ -23,10 +26,13 @@
                     @Html.DisplayFor(modelItem => Model.Id)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => Model.Name)
+                    @Html.DisplayFor(modelItem => Model.FirstName)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => Model.Number)
+                    @Html.DisplayFor(modelItem => Model.LastName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => Model.PositionId)
                 </td>
             </tr>            
         </table>

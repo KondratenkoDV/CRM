@@ -1,4 +1,4 @@
-﻿namespace UI.Models
+﻿namespace UI.Models.Client
 {
     public class Client
     {
@@ -12,11 +12,11 @@
 
         public string SubscriberNumber { get; set; }
 
-        public string Number 
+        public string Number
         {
-            get 
-            { 
-                return $"+{СodeOfTheCountry} ({RegionCode}) {SubscriberNumber}"; 
+            get
+            {
+                return $"+{СodeOfTheCountry} ({RegionCode}) {SubscriberNumber}";
             }
         }
     }

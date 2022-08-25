@@ -69,7 +69,7 @@ namespace Application.Services.Client
             }
         }
 
-        public async Task<IEnumerable<Domain.Client>> AllClientsAsync()
+        public async Task<IEnumerable<Domain.Client>> AllAsync()
         {
             return await _dbContext.Clients.ToListAsync();
         }

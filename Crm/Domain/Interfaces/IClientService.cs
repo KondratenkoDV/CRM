@@ -24,6 +24,6 @@ namespace Domain.Interfaces
 
         Task DeleteAsync(Domain.Client сlient, CancellationToken cancellationToken);
 
-        Task<IEnumerable<Domain.Client>> AllClientsAsync();
+        Task<IEnumerable<Domain.Client>> AllAsync();
     }
 }

@@ -13,24 +13,25 @@ namespace UI.Controllers
         {
             Client ClientInfo = new Client();
 
-            var httpClient = new HttpClient();
-
-            httpClient.BaseAddress = new Uri(Baseurl);
-
-            httpClient.DefaultRequestHeaders.Clear();
-
-            httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-            HttpResponseMessage Res = await httpClient.PostAsJsonAsync("api/Contract/", client);
-
-            if (Res.IsSuccessStatusCode)
+            using (var httpClient = new HttpClient())
             {
-                var ClientResponse = Res.Content.ReadAsStringAsync().Result;
+                httpClient.BaseAddress = new Uri(Baseurl);
 
-                ClientInfo.Id = JsonConvert.DeserializeObject<int>(ClientResponse);
+                httpClient.DefaultRequestHeaders.Clear();
+
+                httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                HttpResponseMessage Res = await httpClient.PostAsJsonAsync("api/Contract/", client);
+
+                if (Res.IsSuccessStatusCode)
+                {
+                    var ClientResponse = Res.Content.ReadAsStringAsync().Result;
+
+                    ClientInfo.Id = JsonConvert.DeserializeObject<int>(ClientResponse);
+                }
+
+                return View(ClientInfo.Id);
             }
-
-            return View(ClientInfo.Id);
         }
 
         public async Task<ActionResult> AllClients()
@@ -83,6 +84,38 @@ namespace UI.Controllers
             }
         }
 
+        public async Task<ActionResult> UpdateClient(Client client, int id)
+        {
+            using (var httpClient = new HttpClient())
+            {
+                httpClient.BaseAddress = new Uri(Baseurl);
+
+                httpClient.DefaultRequestHeaders.Clear();
+
+                httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                HttpResponseMessage Res = await httpClient.PutAsJsonAsync("api/Client/" + id, client);
+
+                return View();
+            }
+        }
+
+        public async Task<ActionResult> DeleteClient(int id)
+        {
+            using (var httpClient = new HttpClient())
+            {
+                httpClient.BaseAddress = new Uri(Baseurl);
+
+                httpClient.DefaultRequestHeaders.Clear();
+
+                httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                HttpResponseMessage Res = await httpClient.DeleteAsync("api/Client/" + id);
+
+                return View();
+            }
+        }
+
         public IActionResult Сhoice()
         {
             return View();
@@ -96,6 +129,11 @@ namespace UI.Controllers
         public IActionResult CreateFormClientView()
         {
             return View();
+        }
+
+        public IActionResult UpdateFormClientView(Client client)
+        {
+            return View(client);
         }
     }
 }

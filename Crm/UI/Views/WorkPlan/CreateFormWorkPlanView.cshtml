@@ -1,0 +1,26 @@
+﻿@using UI.Models.WorkPlan
+
+@model WorkPlan
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@using (Html.BeginForm("CreateWorkPlan", "WorkPlan", FormMethod.Post))
+    {
+        <span>@Html.DisplayNameFor(model => model.DateStart):</span>
+        <p>
+            <input type="date" name="DateStart" />
+        </p>
+        <span>@Html.DisplayNameFor(model => model.DateFinish):</span>
+        <p>
+            <input type="date" name="DateFinish" />
+        </p>
+        <span>@Html.DisplayNameFor(model => model.ContractId):</span>
+        <p>
+            <input type="number" name="ContractId" />
+        </p>
+        <p>
+            <input type="submit" value="save"/>
+        </p>
+    }

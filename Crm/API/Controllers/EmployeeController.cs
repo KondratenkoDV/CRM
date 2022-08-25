@@ -3,6 +3,8 @@ using API.DTOs.Employee;
 using FluentValidation;
 using FluentValidation.Results;
 using Domain.Interfaces;
+using API.DTOs.Contract;
+using Application.Services.Contract;
 
 namespace API.Controllers
 {
@@ -94,6 +96,34 @@ namespace API.Controllers
                 return Ok();
             }
             catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<SelectingEmployeeDto>>> GetEmployees()
+        {
+            try
+            {
+                var employees = await _employeeService.AllAsync();
+
+                var employeesDto = new List<SelectingEmployeeDto>();
+
+                foreach (var employee in employees)
+                {
+                    employeesDto.Add(new SelectingEmployeeDto()
+                    {
+                        Id = employee.Id,
+                        FirstName = employee.FirstName,
+                        LastName = employee.LastName,
+                        PositionId = employee.PositionId,
+                    });
+                }
+
+                return Ok(employeesDto);
+            }
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }

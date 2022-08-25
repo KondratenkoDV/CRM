@@ -69,5 +69,10 @@ namespace Application.Services.Contract
                 await _dbContext.SaveChangesAsync(cancellationToken);
             }
         }
+
+        public async Task<IEnumerable<Domain.Contract>> AllAsync()
+        {
+            return await _dbContext.Contracts.ToListAsync();
+        }
     }
 }

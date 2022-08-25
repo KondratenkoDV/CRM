@@ -1,6 +1,6 @@
-﻿@using UI.Models.Employee
+﻿@using UI.Models.WorkPlan
 
-@model Employee
+@model WorkPlan
 @{
 }
 <div class="form-horizontal">
@@ -12,13 +12,13 @@
                     @Html.DisplayNameFor(model => model.Id)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.FirstName)
+                    @Html.DisplayNameFor(model => model.DateStart)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.LastName)
+                    @Html.DisplayNameFor(model => model.DateFinish)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.PositionId)
+                    @Html.DisplayNameFor(model => model.ContractId)
                 </th>
             </tr>
             <tr>
@@ -26,17 +26,17 @@
                     @Html.DisplayFor(modelItem => Model.Id)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => Model.FirstName)
+                    @Html.DisplayFor(modelItem => Model.DateStart)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => Model.LastName)
+                    @Html.DisplayFor(modelItem => Model.DateFinish)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => Model.PositionId)
+                    @Html.DisplayFor(modelItem => Model.ContractId)
                 </td>
                 <td>
-                    @Html.ActionLink("Edit", "UpdateFormEmployeeView", new { Model.Id, Model.FirstName, Model.LastName, Model.PositionId }) |
-                    @Html.ActionLink("Delete", "DeleteEmployee", new { id=Model.Id })
+                    @Html.ActionLink("Edit", "UpdateFormWorkPlanView", new { Model.Id, Model.DateStart, Model.DateFinish, Model.ContractId }) |
+                    @Html.ActionLink("Delete", "DeleteWorkPlan", new { id=Model.Id })
                 </td>
             </tr>            
         </table>

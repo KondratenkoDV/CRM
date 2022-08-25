@@ -152,5 +152,28 @@ namespace API.Tests.Controllers
                 CancellationToken.None),
                 Times.Once());
         }
+
+        [Fact]
+        public async void Task_When_GetContracts_Expect_ContractsWasSelected()
+        {
+            // Arrange
+
+            var mock = new Mock<IContractService>();
+
+            CreateContract(mock);
+
+            mock.Setup(c => c.AllAsync())
+                .Returns(It.IsAny<Task<IEnumerable<Domain.Contract>>>());
+
+            var contractController = new ContractController(mock.Object);
+
+            // Act
+
+            await contractController.GetContracts();
+
+            // Assert
+
+            mock.Verify(c => c.AllAsync(), Times.Once());
+        }
     }
 }

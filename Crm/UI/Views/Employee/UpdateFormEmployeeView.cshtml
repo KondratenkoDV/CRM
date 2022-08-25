@@ -1,0 +1,32 @@
+﻿@using UI.Models.Employee
+
+@model Employee
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@using (Html.BeginForm("UpdateEmployee", "Employee", FormMethod.Post))
+{
+    <p>
+        <span>@Html.DisplayNameFor(model => model.FirstName):</span>
+    </p>
+    <p>
+        <input type="text" name="FirstName" />
+    </p>
+    <p>
+        <span>@Html.DisplayNameFor(model => model.LastName):</span>
+    </p>
+    <p>
+        <input type="text" name="LastName" />
+    </p>
+    <p>
+        <span>@Html.DisplayNameFor(model => model.PositionId):</span>
+    </p>
+    <p>
+        <input type="number" name="PositionId" />
+    </p>
+    <p>
+        <input type="submit" value="save" />
+    </p>
+}

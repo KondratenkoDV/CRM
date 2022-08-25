@@ -129,5 +129,28 @@ namespace Application.Tests
 
             Assert.Empty(Context.Contracts);
         }
+
+        [Fact]
+        public async void Task_When_AllAsync_Expect_ContractsWasSelectFromDb()
+        {
+            // Arrenge
+
+            var contractService = new ContractService(Context);
+
+            await contractService.AddAsync(
+                GetParameters().Item1,
+                GetParameters().Item2,
+                GetParameters().Item3,
+                GetParameters().Item4,
+                CancellationToken.None);
+
+            // Act
+
+            var contracts = await contractService.AllAsync();
+
+            // Assert
+
+            Assert.NotEmpty(contracts);
+        }
     }
 }

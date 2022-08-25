@@ -3,6 +3,8 @@ using FluentValidation;
 using API.DTOs.Contract;
 using FluentValidation.Results;
 using Domain.Interfaces;
+using API.DTOs.Client;
+using Application.Services.Client;
 
 namespace API.Controllers
 {
@@ -97,6 +99,35 @@ namespace API.Controllers
                 return Ok();
             }
             catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<SelectingContractDto>>> GetContracts()
+        {
+            try
+            {
+                var contracts = await _сontractService.AllAsync();
+
+                var contractsDto = new List<SelectingContractDto>();
+
+                foreach (var contract in contracts)
+                {
+                    contractsDto.Add(new SelectingContractDto()
+                    {
+                        Id = contract.Id,
+                        Subject = contract.Subject,
+                        Address = contract.Address,
+                        Price = contract.Price,
+                        ClientId = contract.ClientId
+                    });
+                }
+
+                return Ok(contractsDto);
+            }
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }

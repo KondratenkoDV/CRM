@@ -127,5 +127,28 @@ namespace Application.Tests
 
             Assert.Empty(Context.Clients);
         }
+
+        [Fact]
+        public async void Task_When_AllAsync_Expect_ClientsWasSelectFromDb()
+        {
+            // Arrenge
+
+            var clientService = new ClientService(Context);
+
+            await clientService.AddAsync(
+                GetParameters().Item1,
+                GetParameters().Item2,
+                GetParameters().Item3,
+                GetParameters().Item4,
+                CancellationToken.None);
+
+            // Act
+
+            var clients = await clientService.AllAsync();
+
+            // Assert
+
+            Assert.NotEmpty(clients);
+        }
     }
 }

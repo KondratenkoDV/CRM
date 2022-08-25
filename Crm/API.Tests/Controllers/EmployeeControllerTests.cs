@@ -145,5 +145,28 @@ namespace API.Tests.Controllers
                 CancellationToken.None),
                 Times.Once);
         }
+
+        [Fact]
+        public async void Task_When_GetEmployees_Expect_EmployeesWasSelected()
+        {
+            // Arrange
+
+            var mock = new Mock<IEmployeeService>();
+
+            CreateEmployee(mock);
+
+            mock.Setup(e => e.AllAsync())
+                .Returns(It.IsAny<Task<IEnumerable<Domain.Employee>>>());
+
+            var employeeController = new EmployeeController(mock.Object);
+
+            // Act
+
+            await employeeController.GetEmployees();
+
+            // Assert
+
+            mock.Verify(e => e.AllAsync(), Times.Once);
+        }
     }
 }

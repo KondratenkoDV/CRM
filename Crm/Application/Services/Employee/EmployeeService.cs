@@ -65,5 +65,10 @@ namespace Application.Services.Employee
                 await _dbContext.SaveChangesAsync(cancellationToken);
             }
         }
+
+        public async Task<IEnumerable<Domain.Employee>> AllAsync()
+        {
+            return await _dbContext.Employees.ToListAsync();
+        }
     }
 }

@@ -22,5 +22,7 @@ namespace Domain.Interfaces
             CancellationToken cancellationToken);
 
         Task DeleteAsync(Domain.Contract contract, CancellationToken cancellationToken);
+
+        Task<IEnumerable<Domain.Contract>> AllAsync();
     }
 }

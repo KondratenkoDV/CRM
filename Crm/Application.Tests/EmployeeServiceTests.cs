@@ -119,5 +119,27 @@ namespace Application.Tests
 
             Assert.Empty(Context.Employees);
         }
+
+        [Fact]
+        public async void Task_When_AllAsync_Expect_EmployeesWasSelectFromDb()
+        {
+            // Arrenge
+
+            var employeeService = new EmployeeService(Context);
+
+            await employeeService.AddAsync(
+                GetParameters().Item1,
+                GetParameters().Item2,
+                GetParameters().Item3,
+                CancellationToken.None);
+
+            // Act
+
+            var employees = await employeeService.AllAsync();
+
+            // Assert
+
+            Assert.NotEmpty(employees);
+        }
     }
 }

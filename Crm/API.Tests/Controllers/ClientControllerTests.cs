@@ -151,5 +151,28 @@ namespace API.Tests.Controllers
 
             mock.Verify(c => c.DeleteAsync(client, CancellationToken.None), Times.Once());
         }
+
+        [Fact]
+        public async void Task_When_GetClients_Expect_ClientsWasSelected()
+        {
+            // Arrange
+
+            var mock = new Mock<IClientService>();
+
+            CreateClient(mock);
+
+            mock.Setup(c => c.AllAsync())
+                .Returns(It.IsAny<Task<IEnumerable<Domain.Client>>>);
+
+            var clientController = new ClientController(mock.Object);
+
+            // Act
+
+            await clientController.GetClients();
+
+            // Assert
+
+            mock.Verify(c => c.AllAsync(), Times.Once());
+        }
     }
 }

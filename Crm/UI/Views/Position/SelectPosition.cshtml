@@ -1,6 +1,6 @@
-﻿@using UI.Models.Client
+﻿@using UI.Models.Position
 
-@model Client
+@model Position
 @{
 }
 <div class="form-horizontal">
@@ -14,9 +14,6 @@
                 <th>
                     @Html.DisplayNameFor(model => model.Name)
                 </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Number)
-                </th>
             </tr>
             <tr>
                 <td>
@@ -26,11 +23,8 @@
                     @Html.DisplayFor(modelItem => Model.Name)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => Model.Number)
-                </td>
-                <td>
-                    @Html.ActionLink("Edit", "UpdateFormClientView", new { Model.Id, Model.Name, Model.СodeOfTheCountry, Model.RegionCode, Model.SubscriberNumber }) |
-                    @Html.ActionLink("Delete", "DeleteClient", new { id=Model.Id })
+                    @Html.ActionLink("Edit", "UpdateFormPositionView", new { Model.Id, Model.Name }) |
+                    @Html.ActionLink("Delete", "DeletePosition", new { id=Model.Id })
                 </td>
             </tr>            
         </table>

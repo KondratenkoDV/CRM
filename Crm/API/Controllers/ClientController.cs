@@ -105,7 +105,7 @@ namespace API.Controllers
         {
             try
             {
-                var clients = await _clientService.AllClientsAsync();
+                var clients = await _clientService.AllAsync();
 
                 var clientsDto = new List<SelectingClientDto>();
 
@@ -127,7 +127,6 @@ namespace API.Controllers
             {
                 return BadRequest(ex.Message);
             }
-
         }
     }
 }

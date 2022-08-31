@@ -8,15 +8,13 @@ namespace UI.Controllers
     {
         private readonly HttpClient _httpClient = new HttpClient();
 
-        private string _baseUrl = "https://localhost:44352/";
+        private string _clientUrl = "https://localhost:44352/api/Client";
 
         public async Task<ActionResult> CreateClient(Client client)
         {
             var clientInfo = new Client();
 
-            _httpClient.BaseAddress = new Uri(_baseUrl);
-
-            var httpResponseMessage = await _httpClient.PostAsJsonAsync("api/Client/", client);
+            var httpResponseMessage = await _httpClient.PostAsJsonAsync(_clientUrl, client);
 
             if(httpResponseMessage.IsSuccessStatusCode)
             {
@@ -32,9 +30,7 @@ namespace UI.Controllers
         {
             List<Client> clientInfo = new List<Client>();
 
-            _httpClient.BaseAddress = new Uri(_baseUrl);
-
-            var httpResponseMessage = await _httpClient.GetAsync("api/Client/");
+            var httpResponseMessage = await _httpClient.GetAsync(_clientUrl);
 
             if(httpResponseMessage.IsSuccessStatusCode)
             {
@@ -50,9 +46,7 @@ namespace UI.Controllers
         {
             var clientInfo = new Client();
 
-            _httpClient.BaseAddress = new Uri(_baseUrl);
-
-            var httpResponseMessage = await _httpClient.GetAsync("api/Client/" + id);
+            var httpResponseMessage = await _httpClient.GetAsync($"{_clientUrl}/{id}");
 
             if(httpResponseMessage.IsSuccessStatusCode)
             {
@@ -68,9 +62,7 @@ namespace UI.Controllers
         {
             var clientInfo = new Client();
 
-            _httpClient.BaseAddress = new Uri(_baseUrl);
-
-            var httpResponseMessage = await _httpClient.GetAsync("api/Client/" + id);
+            var httpResponseMessage = await _httpClient.GetAsync($"{_clientUrl}/{id}");
 
             if (httpResponseMessage.IsSuccessStatusCode)
             {
@@ -85,9 +77,7 @@ namespace UI.Controllers
         [HttpPost]
         public async Task<ActionResult> UpdateClient(Client client, int id)
         {
-            _httpClient.BaseAddress = new Uri(_baseUrl);
-
-            var httpResponseMessage = await _httpClient.PutAsJsonAsync("api/Client/" + id, client);
+            var httpResponseMessage = await _httpClient.PutAsJsonAsync($"{_clientUrl}/{id}", client);
 
             if(httpResponseMessage.IsSuccessStatusCode)
             {
@@ -99,9 +89,7 @@ namespace UI.Controllers
 
         public async Task<ActionResult> DeleteClient(int id)
         {
-            _httpClient.BaseAddress = new Uri(_baseUrl);
-
-            var httpResponseMessage = await _httpClient.DeleteAsync("api/Client/" + id);
+            var httpResponseMessage = await _httpClient.DeleteAsync($"{_clientUrl}/{id}");
 
             if(httpResponseMessage.IsSuccessStatusCode)
             {

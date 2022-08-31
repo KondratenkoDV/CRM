@@ -8,15 +8,13 @@ namespace UI.Controllers
     {
         private readonly HttpClient _httpClient = new HttpClient();
 
-        private string _baseUrl = "https://localhost:44352/";
+        private string _workPlanUrl = "https://localhost:44352/api/WorkPlan";
 
         public async Task<ActionResult> CreateWorkPlan(WorkPlan workPlan)
         {
             var workPlanInfo = new WorkPlan();
 
-            _httpClient.BaseAddress = new Uri(_baseUrl);
-
-            var httpResponseMessage = await _httpClient.PostAsJsonAsync("api/WorkPlan/", workPlan);
+            var httpResponseMessage = await _httpClient.PostAsJsonAsync(_workPlanUrl, workPlan);
 
             if(httpResponseMessage.IsSuccessStatusCode)
             {
@@ -32,9 +30,7 @@ namespace UI.Controllers
         {
             var workPlanInfo = new WorkPlan();
 
-            _httpClient.BaseAddress = new Uri(_baseUrl);
-
-            var httpResponseMessage = await _httpClient.GetAsync("api/WorkPlan/" + id);
+            var httpResponseMessage = await _httpClient.GetAsync($"{_workPlanUrl}/{id}");
 
             if(httpResponseMessage.IsSuccessStatusCode)
             {
@@ -50,9 +46,7 @@ namespace UI.Controllers
         {
             var workPlanInfo = new WorkPlan();
 
-            _httpClient.BaseAddress = new Uri(_baseUrl);
-
-            var httpResponseMessage = await _httpClient.GetAsync("api/WorkPlan/" + id);
+            var httpResponseMessage = await _httpClient.GetAsync($"{_workPlanUrl}/{id}");
 
             if (httpResponseMessage.IsSuccessStatusCode)
             {
@@ -67,9 +61,7 @@ namespace UI.Controllers
         [HttpPost]
         public async Task<ActionResult> UpdateWorkPlan(WorkPlan workPlan, int id)
         {
-            _httpClient.BaseAddress = new Uri(_baseUrl);
-
-            var httpResponseMessage = await _httpClient.PutAsJsonAsync("api/WorkPlan/" + id, workPlan);
+            var httpResponseMessage = await _httpClient.PutAsJsonAsync($"{_workPlanUrl}/{id}", workPlan);
 
             if (httpResponseMessage.IsSuccessStatusCode)
             {
@@ -81,9 +73,7 @@ namespace UI.Controllers
 
         public async Task<ActionResult> DeleteWorkPlan(int id)
         {
-            _httpClient.BaseAddress = new Uri(_baseUrl);
-
-            var httpResponseMessage = await _httpClient.DeleteAsync("api/WorkPlan/" + id);
+            var httpResponseMessage = await _httpClient.DeleteAsync($"{_workPlanUrl}/{id}");
 
             if(httpResponseMessage.IsSuccessStatusCode)
             {

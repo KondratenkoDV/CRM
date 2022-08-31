@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Net.Http;
+using System.Text;
 using UI.Models.Contract;
 
 namespace UI.Controllers
@@ -8,15 +10,12 @@ namespace UI.Controllers
     {
         private readonly HttpClient _httpClient = new HttpClient();
 
-        private string _baseUrl = "https://localhost:44352/";
+        private string _contractUrl = "https://localhost:44352/api/Contract";
 
         public async Task<ActionResult> CreateContract(Contract contract)
         {
             var contractInfo = new Contract();
-
-            _httpClient.BaseAddress = new Uri(_baseUrl);
-
-            var httpResponseMessage = await _httpClient.PostAsJsonAsync("api/Contract/", contract);
+            var httpResponseMessage = await _httpClient.PostAsJsonAsync(_contractUrl, contract);
 
             if(httpResponseMessage.IsSuccessStatusCode)
             {
@@ -32,9 +31,7 @@ namespace UI.Controllers
         {
             List<Contract> contractInfo = new List<Contract>();
 
-            _httpClient.BaseAddress = new Uri(_baseUrl);
-
-            var httpResponseMessage = await _httpClient.GetAsync("api/Contract");
+            var httpResponseMessage = await _httpClient.GetAsync(_contractUrl);
 
             if(httpResponseMessage.IsSuccessStatusCode)
             {
@@ -50,9 +47,7 @@ namespace UI.Controllers
         {
             var contractInfo = new Contract();
 
-            _httpClient.BaseAddress = new Uri(_baseUrl);
-
-            var httpResponseMessage = await _httpClient.GetAsync("api/Contract/" + id);
+            var httpResponseMessage = await _httpClient.GetAsync($"{_contractUrl}/{id}");
 
             if(httpResponseMessage.IsSuccessStatusCode)
             {
@@ -68,9 +63,7 @@ namespace UI.Controllers
         {
             var contractInfo = new Contract();
 
-            _httpClient.BaseAddress = new Uri(_baseUrl);
-
-            var httpResponseMessage = await _httpClient.GetAsync("api/Contract/" + id);
+            var httpResponseMessage = await _httpClient.GetAsync($"{_contractUrl}/{id}");
 
             if(httpResponseMessage.IsSuccessStatusCode)
             {
@@ -85,11 +78,9 @@ namespace UI.Controllers
         [HttpPost]
         public async Task<ActionResult> UpdateContract(Contract contract, int id)
         {
-            _httpClient.BaseAddress = new Uri(_baseUrl);
+            var httpResponseMessage = await _httpClient.PutAsJsonAsync($"{_contractUrl}/{id}", contract);
 
-            var httpResponseMessage = await _httpClient.PutAsJsonAsync("api/Contract/" + id, contract);
-
-            if(httpResponseMessage.IsSuccessStatusCode)
+            if (httpResponseMessage.IsSuccessStatusCode)
             {
                 return RedirectToAction("Сhoice");
             }
@@ -99,9 +90,7 @@ namespace UI.Controllers
 
         public async Task<ActionResult> DeleteContract(int id)
         {
-            _httpClient.BaseAddress = new Uri(_baseUrl);
-
-            var httpResponseMessage = await _httpClient.DeleteAsync("api/Contract/" + id);
+            var httpResponseMessage = await _httpClient.DeleteAsync($"{_contractUrl}/{id}");
 
             if(httpResponseMessage.IsSuccessStatusCode)
             {

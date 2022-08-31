@@ -8,15 +8,13 @@ namespace UI.Controllers
     {
         private readonly HttpClient _httpClient = new HttpClient();
 
-        private string _baseUrl = "https://localhost:44352/";
+        private string _employeeUrl = "https://localhost:44352/api/Employee";
 
         public async Task<ActionResult> CreateEmployee(Employee employee)
         {
             var employeeInfo = new Employee();
 
-            _httpClient.BaseAddress = new Uri(_baseUrl);
-
-            var httpResponseMessage = await _httpClient.PostAsJsonAsync("api/Employee/", employee);
+            var httpResponseMessage = await _httpClient.PostAsJsonAsync(_employeeUrl, employee);
 
             if(httpResponseMessage.IsSuccessStatusCode)
             {
@@ -32,9 +30,7 @@ namespace UI.Controllers
         {
             List<Employee> employeeInfo = new List<Employee>();
 
-            _httpClient.BaseAddress = new Uri(_baseUrl);
-
-            var httpResponseMessage = await _httpClient.GetAsync("api/Employee/");
+            var httpResponseMessage = await _httpClient.GetAsync(_employeeUrl);
 
             if(httpResponseMessage.IsSuccessStatusCode)
             {
@@ -50,9 +46,7 @@ namespace UI.Controllers
         {
             var employeeInfo = new Employee();
 
-            _httpClient.BaseAddress = new Uri(_baseUrl);
-
-            var httpResponseMessage = await _httpClient.GetAsync("api/Employee/" + id);
+            var httpResponseMessage = await _httpClient.GetAsync($"{_employeeUrl}/{id}");
 
             if(httpResponseMessage.IsSuccessStatusCode)
             {
@@ -68,9 +62,7 @@ namespace UI.Controllers
         {
             var employeeInfo = new Employee();
 
-            _httpClient.BaseAddress = new Uri(_baseUrl);
-
-            var httpResponseMessage = await _httpClient.GetAsync("api/Employee/" + id);
+            var httpResponseMessage = await _httpClient.GetAsync($"{_employeeUrl}/{id}");
 
             if (httpResponseMessage.IsSuccessStatusCode)
             {
@@ -85,9 +77,7 @@ namespace UI.Controllers
         [HttpPost]
         public async Task<ActionResult> UpdateEmployee(Employee employee, int id)
         {
-            _httpClient.BaseAddress = new Uri(_baseUrl);
-
-            var httpResponseMessage = await _httpClient.PutAsJsonAsync("api/Employee/" + id, employee);
+            var httpResponseMessage = await _httpClient.PutAsJsonAsync($"{_employeeUrl}/{id}", employee);
 
             if(httpResponseMessage.IsSuccessStatusCode)
             {
@@ -99,9 +89,7 @@ namespace UI.Controllers
 
         public async Task<ActionResult> DeleteEmployee(int id)
         {
-            _httpClient.BaseAddress = new Uri(_baseUrl);
-
-            var httpResponseMessage = await _httpClient.DeleteAsync("api/Employee/" + id);
+            var httpResponseMessage = await _httpClient.DeleteAsync($"{_employeeUrl}/{id}");
 
             if(httpResponseMessage.IsSuccessStatusCode)
             {

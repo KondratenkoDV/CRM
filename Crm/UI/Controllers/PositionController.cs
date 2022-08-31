@@ -8,15 +8,13 @@ namespace UI.Controllers
     {
         private readonly HttpClient _httpClient = new HttpClient();
 
-        private string _baseUrl = "https://localhost:44352/";
+        private string _positionUrl = "https://localhost:44352/api/Position";
 
         public async Task<ActionResult> CreatePosition(Position position)
         {
             var positionInfo = new Position();
 
-            _httpClient.BaseAddress = new Uri(_baseUrl);
-
-            var httpResponseMessage = await _httpClient.PostAsJsonAsync("api/Position/", position);
+            var httpResponseMessage = await _httpClient.PostAsJsonAsync(_positionUrl, position);
 
             if(httpResponseMessage.IsSuccessStatusCode)
             {
@@ -32,9 +30,7 @@ namespace UI.Controllers
         {
             var positionInfo = new Position();
 
-            _httpClient.BaseAddress = new Uri(_baseUrl);
-
-            var httpResponseMessage = await _httpClient.GetAsync("api/Position/" + id);
+            var httpResponseMessage = await _httpClient.GetAsync($"{_positionUrl}/{id}");
 
             if(httpResponseMessage.IsSuccessStatusCode)
             {
@@ -50,9 +46,7 @@ namespace UI.Controllers
         {
             var positionInfo = new Position();
 
-            _httpClient.BaseAddress = new Uri(_baseUrl);
-
-            var httpResponseMessage = await _httpClient.GetAsync("api/Position/" + id);
+            var httpResponseMessage = await _httpClient.GetAsync($"{_positionUrl}/{id}");
 
             if (httpResponseMessage.IsSuccessStatusCode)
             {
@@ -67,9 +61,7 @@ namespace UI.Controllers
         [HttpPost]
         public async Task<ActionResult> UpdatePosition(Position position, int id)
         {
-            _httpClient.BaseAddress = new Uri(_baseUrl);
-
-            var httpResponseMessage = await _httpClient.PutAsJsonAsync("api/Position/" + id, position);
+            var httpResponseMessage = await _httpClient.PutAsJsonAsync($"{_positionUrl}/{id}", position);
 
             if(httpResponseMessage.IsSuccessStatusCode)
             {
@@ -81,9 +73,7 @@ namespace UI.Controllers
 
         public async Task<ActionResult> DeletePosition(int id)
         {
-            _httpClient.BaseAddress = new Uri(_baseUrl);
-
-            var httpResponseMessage = await _httpClient.DeleteAsync("api/Position/" + id);
+            var httpResponseMessage = await _httpClient.DeleteAsync($"{_positionUrl}/{id}");
 
             if(httpResponseMessage.IsSuccessStatusCode)
             {

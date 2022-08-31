@@ -35,7 +35,7 @@
                     @Html.DisplayFor(modelItem => Model.ContractId)
                 </td>
                 <td>
-                    @Html.ActionLink("Edit", "UpdateFormWorkPlanView", new { Model.Id, Model.DateStart, Model.DateFinish, Model.ContractId }) |
+                    @Html.ActionLink("Edit", "UpdateWorkPlan", new { id=Model.Id }) |
                     @Html.ActionLink("Delete", "DeleteWorkPlan", new { id=Model.Id })
                 </td>
             </tr>            

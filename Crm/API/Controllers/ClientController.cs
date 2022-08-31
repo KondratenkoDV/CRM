@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using API.DTOs.Client;
 using Domain.Interfaces;
+using Domain.Enum;
 
 namespace API.Controllers
 {
@@ -22,12 +23,21 @@ namespace API.Controllers
         {
             try
             {
-                return Ok(await _clientService.AddAsync(
+                if(int.TryParse(createClientDto.СodeOfTheCountry, out int result) ||
+                    Enum.IsDefined(typeof(CodeOfTheCountry), result))
+                {
+                    CodeOfTheCountry codeOfTheCountry = (CodeOfTheCountry)Enum
+                        .Parse(typeof(CodeOfTheCountry), createClientDto.СodeOfTheCountry);
+
+                    return Ok(await _clientService.AddAsync(
                     createClientDto.Name,
-                    createClientDto.СodeOfTheCountry,
+                    codeOfTheCountry,
                     createClientDto.RegionCode,
                     createClientDto.SubscriberNumber,
                     cancellationToken));
+                }
+
+                return BadRequest();
             }
             catch
             {
@@ -46,7 +56,7 @@ namespace API.Controllers
                 {
                     Id = client.Id,
                     Name = client.Name,
-                    СodeOfTheCountry = client.СodeOfTheCountry,
+                    СodeOfTheCountry = ((int)client.СodeOfTheCountry).ToString(),
                     RegionCode = client.RegionCode,
                     SubscriberNumber = client.SubscriberNumber
                 });
@@ -67,15 +77,23 @@ namespace API.Controllers
             {
                 var client = await _clientService.SelectingAsync(id);
 
-                await _clientService.UpdateAsync(
+                if (Enum.IsDefined(typeof(CodeOfTheCountry), updateClientDto.NewСodeOfTheCountry))
+                {
+                    CodeOfTheCountry newCodeOfTheCountry = (CodeOfTheCountry)Enum
+                        .Parse(typeof(CodeOfTheCountry), updateClientDto.NewСodeOfTheCountry);
+
+                    await _clientService.UpdateAsync(
                     client,
                     updateClientDto.NewName,
-                    updateClientDto.NewСodeOfTheCountry,
+                    newCodeOfTheCountry,
                     updateClientDto.NewRegionCode,
                     updateClientDto.NewSubscriberNumber,
                     cancellationToken);
 
-                return Ok();
+                    return Ok();
+                }
+
+                return BadRequest();
             }
             catch(Exception ex)
             {
@@ -115,7 +133,7 @@ namespace API.Controllers
                     {
                         Id = client.Id,
                         Name = client.Name,
-                        СodeOfTheCountry = client.СodeOfTheCountry,
+                        СodeOfTheCountry = ((int)client.СodeOfTheCountry).ToString(),
                         RegionCode = client.RegionCode,
                         SubscriberNumber = client.SubscriberNumber
                     });

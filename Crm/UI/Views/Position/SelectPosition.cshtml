@@ -23,7 +23,7 @@
                     @Html.DisplayFor(modelItem => Model.Name)
                 </td>
                 <td>
-                    @Html.ActionLink("Edit", "UpdateFormPositionView", new { Model.Id, Model.Name }) |
+                    @Html.ActionLink("Edit", "UpdatePosition", new { id=Model.Id }) |
                     @Html.ActionLink("Delete", "DeletePosition", new { id=Model.Id })
                 </td>
             </tr>            

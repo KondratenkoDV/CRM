@@ -1,93 +1,96 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using System.Net.Http.Headers;
 using UI.Models.WorkPlan;
 
 namespace UI.Controllers
 {
     public class WorkPlanController : Controller
     {
-        string Baseurl = "https://localhost:44352/";
+        private readonly HttpClient _httpClient = new HttpClient();
+
+        private string _baseUrl = "https://localhost:44352/";
 
         public async Task<ActionResult> CreateWorkPlan(WorkPlan workPlan)
         {
-            var WorkPlanInfo = new WorkPlan();
+            var workPlanInfo = new WorkPlan();
 
-            var httpClient = new HttpClient();
+            _httpClient.BaseAddress = new Uri(_baseUrl);
 
-            httpClient.BaseAddress = new Uri(Baseurl);
+            var httpResponseMessage = await _httpClient.PostAsJsonAsync("api/WorkPlan/", workPlan);
 
-            httpClient.DefaultRequestHeaders.Clear();
-
-            httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-            HttpResponseMessage Res = await httpClient.PostAsJsonAsync("api/WorkPlan/", workPlan);
-
-            if (Res.IsSuccessStatusCode)
+            if(httpResponseMessage.IsSuccessStatusCode)
             {
-                var WorkPlanResponse = Res.Content.ReadAsStringAsync().Result;
+                var workPlanResponse = httpResponseMessage.Content.ReadAsStringAsync().Result;
 
-                WorkPlanInfo.Id = JsonConvert.DeserializeObject<int>(WorkPlanResponse);
+                workPlanInfo.Id = JsonConvert.DeserializeObject<int>(workPlanResponse);
             }
 
-            return View(WorkPlanInfo.Id);
+            return View(workPlanInfo.Id);
         }
 
         public async Task<ActionResult> SelectWorkPlan(int id)
         {
-            var WorkPlanInfo = new WorkPlan();
+            var workPlanInfo = new WorkPlan();
 
-            using (var httpClient = new HttpClient())
+            _httpClient.BaseAddress = new Uri(_baseUrl);
+
+            var httpResponseMessage = await _httpClient.GetAsync("api/WorkPlan/" + id);
+
+            if(httpResponseMessage.IsSuccessStatusCode)
             {
-                httpClient.BaseAddress = new Uri(Baseurl);
+                var workPlanResponse = httpResponseMessage.Content.ReadAsStringAsync().Result;
 
-                httpClient.DefaultRequestHeaders.Clear();
-
-                httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                HttpResponseMessage Res = await httpClient.GetAsync("api/WorkPlan/" + id);
-
-                if (Res.IsSuccessStatusCode)
-                {
-                    var WorkPlanResponse = Res.Content.ReadAsStringAsync().Result;
-
-                    WorkPlanInfo = JsonConvert.DeserializeObject<WorkPlan>(WorkPlanResponse);
-                }
-
-                return View(WorkPlanInfo);
+                workPlanInfo = JsonConvert.DeserializeObject<WorkPlan>(workPlanResponse);
             }
+
+            return View(workPlanInfo);
         }
 
+        public async Task<ActionResult> UpdateWorkPlan(int id)
+        {
+            var workPlanInfo = new WorkPlan();
+
+            _httpClient.BaseAddress = new Uri(_baseUrl);
+
+            var httpResponseMessage = await _httpClient.GetAsync("api/WorkPlan/" + id);
+
+            if (httpResponseMessage.IsSuccessStatusCode)
+            {
+                var workPlanResponse = httpResponseMessage.Content.ReadAsStringAsync().Result;
+
+                workPlanInfo = JsonConvert.DeserializeObject<WorkPlan>(workPlanResponse);
+            }
+
+            return View(workPlanInfo);
+        }
+
+        [HttpPost]
         public async Task<ActionResult> UpdateWorkPlan(WorkPlan workPlan, int id)
         {
-            using (var httpClient = new HttpClient())
+            _httpClient.BaseAddress = new Uri(_baseUrl);
+
+            var httpResponseMessage = await _httpClient.PutAsJsonAsync("api/WorkPlan/" + id, workPlan);
+
+            if (httpResponseMessage.IsSuccessStatusCode)
             {
-                httpClient.BaseAddress = new Uri(Baseurl);
-
-                httpClient.DefaultRequestHeaders.Clear();
-
-                httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                HttpResponseMessage Res = await httpClient.PutAsJsonAsync("api/WorkPlan/" + id, workPlan);
-
-                return View();
+                return RedirectToAction("Сhoice");
             }
+
+            return View(workPlan);
         }
 
         public async Task<ActionResult> DeleteWorkPlan(int id)
         {
-            using (var httpClient = new HttpClient())
+            _httpClient.BaseAddress = new Uri(_baseUrl);
+
+            var httpResponseMessage = await _httpClient.DeleteAsync("api/WorkPlan/" + id);
+
+            if(httpResponseMessage.IsSuccessStatusCode)
             {
-                httpClient.BaseAddress = new Uri(Baseurl);
-
-                httpClient.DefaultRequestHeaders.Clear();
-
-                httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                HttpResponseMessage Res = await httpClient.DeleteAsync("api/WorkPlan/" + id);
-
-                return View();
+                return RedirectToAction("Сhoice");
             }
+
+            return View(httpResponseMessage.StatusCode);
         }
 
         public IActionResult SelectingWorkPlanView()
@@ -103,11 +106,6 @@ namespace UI.Controllers
         public IActionResult CreateFormWorkPlanView()
         {
             return View();
-        }
-
-        public IActionResult UpdateFormWorkPlanView(WorkPlan workPlan)
-        {
-            return View(workPlan);
         }
     }
 }

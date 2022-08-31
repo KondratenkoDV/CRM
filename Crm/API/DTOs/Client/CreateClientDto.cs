@@ -6,7 +6,7 @@ namespace API.DTOs.Client
     {
         public string Name { get; set; }
 
-        public CodeOfTheCountry СodeOfTheCountry { get; set; }
+        public string СodeOfTheCountry { get; set; }
 
         public string RegionCode { get; set; }
 

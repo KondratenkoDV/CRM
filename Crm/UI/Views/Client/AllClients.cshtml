@@ -35,7 +35,7 @@
                         @Html.DisplayFor(modelItem => item.Number)
                     </td>
                     <td>
-                        @Html.ActionLink("Edit", "UpdateFormClientView", new { item.Id, item.Name, item.СodeOfTheCountry, item.RegionCode, item.SubscriberNumber }) |
+                        @Html.ActionLink("Edit", "UpdateClient", new { id=item.Id }) |
                         @Html.ActionLink("Delete", "DeleteClient", new { id=item.Id })
                     </td>
                 </tr>

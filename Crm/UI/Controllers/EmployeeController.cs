@@ -1,118 +1,114 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using System.Net.Http.Headers;
 using UI.Models.Employee;
 
 namespace UI.Controllers
 {
     public class EmployeeController : Controller
     {
-        string Baseurl = "https://localhost:44352/";
+        private readonly HttpClient _httpClient = new HttpClient();
+
+        private string _baseUrl = "https://localhost:44352/";
 
         public async Task<ActionResult> CreateEmployee(Employee employee)
         {
-            var EmployeeInfo = new Employee();
+            var employeeInfo = new Employee();
 
-            var httpClient = new HttpClient();
+            _httpClient.BaseAddress = new Uri(_baseUrl);
 
-            httpClient.BaseAddress = new Uri(Baseurl);
+            var httpResponseMessage = await _httpClient.PostAsJsonAsync("api/Employee/", employee);
 
-            httpClient.DefaultRequestHeaders.Clear();
-
-            httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-            HttpResponseMessage Res = await httpClient.PostAsJsonAsync("api/Employee/", employee);
-
-            if (Res.IsSuccessStatusCode)
+            if(httpResponseMessage.IsSuccessStatusCode)
             {
-                var ClientResponse = Res.Content.ReadAsStringAsync().Result;
+                var employeeResponse = httpResponseMessage.Content.ReadAsStringAsync().Result;
 
-                EmployeeInfo.Id = JsonConvert.DeserializeObject<int>(ClientResponse);
+                employeeInfo.Id = JsonConvert.DeserializeObject<int>(employeeResponse);
             }
 
-            return View(EmployeeInfo.Id);
+            return View(employeeInfo.Id);
         }
 
         public async Task<ActionResult> AllEmployees()
         {
-            List<Employee> EmployeeInfo = new List<Employee>();
+            List<Employee> employeeInfo = new List<Employee>();
 
-            using (var httpClient = new HttpClient())
+            _httpClient.BaseAddress = new Uri(_baseUrl);
+
+            var httpResponseMessage = await _httpClient.GetAsync("api/Employee/");
+
+            if(httpResponseMessage.IsSuccessStatusCode)
             {
-                httpClient.BaseAddress = new Uri(Baseurl);
+                var employeeResponse = httpResponseMessage.Content.ReadAsStringAsync().Result;
 
-                httpClient.DefaultRequestHeaders.Clear();
-
-                httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                HttpResponseMessage Res = await httpClient.GetAsync("api/Employee/");
-
-                if (Res.IsSuccessStatusCode)
-                {
-                    var EmployeeResponse = Res.Content.ReadAsStringAsync().Result;
-
-                    EmployeeInfo = JsonConvert.DeserializeObject<List<Employee>>(EmployeeResponse);
-                }
-
-                return View(EmployeeInfo);
+                employeeInfo = JsonConvert.DeserializeObject<List<Employee>>(employeeResponse);
             }
+
+            return View(employeeInfo);
         }
 
         public async Task<ActionResult> SelectEmployee(int id)
         {
-            var EmployeeInfo = new Employee();
+            var employeeInfo = new Employee();
 
-            using (var httpClient = new HttpClient())
+            _httpClient.BaseAddress = new Uri(_baseUrl);
+
+            var httpResponseMessage = await _httpClient.GetAsync("api/Employee/" + id);
+
+            if(httpResponseMessage.IsSuccessStatusCode)
             {
-                httpClient.BaseAddress = new Uri(Baseurl);
+                var employeeResponse = httpResponseMessage.Content.ReadAsStringAsync().Result;
 
-                httpClient.DefaultRequestHeaders.Clear();
-
-                httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                HttpResponseMessage Res = await httpClient.GetAsync("api/Employee/" + id);
-
-                if (Res.IsSuccessStatusCode)
-                {
-                    var ContractResponse = Res.Content.ReadAsStringAsync().Result;
-
-                    EmployeeInfo = JsonConvert.DeserializeObject<Employee>(ContractResponse);
-                }
-
-                return View(EmployeeInfo);
+                employeeInfo = JsonConvert.DeserializeObject<Employee>(employeeResponse);
             }
+
+            return View(employeeInfo);
         }
 
+        public async Task<ActionResult> UpdateEmployee(int id)
+        {
+            var employeeInfo = new Employee();
+
+            _httpClient.BaseAddress = new Uri(_baseUrl);
+
+            var httpResponseMessage = await _httpClient.GetAsync("api/Employee/" + id);
+
+            if (httpResponseMessage.IsSuccessStatusCode)
+            {
+                var employeeResponse = httpResponseMessage.Content.ReadAsStringAsync().Result;
+
+                employeeInfo = JsonConvert.DeserializeObject<Employee>(employeeResponse);
+            }
+
+            return View(employeeInfo);
+        }
+
+        [HttpPost]
         public async Task<ActionResult> UpdateEmployee(Employee employee, int id)
         {
-            using (var httpClient = new HttpClient())
+            _httpClient.BaseAddress = new Uri(_baseUrl);
+
+            var httpResponseMessage = await _httpClient.PutAsJsonAsync("api/Employee/" + id, employee);
+
+            if(httpResponseMessage.IsSuccessStatusCode)
             {
-                httpClient.BaseAddress = new Uri(Baseurl);
-
-                httpClient.DefaultRequestHeaders.Clear();
-
-                httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                HttpResponseMessage Res = await httpClient.PutAsJsonAsync("api/Employee/" + id, employee);
-
-                return View();
+                return RedirectToAction("Сhoice");
             }
+
+            return View(employee);
         }
 
         public async Task<ActionResult> DeleteEmployee(int id)
         {
-            using (var httpClient = new HttpClient())
+            _httpClient.BaseAddress = new Uri(_baseUrl);
+
+            var httpResponseMessage = await _httpClient.DeleteAsync("api/Employee/" + id);
+
+            if(httpResponseMessage.IsSuccessStatusCode)
             {
-                httpClient.BaseAddress = new Uri(Baseurl);
-
-                httpClient.DefaultRequestHeaders.Clear();
-
-                httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                HttpResponseMessage Res = await httpClient.DeleteAsync("api/Employee/" + id);
-
-                return View();
+                return RedirectToAction("Сhoice");
             }
+
+            return View(httpResponseMessage.StatusCode);
         }
 
         public IActionResult SelectingEmployeeView()
@@ -128,11 +124,6 @@ namespace UI.Controllers
         public IActionResult CreateFormEmployeeView()
         {
             return View();
-        }
-
-        public IActionResult UpdateFormEmployeeView(Employee employee)
-        {
-            return View(employee);
         }
     }
 }

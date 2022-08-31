@@ -29,7 +29,7 @@
                     @Html.DisplayFor(modelItem => Model.Number)
                 </td>
                 <td>
-                    @Html.ActionLink("Edit", "UpdateFormClientView", new { Model.Id, Model.Name, Model.СodeOfTheCountry, Model.RegionCode, Model.SubscriberNumber }) |
+                    @Html.ActionLink("Edit", "UpdateClient", new { id=Model.Id }) |
                     @Html.ActionLink("Delete", "DeleteClient", new { id=Model.Id })
                 </td>
             </tr>            

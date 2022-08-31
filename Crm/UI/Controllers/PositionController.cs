@@ -1,93 +1,96 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using System.Net.Http.Headers;
 using UI.Models.Position;
 
 namespace UI.Controllers
 {
     public class PositionController : Controller
     {
-        string Baseurl = "https://localhost:44352/";
+        private readonly HttpClient _httpClient = new HttpClient();
+
+        private string _baseUrl = "https://localhost:44352/";
 
         public async Task<ActionResult> CreatePosition(Position position)
         {
-            var PositionInfo = new Position();
+            var positionInfo = new Position();
 
-            var httpClient = new HttpClient();
+            _httpClient.BaseAddress = new Uri(_baseUrl);
 
-            httpClient.BaseAddress = new Uri(Baseurl);
+            var httpResponseMessage = await _httpClient.PostAsJsonAsync("api/Position/", position);
 
-            httpClient.DefaultRequestHeaders.Clear();
-
-            httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-            HttpResponseMessage Res = await httpClient.PostAsJsonAsync("api/Position/", position);
-
-            if (Res.IsSuccessStatusCode)
+            if(httpResponseMessage.IsSuccessStatusCode)
             {
-                var PositionResponse = Res.Content.ReadAsStringAsync().Result;
+                var positionResponse = httpResponseMessage.Content.ReadAsStringAsync().Result;
 
-                PositionInfo.Id = JsonConvert.DeserializeObject<int>(PositionResponse);
+                positionInfo.Id = JsonConvert.DeserializeObject<int>(positionResponse);
             }
 
-            return View(PositionInfo.Id);
+            return View(positionInfo.Id);
         }
 
         public async Task<ActionResult> SelectPosition(int id)
         {
-            var PositionInfo = new Position();
+            var positionInfo = new Position();
 
-            using (var httpClient = new HttpClient())
+            _httpClient.BaseAddress = new Uri(_baseUrl);
+
+            var httpResponseMessage = await _httpClient.GetAsync("api/Position/" + id);
+
+            if(httpResponseMessage.IsSuccessStatusCode)
             {
-                httpClient.BaseAddress = new Uri(Baseurl);
+                var positionResponse = httpResponseMessage.Content.ReadAsStringAsync().Result;
 
-                httpClient.DefaultRequestHeaders.Clear();
-
-                httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                HttpResponseMessage Res = await httpClient.GetAsync("api/Position/" + id);
-
-                if (Res.IsSuccessStatusCode)
-                {
-                    var PositionResponse = Res.Content.ReadAsStringAsync().Result;
-
-                    PositionInfo = JsonConvert.DeserializeObject<Position>(PositionResponse);
-                }
-
-                return View(PositionInfo);
+                positionInfo = JsonConvert.DeserializeObject<Position>(positionResponse);
             }
+
+            return View(positionInfo);            
         }
 
+        public async Task<ActionResult> UpdatePosition(int id)
+        {
+            var positionInfo = new Position();
+
+            _httpClient.BaseAddress = new Uri(_baseUrl);
+
+            var httpResponseMessage = await _httpClient.GetAsync("api/Position/" + id);
+
+            if (httpResponseMessage.IsSuccessStatusCode)
+            {
+                var positionResponse = httpResponseMessage.Content.ReadAsStringAsync().Result;
+
+                positionInfo = JsonConvert.DeserializeObject<Position>(positionResponse);
+            }
+
+            return View(positionInfo);
+        }
+
+        [HttpPost]
         public async Task<ActionResult> UpdatePosition(Position position, int id)
         {
-            using (var httpClient = new HttpClient())
+            _httpClient.BaseAddress = new Uri(_baseUrl);
+
+            var httpResponseMessage = await _httpClient.PutAsJsonAsync("api/Position/" + id, position);
+
+            if(httpResponseMessage.IsSuccessStatusCode)
             {
-                httpClient.BaseAddress = new Uri(Baseurl);
-
-                httpClient.DefaultRequestHeaders.Clear();
-
-                httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                HttpResponseMessage Res = await httpClient.PutAsJsonAsync("api/Position/" + id, position);
-
-                return View();
+                return RedirectToAction("Сhoice");
             }
+
+            return View(position);
         }
 
         public async Task<ActionResult> DeletePosition(int id)
         {
-            using (var httpClient = new HttpClient())
+            _httpClient.BaseAddress = new Uri(_baseUrl);
+
+            var httpResponseMessage = await _httpClient.DeleteAsync("api/Position/" + id);
+
+            if(httpResponseMessage.IsSuccessStatusCode)
             {
-                httpClient.BaseAddress = new Uri(Baseurl);
-
-                httpClient.DefaultRequestHeaders.Clear();
-
-                httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                HttpResponseMessage Res = await httpClient.DeleteAsync("api/Position/" + id);
-
-                return View();
+                return RedirectToAction("Сhoice");
             }
+
+            return View(httpResponseMessage.StatusCode);
         }
 
         public IActionResult SelectingPositionView()
@@ -103,11 +106,6 @@ namespace UI.Controllers
         public IActionResult CreateFormPositionView()
         {
             return View();
-        }
-
-        public IActionResult UpdateFormPositionView(Position position)
-        {
-            return View(position);
         }
     }
 }

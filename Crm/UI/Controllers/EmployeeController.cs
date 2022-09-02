@@ -6,97 +6,162 @@ namespace UI.Controllers
 {
     public class EmployeeController : Controller
     {
-        private readonly HttpClient _httpClient = new HttpClient();
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        private string _employeeUrl = "https://localhost:44352/api/Employee";
+        private string _employeeUrl;
 
-        public async Task<ActionResult> CreateEmployee(Employee employee)
+        public EmployeeController(IHttpClientFactory httpClientFactory, IConfiguration configuration)
         {
-            var employeeInfo = new Employee();
+            _httpClientFactory = httpClientFactory;
+            _employeeUrl = configuration.GetConnectionString("API");
+        }
 
-            var httpResponseMessage = await _httpClient.PostAsJsonAsync(_employeeUrl, employee);
-
-            if(httpResponseMessage.IsSuccessStatusCode)
+        public async Task<ActionResult> CreateEmployee(CreateEmployeeModel createEmployeeModel)
+        {
+            try
             {
-                var employeeResponse = httpResponseMessage.Content.ReadAsStringAsync().Result;
+                var httpClient = _httpClientFactory.CreateClient();
 
-                employeeInfo.Id = JsonConvert.DeserializeObject<int>(employeeResponse);
+                var httpResponseMessage = await httpClient.PostAsJsonAsync($"{_employeeUrl}/Employee/", createEmployeeModel);
+
+                if(httpResponseMessage.IsSuccessStatusCode)
+                {
+                    var employeeResponse = httpResponseMessage.Content.ReadAsStringAsync().Result;
+
+                    int id = JsonConvert.DeserializeObject<int>(employeeResponse);
+
+                    return View(id);
+                }
+
+                return RedirectToAction("CreateFormEmployeeView");
             }
-
-            return View(employeeInfo.Id);
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         public async Task<ActionResult> AllEmployees()
         {
-            List<Employee> employeeInfo = new List<Employee>();
-
-            var httpResponseMessage = await _httpClient.GetAsync(_employeeUrl);
-
-            if(httpResponseMessage.IsSuccessStatusCode)
+            try
             {
-                var employeeResponse = httpResponseMessage.Content.ReadAsStringAsync().Result;
+                var httpClient = _httpClientFactory.CreateClient();
 
-                employeeInfo = JsonConvert.DeserializeObject<List<Employee>>(employeeResponse);
+                List<SelectingEmployeeModel> selectingEmployeeModel = new();
+
+                var httpResponseMessage = await httpClient.GetAsync($"{_employeeUrl}/Employee/");
+
+                if (httpResponseMessage.IsSuccessStatusCode)
+                {
+                    var employeeResponse = httpResponseMessage.Content.ReadAsStringAsync().Result;
+
+                    selectingEmployeeModel = JsonConvert.DeserializeObject<List<SelectingEmployeeModel>>(employeeResponse);
+                }
+
+                return View(selectingEmployeeModel);
             }
-
-            return View(employeeInfo);
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         public async Task<ActionResult> SelectEmployee(int id)
         {
-            var employeeInfo = new Employee();
-
-            var httpResponseMessage = await _httpClient.GetAsync($"{_employeeUrl}/{id}");
-
-            if(httpResponseMessage.IsSuccessStatusCode)
+            try
             {
-                var employeeResponse = httpResponseMessage.Content.ReadAsStringAsync().Result;
+                var httpClient = _httpClientFactory.CreateClient();
 
-                employeeInfo = JsonConvert.DeserializeObject<Employee>(employeeResponse);
+                var selectingEmployeeModel = new SelectingEmployeeModel();
+
+                var httpResponseMessage = await httpClient.GetAsync($"{_employeeUrl}/Employee/{id}");
+
+                if(httpResponseMessage.IsSuccessStatusCode)
+                {
+                    var employeeResponse = httpResponseMessage.Content.ReadAsStringAsync().Result;
+
+                    selectingEmployeeModel = JsonConvert.DeserializeObject<SelectingEmployeeModel>(employeeResponse);
+                }
+
+                return View(selectingEmployeeModel);
             }
-
-            return View(employeeInfo);
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         public async Task<ActionResult> UpdateEmployee(int id)
         {
-            var employeeInfo = new Employee();
-
-            var httpResponseMessage = await _httpClient.GetAsync($"{_employeeUrl}/{id}");
-
-            if (httpResponseMessage.IsSuccessStatusCode)
+            try
             {
-                var employeeResponse = httpResponseMessage.Content.ReadAsStringAsync().Result;
+                var httpClient = _httpClientFactory.CreateClient();
 
-                employeeInfo = JsonConvert.DeserializeObject<Employee>(employeeResponse);
+                var selectingEmployeeModel = new SelectingEmployeeModel();
+
+                var httpResponseMessage = await httpClient.GetAsync($"{_employeeUrl}/Employee/{id}");
+
+                if (httpResponseMessage.IsSuccessStatusCode)
+                {
+                    var employeeResponse = httpResponseMessage.Content.ReadAsStringAsync().Result;
+
+                    selectingEmployeeModel = JsonConvert.DeserializeObject<SelectingEmployeeModel>(employeeResponse);
+                }
+
+                return View(new UpdateEmployeeModel()
+                {
+                    NewFirstName = selectingEmployeeModel.FirstName,
+                    NewLastName = selectingEmployeeModel.LastName,
+                    NewPositionId = selectingEmployeeModel.PositionId
+                });
             }
-
-            return View(employeeInfo);
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost]
-        public async Task<ActionResult> UpdateEmployee(Employee employee, int id)
+        public async Task<ActionResult> UpdateEmployee(UpdateEmployeeModel updateEmployeeModel, int id)
         {
-            var httpResponseMessage = await _httpClient.PutAsJsonAsync($"{_employeeUrl}/{id}", employee);
-
-            if(httpResponseMessage.IsSuccessStatusCode)
+            try
             {
-                return RedirectToAction("Сhoice");
-            }
+                var httpClient = _httpClientFactory.CreateClient();
 
-            return View(employee);
+                var httpResponseMessage = await httpClient.PutAsJsonAsync($"{_employeeUrl}/Employee/{id}", updateEmployeeModel);
+
+                if(httpResponseMessage.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Сhoice");
+                }
+
+                return View(updateEmployeeModel);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         public async Task<ActionResult> DeleteEmployee(int id)
         {
-            var httpResponseMessage = await _httpClient.DeleteAsync($"{_employeeUrl}/{id}");
-
-            if(httpResponseMessage.IsSuccessStatusCode)
+            try
             {
-                return RedirectToAction("Сhoice");
-            }
+                var httpClient = _httpClientFactory.CreateClient();
 
-            return View(httpResponseMessage.StatusCode);
+                var httpResponseMessage = await httpClient.DeleteAsync($"{_employeeUrl}/Employee/{id}");
+
+                if(httpResponseMessage.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Сhoice");
+                }
+
+                return View(httpResponseMessage.StatusCode);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         public IActionResult SelectingEmployeeView()

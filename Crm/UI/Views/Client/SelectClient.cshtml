@@ -1,6 +1,6 @@
 ﻿@using UI.Models.Client
 
-@model Client
+@model SelectingClientModel
 @{
 }
 <div class="form-horizontal">
@@ -12,10 +12,10 @@
                     @Html.DisplayNameFor(model => model.Id)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Name)
+                    <p>Name</p>
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Number)
+                    <p>Number</p>
                 </th>
             </tr>
             <tr>
@@ -23,10 +23,14 @@
                     @Html.DisplayFor(modelItem => Model.Id)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => Model.Name)
+                    @Html.DisplayFor(modelItem => Model.SelectedName)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => Model.Number)
+                    <p>
+                        +@Html.DisplayFor(modelItem => Model.SelectedСodeOfTheCountry)
+                        (@Html.DisplayFor(modelItem => Model.SelectedRegionCode))
+                        @Html.DisplayFor(modelItem => Model.SelectedSubscriberNumber)
+                    </p>
                 </td>
                 <td>
                     @Html.ActionLink("Edit", "UpdateClient", new { id=Model.Id }) |

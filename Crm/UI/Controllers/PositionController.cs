@@ -6,81 +6,135 @@ namespace UI.Controllers
 {
     public class PositionController : Controller
     {
-        private readonly HttpClient _httpClient = new HttpClient();
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        private string _positionUrl = "https://localhost:44352/api/Position";
+        private string _positionUrl;
 
-        public async Task<ActionResult> CreatePosition(Position position)
+        public PositionController(IHttpClientFactory httpClientFactory, IConfiguration configuration)
         {
-            var positionInfo = new Position();
+            _httpClientFactory = httpClientFactory;
+            _positionUrl = configuration.GetConnectionString("API");
+        }
 
-            var httpResponseMessage = await _httpClient.PostAsJsonAsync(_positionUrl, position);
-
-            if(httpResponseMessage.IsSuccessStatusCode)
+        public async Task<ActionResult> CreatePosition(CreatePositionModel createPositionModel)
+        {
+            try
             {
-                var positionResponse = httpResponseMessage.Content.ReadAsStringAsync().Result;
+                var httpClient = _httpClientFactory.CreateClient();
 
-                positionInfo.Id = JsonConvert.DeserializeObject<int>(positionResponse);
+                var httpResponseMessage = await httpClient.PostAsJsonAsync($"{_positionUrl}/Position/", createPositionModel);
+
+                if(httpResponseMessage.IsSuccessStatusCode)
+                {
+                    var positionResponse = httpResponseMessage.Content.ReadAsStringAsync().Result;
+
+                    int id = JsonConvert.DeserializeObject<int>(positionResponse);
+
+                    return View(id);
+                }
+
+                return RedirectToAction("CreateFormPositionView");
             }
-
-            return View(positionInfo.Id);
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         public async Task<ActionResult> SelectPosition(int id)
         {
-            var positionInfo = new Position();
-
-            var httpResponseMessage = await _httpClient.GetAsync($"{_positionUrl}/{id}");
-
-            if(httpResponseMessage.IsSuccessStatusCode)
+            try
             {
-                var positionResponse = httpResponseMessage.Content.ReadAsStringAsync().Result;
+                var httpClient = _httpClientFactory.CreateClient();
 
-                positionInfo = JsonConvert.DeserializeObject<Position>(positionResponse);
+                var selectingPositionModel = new SelectingPositionModel();
+
+                var httpResponseMessage = await httpClient.GetAsync($"{_positionUrl}/Position/{id}");
+
+                if(httpResponseMessage.IsSuccessStatusCode)
+                {
+                    var positionResponse = httpResponseMessage.Content.ReadAsStringAsync().Result;
+
+                    selectingPositionModel = JsonConvert.DeserializeObject<SelectingPositionModel>(positionResponse);
+                }
+
+                return View(selectingPositionModel);
             }
-
-            return View(positionInfo);            
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         public async Task<ActionResult> UpdatePosition(int id)
         {
-            var positionInfo = new Position();
-
-            var httpResponseMessage = await _httpClient.GetAsync($"{_positionUrl}/{id}");
-
-            if (httpResponseMessage.IsSuccessStatusCode)
+            try
             {
-                var positionResponse = httpResponseMessage.Content.ReadAsStringAsync().Result;
+                var httpClient = _httpClientFactory.CreateClient();
 
-                positionInfo = JsonConvert.DeserializeObject<Position>(positionResponse);
+                var selectingPositionModel = new SelectingPositionModel();
+
+                var httpResponseMessage = await httpClient.GetAsync($"{_positionUrl}/Position/{id}");
+
+                if (httpResponseMessage.IsSuccessStatusCode)
+                {
+                    var positionResponse = httpResponseMessage.Content.ReadAsStringAsync().Result;
+
+                    selectingPositionModel = JsonConvert.DeserializeObject<SelectingPositionModel>(positionResponse);
+                }
+
+                return View(new UpdatePositionModel()
+                {
+                    NewName = selectingPositionModel.Name
+                });
             }
-
-            return View(positionInfo);
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost]
-        public async Task<ActionResult> UpdatePosition(Position position, int id)
+        public async Task<ActionResult> UpdatePosition(UpdatePositionModel updatePositionModel, int id)
         {
-            var httpResponseMessage = await _httpClient.PutAsJsonAsync($"{_positionUrl}/{id}", position);
-
-            if(httpResponseMessage.IsSuccessStatusCode)
+            try
             {
-                return RedirectToAction("Сhoice");
-            }
+                var httpClient = _httpClientFactory.CreateClient();
 
-            return View(position);
+                var httpResponseMessage = await httpClient.PutAsJsonAsync($"{_positionUrl}/Position/{id}", updatePositionModel);
+
+                if(httpResponseMessage.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Сhoice");
+                }
+
+                return View(updatePositionModel);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         public async Task<ActionResult> DeletePosition(int id)
         {
-            var httpResponseMessage = await _httpClient.DeleteAsync($"{_positionUrl}/{id}");
-
-            if(httpResponseMessage.IsSuccessStatusCode)
+            try
             {
-                return RedirectToAction("Сhoice");
-            }
+                var httpClient = _httpClientFactory.CreateClient();
 
-            return View(httpResponseMessage.StatusCode);
+                var httpResponseMessage = await httpClient.DeleteAsync($"{_positionUrl}/Position/{id}");
+
+                if(httpResponseMessage.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Сhoice");
+                }
+
+                return View(httpResponseMessage.StatusCode);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         public IActionResult SelectingPositionView()

@@ -44,10 +44,7 @@ namespace API
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHttpsRedirection();
-            app.UseAuthorization();
             app.MapControllers();
-            app.Run();
         }
 
         public static void ConfigureServices(WebApplicationBuilder builder)

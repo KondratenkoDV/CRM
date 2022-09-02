@@ -1,4 +1,5 @@
 ﻿using Domain.Enum;
+using System.Text.Json.Serialization;
 
 namespace API.DTOs.Client
 {
@@ -6,7 +7,8 @@ namespace API.DTOs.Client
     {
         public string NewName { get; set; }
 
-        public string NewСodeOfTheCountry { get; set; }
+        [JsonConverter(typeof(JsonStringEnumConverter))]
+        public CodeOfTheCountry NewСodeOfTheCountry { get; set; }
 
         public string NewRegionCode { get; set; }
 

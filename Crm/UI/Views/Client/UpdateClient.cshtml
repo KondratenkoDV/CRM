@@ -1,6 +1,6 @@
 ﻿@using UI.Models.Client
 
-@model UI.Models.Client.Client
+@model UpdateClientModel
 @*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
@@ -15,37 +15,36 @@
     <div class="form-horizontal">
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        @Html.HiddenFor(model => model.Id)
 
         <div class="form-group">
-            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.NewName, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                @Html.EditorFor(model => model.NewName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.NewName, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.СodeOfTheCountry, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.NewСodeOfTheCountry, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.СodeOfTheCountry, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.СodeOfTheCountry, "", new { @class = "text-danger" })
+                @Html.EditorFor(model => model.NewСodeOfTheCountry, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.NewСodeOfTheCountry, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.RegionCode, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.NewRegionCode, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.RegionCode, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.RegionCode, "", new { @class = "text-danger" })
+                @Html.EditorFor(model => model.NewRegionCode, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.NewRegionCode, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.SubscriberNumber, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.NewSubscriberNumber, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.SubscriberNumber, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.SubscriberNumber, "", new { @class = "text-danger" })
+                @Html.EditorFor(model => model.NewSubscriberNumber, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.NewSubscriberNumber, "", new { @class = "text-danger" })
             </div>
         </div>
 

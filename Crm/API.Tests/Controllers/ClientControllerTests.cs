@@ -87,8 +87,6 @@ namespace API.Tests.Controllers
         {
             // Arrange
 
-            //var client = CreateClient();
-
             var updateClientDto = new UpdateClientDto()
             {
                 NewName = "NewName",

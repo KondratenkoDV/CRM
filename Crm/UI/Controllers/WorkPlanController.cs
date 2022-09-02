@@ -6,81 +6,137 @@ namespace UI.Controllers
 {
     public class WorkPlanController : Controller
     {
-        private readonly HttpClient _httpClient = new HttpClient();
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        private string _workPlanUrl = "https://localhost:44352/api/WorkPlan";
+        private string _workPlanUrl;
 
-        public async Task<ActionResult> CreateWorkPlan(WorkPlan workPlan)
+        public WorkPlanController(IHttpClientFactory httpClientFactory, IConfiguration configuration)
         {
-            var workPlanInfo = new WorkPlan();
+            _httpClientFactory = httpClientFactory;
+            _workPlanUrl = configuration.GetConnectionString("API");
+        }
 
-            var httpResponseMessage = await _httpClient.PostAsJsonAsync(_workPlanUrl, workPlan);
-
-            if(httpResponseMessage.IsSuccessStatusCode)
+        public async Task<ActionResult> CreateWorkPlan(CreateWorkPlanModel createWorkPlanModel)
+        {
+            try
             {
-                var workPlanResponse = httpResponseMessage.Content.ReadAsStringAsync().Result;
+                var httpClient = _httpClientFactory.CreateClient();
 
-                workPlanInfo.Id = JsonConvert.DeserializeObject<int>(workPlanResponse);
+                var httpResponseMessage = await httpClient.PostAsJsonAsync($"{_workPlanUrl}/WorkPlan/", createWorkPlanModel);
+
+                if(httpResponseMessage.IsSuccessStatusCode)
+                {
+                    var workPlanResponse = httpResponseMessage.Content.ReadAsStringAsync().Result;
+
+                    int id = JsonConvert.DeserializeObject<int>(workPlanResponse);
+
+                    return View(id);
+                }
+
+                return RedirectToAction("CreateFormWorkPlanView");
             }
-
-            return View(workPlanInfo.Id);
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         public async Task<ActionResult> SelectWorkPlan(int id)
         {
-            var workPlanInfo = new WorkPlan();
-
-            var httpResponseMessage = await _httpClient.GetAsync($"{_workPlanUrl}/{id}");
-
-            if(httpResponseMessage.IsSuccessStatusCode)
+            try
             {
-                var workPlanResponse = httpResponseMessage.Content.ReadAsStringAsync().Result;
+                var httpClient = _httpClientFactory.CreateClient();
 
-                workPlanInfo = JsonConvert.DeserializeObject<WorkPlan>(workPlanResponse);
+                var selectingWorkPlanModel = new SelectingWorkPlanModel();
+
+                var httpResponseMessage = await httpClient.GetAsync($"{_workPlanUrl}/WorkPlan/{id}");
+
+                if(httpResponseMessage.IsSuccessStatusCode)
+                {
+                    var workPlanResponse = httpResponseMessage.Content.ReadAsStringAsync().Result;
+
+                    selectingWorkPlanModel = JsonConvert.DeserializeObject<SelectingWorkPlanModel>(workPlanResponse);
+                }
+
+                return View(selectingWorkPlanModel);
             }
-
-            return View(workPlanInfo);
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         public async Task<ActionResult> UpdateWorkPlan(int id)
         {
-            var workPlanInfo = new WorkPlan();
-
-            var httpResponseMessage = await _httpClient.GetAsync($"{_workPlanUrl}/{id}");
-
-            if (httpResponseMessage.IsSuccessStatusCode)
+            try
             {
-                var workPlanResponse = httpResponseMessage.Content.ReadAsStringAsync().Result;
+                var httpClient = _httpClientFactory.CreateClient();
 
-                workPlanInfo = JsonConvert.DeserializeObject<WorkPlan>(workPlanResponse);
+                var selectingWorkPlanModel = new SelectingWorkPlanModel();
+
+                var httpResponseMessage = await httpClient.GetAsync($"{_workPlanUrl}/WorkPlan/{id}");
+
+                if (httpResponseMessage.IsSuccessStatusCode)
+                {
+                    var workPlanResponse = httpResponseMessage.Content.ReadAsStringAsync().Result;
+
+                    selectingWorkPlanModel = JsonConvert.DeserializeObject<SelectingWorkPlanModel>(workPlanResponse);
+                }
+
+                return View(new UpdateWorkPlanModel()
+                {
+                    NewDateStart = selectingWorkPlanModel.DateStart,
+                    NewDateFinish = selectingWorkPlanModel.DateFinish,
+                    NewContractId = selectingWorkPlanModel.ContractId
+                });
             }
-
-            return View(workPlanInfo);
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost]
-        public async Task<ActionResult> UpdateWorkPlan(WorkPlan workPlan, int id)
+        public async Task<ActionResult> UpdateWorkPlan(UpdateWorkPlanModel updateWorkPlanModel, int id)
         {
-            var httpResponseMessage = await _httpClient.PutAsJsonAsync($"{_workPlanUrl}/{id}", workPlan);
-
-            if (httpResponseMessage.IsSuccessStatusCode)
+            try
             {
-                return RedirectToAction("Сhoice");
-            }
+                var httpClient = _httpClientFactory.CreateClient();
 
-            return View(workPlan);
+                var httpResponseMessage = await httpClient.PutAsJsonAsync($"{_workPlanUrl}/WorkPlan/{id}", updateWorkPlanModel);
+
+                if (httpResponseMessage.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Сhoice");
+                }
+
+                return View(updateWorkPlanModel);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         public async Task<ActionResult> DeleteWorkPlan(int id)
         {
-            var httpResponseMessage = await _httpClient.DeleteAsync($"{_workPlanUrl}/{id}");
-
-            if(httpResponseMessage.IsSuccessStatusCode)
+            try
             {
-                return RedirectToAction("Сhoice");
-            }
+                var httpClient = _httpClientFactory.CreateClient();
 
-            return View(httpResponseMessage.StatusCode);
+                var httpResponseMessage = await httpClient.DeleteAsync($"{_workPlanUrl}/WorkPlan/{id}");
+
+                if(httpResponseMessage.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Сhoice");
+                }
+
+                return View(httpResponseMessage.StatusCode);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         public IActionResult SelectingWorkPlanView()

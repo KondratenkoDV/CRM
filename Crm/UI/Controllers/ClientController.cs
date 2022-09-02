@@ -6,97 +6,163 @@ namespace UI.Controllers
 {
     public class ClientController : Controller
     {
-        private readonly HttpClient _httpClient = new HttpClient();
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        private string _clientUrl = "https://localhost:44352/api/Client";
+        private readonly string _clientUrl;
 
-        public async Task<ActionResult> CreateClient(Client client)
+        public ClientController(IHttpClientFactory httpClientFactory, IConfiguration configuration)
         {
-            var clientInfo = new Client();
+            _httpClientFactory = httpClientFactory;
+            _clientUrl = configuration.GetConnectionString("API");
+        }
 
-            var httpResponseMessage = await _httpClient.PostAsJsonAsync(_clientUrl, client);
-
-            if(httpResponseMessage.IsSuccessStatusCode)
+        public async Task<ActionResult> CreateClient(CreateClientModel createClientModel)
+        {
+            try
             {
-                var clientResponse = httpResponseMessage.Content.ReadAsStringAsync().Result;
+                var httpClient = _httpClientFactory.CreateClient();
 
-                clientInfo.Id = JsonConvert.DeserializeObject<int>(clientResponse);
+                var httpResponseMessage = await httpClient.PostAsJsonAsync($"{_clientUrl}/Client/", createClientModel);
+
+                if(httpResponseMessage.IsSuccessStatusCode)
+                {
+                    var clientResponse = httpResponseMessage.Content.ReadAsStringAsync().Result;
+
+                    int id = JsonConvert.DeserializeObject<int>(clientResponse);
+
+                    return View(id);
+                }
+
+                return RedirectToAction("CreateFormClientView");
             }
-
-            return View(clientInfo.Id);
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         public async Task<ActionResult> AllClients()
         {
-            List<Client> clientInfo = new List<Client>();
-
-            var httpResponseMessage = await _httpClient.GetAsync(_clientUrl);
-
-            if(httpResponseMessage.IsSuccessStatusCode)
+            try
             {
-                var clientResponse = httpResponseMessage.Content.ReadAsStringAsync().Result;
+                var httpClient = _httpClientFactory.CreateClient();
 
-                clientInfo = JsonConvert.DeserializeObject<List<Client>>(clientResponse);
+                List<SelectingClientModel> selectingClientModel = new();
+
+                var httpResponseMessage = await httpClient.GetAsync($"{_clientUrl}/Client/");
+
+                if(httpResponseMessage.IsSuccessStatusCode)
+                {
+                    var clientResponse = httpResponseMessage.Content.ReadAsStringAsync().Result;
+
+                    selectingClientModel = JsonConvert.DeserializeObject<List<SelectingClientModel>>(clientResponse);
+                }
+
+                return View(selectingClientModel);
             }
-
-            return View(clientInfo);
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         public async Task<ActionResult> SelectClient(int id)
         {
-            var clientInfo = new Client();
-
-            var httpResponseMessage = await _httpClient.GetAsync($"{_clientUrl}/{id}");
-
-            if(httpResponseMessage.IsSuccessStatusCode)
+            try
             {
-                var clientResponse = httpResponseMessage.Content.ReadAsStringAsync().Result;
+                var httpClient = _httpClientFactory.CreateClient();
 
-                clientInfo  = JsonConvert.DeserializeObject<Client>(clientResponse);
+                var selectingClientModel = new SelectingClientModel();
+
+                var httpResponseMessage = await httpClient.GetAsync($"{_clientUrl}/Client/{id}");
+
+                if(httpResponseMessage.IsSuccessStatusCode)
+                {
+                    var clientResponse = httpResponseMessage.Content.ReadAsStringAsync().Result;
+
+                    selectingClientModel = JsonConvert.DeserializeObject<SelectingClientModel>(clientResponse);
+                }
+
+                return View(selectingClientModel);
             }
-
-            return View(clientInfo);
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         public async Task<ActionResult> UpdateClient(int id)
         {
-            var clientInfo = new Client();
-
-            var httpResponseMessage = await _httpClient.GetAsync($"{_clientUrl}/{id}");
-
-            if (httpResponseMessage.IsSuccessStatusCode)
+            try
             {
-                var clientResponse = httpResponseMessage.Content.ReadAsStringAsync().Result;
+                var httpClient = _httpClientFactory.CreateClient();
 
-                clientInfo = JsonConvert.DeserializeObject<Client>(clientResponse);
+                var selectingClientModel = new SelectingClientModel();
+
+                var httpResponseMessage = await httpClient.GetAsync($"{_clientUrl}/Client/{id}");
+
+                if (httpResponseMessage.IsSuccessStatusCode)
+                {
+                    var clientResponse = httpResponseMessage.Content.ReadAsStringAsync().Result;
+
+                    selectingClientModel = JsonConvert.DeserializeObject<SelectingClientModel>(clientResponse);
+                }
+
+                return View(new UpdateClientModel()
+                {
+                    NewName = selectingClientModel.SelectedName,
+                    NewСodeOfTheCountry = selectingClientModel.SelectedСodeOfTheCountry,
+                    NewRegionCode = selectingClientModel.SelectedRegionCode,
+                    NewSubscriberNumber = selectingClientModel.SelectedSubscriberNumber
+                });
             }
-
-            return View(clientInfo);
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost]
-        public async Task<ActionResult> UpdateClient(Client client, int id)
+        public async Task<ActionResult> UpdateClient(UpdateClientModel updateClientModel, int id)
         {
-            var httpResponseMessage = await _httpClient.PutAsJsonAsync($"{_clientUrl}/{id}", client);
-
-            if(httpResponseMessage.IsSuccessStatusCode)
+            try
             {
-                return RedirectToAction("Сhoice");
-            }
+                var httpClient = _httpClientFactory.CreateClient();
 
-            return View(client);
+                var httpResponseMessage = await httpClient.PutAsJsonAsync($"{_clientUrl}/Client/{id}", updateClientModel);
+
+                if(httpResponseMessage.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Сhoice");
+                }
+
+                return View(updateClientModel);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         public async Task<ActionResult> DeleteClient(int id)
         {
-            var httpResponseMessage = await _httpClient.DeleteAsync($"{_clientUrl}/{id}");
-
-            if(httpResponseMessage.IsSuccessStatusCode)
+            try
             {
-                return RedirectToAction("Сhoice");
-            }
+                var httpClient = _httpClientFactory.CreateClient();
 
-            return View(httpResponseMessage.StatusCode);
+                var httpResponseMessage = await httpClient.DeleteAsync($"{_clientUrl}/Client/{id}");
+
+                if(httpResponseMessage.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Сhoice");
+                }
+
+                return View(httpResponseMessage.StatusCode);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         public IActionResult Сhoice()

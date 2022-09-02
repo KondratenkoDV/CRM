@@ -1,9 +1,7 @@
 ﻿namespace UI.Models.Position
 {
-    public class Position
+    public class CreatePositionModel
     {
-        public int Id { get; set; }
-
         public string Name { get; set; }
     }
 }

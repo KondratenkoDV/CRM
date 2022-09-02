@@ -28,9 +28,9 @@ namespace API.Controllers
                     createWorkPlanDto.ContractId,
                     cancellationToken));
             }
-            catch
+            catch(Exception ex)
             {
-                return StatusCodes.Status500InternalServerError;
+                return BadRequest(ex.Message);
             }
         }
 

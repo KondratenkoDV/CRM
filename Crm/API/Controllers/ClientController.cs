@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using API.DTOs.Client;
 using Domain.Interfaces;
-using Domain.Enum;
 
 namespace API.Controllers
 {
@@ -23,25 +22,16 @@ namespace API.Controllers
         {
             try
             {
-                if(int.TryParse(createClientDto.СodeOfTheCountry, out int result) ||
-                    Enum.IsDefined(typeof(CodeOfTheCountry), result))
-                {
-                    CodeOfTheCountry codeOfTheCountry = (CodeOfTheCountry)Enum
-                        .Parse(typeof(CodeOfTheCountry), createClientDto.СodeOfTheCountry);
-
-                    return Ok(await _clientService.AddAsync(
-                    createClientDto.Name,
-                    codeOfTheCountry,
-                    createClientDto.RegionCode,
-                    createClientDto.SubscriberNumber,
-                    cancellationToken));
-                }
-
-                return BadRequest();
+                return Ok(await _clientService.AddAsync(
+                createClientDto.Name,
+                createClientDto.СodeOfTheCountry,
+                createClientDto.RegionCode,
+                createClientDto.SubscriberNumber,
+                cancellationToken));
             }
-            catch
+            catch(Exception ex)
             {
-                return StatusCodes.Status500InternalServerError;
+                return BadRequest(ex.Message);
             }
         }
 
@@ -55,10 +45,10 @@ namespace API.Controllers
                 return Ok(new SelectingClientDto()
                 {
                     Id = client.Id,
-                    Name = client.Name,
-                    СodeOfTheCountry = ((int)client.СodeOfTheCountry).ToString(),
-                    RegionCode = client.RegionCode,
-                    SubscriberNumber = client.SubscriberNumber
+                    SelectedName = client.Name,
+                    SelectedСodeOfTheCountry = client.СodeOfTheCountry,
+                    SelectedRegionCode = client.RegionCode,
+                    SelectedSubscriberNumber = client.SubscriberNumber
                 });
             }
             catch(Exception ex)
@@ -77,23 +67,15 @@ namespace API.Controllers
             {
                 var client = await _clientService.SelectingAsync(id);
 
-                if (Enum.IsDefined(typeof(CodeOfTheCountry), updateClientDto.NewСodeOfTheCountry))
-                {
-                    CodeOfTheCountry newCodeOfTheCountry = (CodeOfTheCountry)Enum
-                        .Parse(typeof(CodeOfTheCountry), updateClientDto.NewСodeOfTheCountry);
+                await _clientService.UpdateAsync(
+                client,
+                updateClientDto.NewName,
+                updateClientDto.NewСodeOfTheCountry,
+                updateClientDto.NewRegionCode,
+                updateClientDto.NewSubscriberNumber,
+                cancellationToken);
 
-                    await _clientService.UpdateAsync(
-                    client,
-                    updateClientDto.NewName,
-                    newCodeOfTheCountry,
-                    updateClientDto.NewRegionCode,
-                    updateClientDto.NewSubscriberNumber,
-                    cancellationToken);
-
-                    return Ok();
-                }
-
-                return BadRequest();
+                return Ok();
             }
             catch(Exception ex)
             {
@@ -132,10 +114,10 @@ namespace API.Controllers
                     clientsDto.Add(new SelectingClientDto()
                     {
                         Id = client.Id,
-                        Name = client.Name,
-                        СodeOfTheCountry = ((int)client.СodeOfTheCountry).ToString(),
-                        RegionCode = client.RegionCode,
-                        SubscriberNumber = client.SubscriberNumber
+                        SelectedName = client.Name,
+                        SelectedСodeOfTheCountry = client.СodeOfTheCountry,
+                        SelectedRegionCode = client.RegionCode,
+                        SelectedSubscriberNumber = client.SubscriberNumber
                     });
                 }
 

@@ -1,103 +1,168 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using System.Net.Http;
-using System.Text;
 using UI.Models.Contract;
 
 namespace UI.Controllers
 {
     public class ContractController : Controller
     {
-        private readonly HttpClient _httpClient = new HttpClient();
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        private string _contractUrl = "https://localhost:44352/api/Contract";
+        private string _contractUrl;
 
-        public async Task<ActionResult> CreateContract(Contract contract)
+        public ContractController(IHttpClientFactory httpClientFactory, IConfiguration configuration)
         {
-            var contractInfo = new Contract();
-            var httpResponseMessage = await _httpClient.PostAsJsonAsync(_contractUrl, contract);
+            _httpClientFactory = httpClientFactory;
+            _contractUrl = configuration.GetConnectionString("API");
+        }
 
-            if(httpResponseMessage.IsSuccessStatusCode)
+        public async Task<ActionResult> CreateContract(CreateContractModel createContractModel)
+        {
+            try
             {
-                var clientResponse = httpResponseMessage.Content.ReadAsStringAsync().Result;
+                var httpClient = _httpClientFactory.CreateClient();
 
-                contractInfo.Id = JsonConvert.DeserializeObject<int>(clientResponse);
+                var httpResponseMessage = await httpClient.PostAsJsonAsync($"{_contractUrl}/Contract/", createContractModel);
+
+                if(httpResponseMessage.IsSuccessStatusCode)
+                {
+                    var clientResponse = httpResponseMessage.Content.ReadAsStringAsync().Result;
+
+                    int id = JsonConvert.DeserializeObject<int>(clientResponse);
+
+                    return View(id);
+                }
+
+                return RedirectToAction("CreateFormContractView");
             }
-
-            return View(contractInfo.Id);
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         public async Task<ActionResult> AllContracts()
         {
-            List<Contract> contractInfo = new List<Contract>();
-
-            var httpResponseMessage = await _httpClient.GetAsync(_contractUrl);
-
-            if(httpResponseMessage.IsSuccessStatusCode)
+            try
             {
-                var contractResponse = httpResponseMessage.Content.ReadAsStringAsync().Result;
+                var httpClient = _httpClientFactory.CreateClient();
 
-                contractInfo = JsonConvert.DeserializeObject<List<Contract>>(contractResponse);
+                List<SelectingContractModel> selectingContractModel = new();
+
+                var httpResponseMessage = await httpClient.GetAsync($"{_contractUrl}/Contract/");
+
+                if(httpResponseMessage.IsSuccessStatusCode)
+                {
+                    var contractResponse = httpResponseMessage.Content.ReadAsStringAsync().Result;
+
+                    selectingContractModel = JsonConvert.DeserializeObject<List<SelectingContractModel>>(contractResponse);
+                }
+
+                return View(selectingContractModel);
             }
-
-            return View(contractInfo);
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         public async Task<ActionResult> SelectContract(int id)
         {
-            var contractInfo = new Contract();
-
-            var httpResponseMessage = await _httpClient.GetAsync($"{_contractUrl}/{id}");
-
-            if(httpResponseMessage.IsSuccessStatusCode)
+            try
             {
-                var contractResponse = httpResponseMessage.Content.ReadAsStringAsync().Result;
+                var httpClient = _httpClientFactory.CreateClient();
 
-                contractInfo = JsonConvert.DeserializeObject<Contract>(contractResponse);
+                var selectingContractModel = new SelectingContractModel();
+
+                var httpResponseMessage = await httpClient.GetAsync($"{_contractUrl}/Contract/{id}");
+
+                if(httpResponseMessage.IsSuccessStatusCode)
+                {
+                    var contractResponse = httpResponseMessage.Content.ReadAsStringAsync().Result;
+
+                    selectingContractModel = JsonConvert.DeserializeObject<SelectingContractModel>(contractResponse);
+                }
+
+                return View(selectingContractModel);
             }
-
-            return View(contractInfo);
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         public async Task<ActionResult> UpdateContract(int id)
         {
-            var contractInfo = new Contract();
-
-            var httpResponseMessage = await _httpClient.GetAsync($"{_contractUrl}/{id}");
-
-            if(httpResponseMessage.IsSuccessStatusCode)
+            try
             {
-                var contractResponse = httpResponseMessage.Content.ReadAsStringAsync().Result;
+                var httpClient = _httpClientFactory.CreateClient();
 
-                contractInfo = JsonConvert.DeserializeObject<Contract>(contractResponse);
+                var selectingContractModel = new SelectingContractModel();
+
+                var httpResponseMessage = await httpClient.GetAsync($"{_contractUrl}/Contract/{id}");
+
+                if(httpResponseMessage.IsSuccessStatusCode)
+                {
+                    var contractResponse = httpResponseMessage.Content.ReadAsStringAsync().Result;
+
+                    selectingContractModel = JsonConvert.DeserializeObject<SelectingContractModel>(contractResponse);
+                }
+
+                return View(new UpdateContractModel()
+                {
+                    NewSubject = selectingContractModel.Subject,
+                    NewAddress = selectingContractModel.Address,
+                    NewPrice = selectingContractModel.Price,
+                    NewClientId = selectingContractModel.ClientId
+                });
             }
-
-            return View(contractInfo);
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost]
-        public async Task<ActionResult> UpdateContract(Contract contract, int id)
+        public async Task<ActionResult> UpdateContract(UpdateContractModel updateContractModel, int id)
         {
-            var httpResponseMessage = await _httpClient.PutAsJsonAsync($"{_contractUrl}/{id}", contract);
-
-            if (httpResponseMessage.IsSuccessStatusCode)
+            try
             {
-                return RedirectToAction("Сhoice");
-            }
+                var httpClient = _httpClientFactory.CreateClient();
 
-            return View(contract);
+                var httpResponseMessage = await httpClient.PutAsJsonAsync($"{_contractUrl}/Contract/{id}", updateContractModel);
+
+                if (httpResponseMessage.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Сhoice");
+                }
+
+                return View(updateContractModel);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         public async Task<ActionResult> DeleteContract(int id)
         {
-            var httpResponseMessage = await _httpClient.DeleteAsync($"{_contractUrl}/{id}");
-
-            if(httpResponseMessage.IsSuccessStatusCode)
+            try
             {
-                return RedirectToAction("Сhoice");
-            }
+                var httpClient = _httpClientFactory.CreateClient();
 
-            return View(httpResponseMessage.StatusCode);
+                var httpResponseMessage = await httpClient.DeleteAsync($"{_contractUrl}/Contract/{id}");
+
+                if(httpResponseMessage.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Сhoice");
+                }
+
+                return View(httpResponseMessage.StatusCode);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         public IActionResult SelectingContractView()

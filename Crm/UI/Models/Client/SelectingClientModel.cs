@@ -1,14 +1,12 @@
-﻿using Domain.Enum;
-
-namespace API.DTOs.Client
+﻿namespace UI.Models.Client
 {
-    public class SelectingClientDto
+    public class SelectingClientModel
     {
         public int Id { get; set; }
 
         public string SelectedName { get; set; }
 
-        public CodeOfTheCountry SelectedСodeOfTheCountry { get; set; }
+        public string SelectedСodeOfTheCountry { get; set; }
 
         public string SelectedRegionCode { get; set; }
 

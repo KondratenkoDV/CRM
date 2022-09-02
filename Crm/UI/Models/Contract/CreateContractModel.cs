@@ -1,9 +1,7 @@
 ﻿namespace UI.Models.Contract
 {
-    public class Contract
+    public class CreateContractModel
     {
-        public int Id { get; set; }
-
         public string Subject { get; set; }
 
         public string Address { get; set; }

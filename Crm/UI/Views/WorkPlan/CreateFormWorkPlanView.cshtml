@@ -6,21 +6,30 @@
 *@
 @{
 }
-@using (Html.BeginForm("CreateWorkPlan", "WorkPlan", FormMethod.Post))
-    {
-        <span>@Html.DisplayNameFor(model => model.DateStart):</span>
-        <p>
-            <input type="date" name="DateStart" />
-        </p>
-        <span>@Html.DisplayNameFor(model => model.DateFinish):</span>
-        <p>
-            <input type="date" name="DateFinish" />
-        </p>
-        <span>@Html.DisplayNameFor(model => model.ContractId):</span>
-        <p>
-            <input type="number" name="ContractId" />
-        </p>
-        <p>
-            <input type="submit" value="save"/>
-        </p>
-    }
+<h2>Create Work Plan</h2>
+
+<form asp-action="CreateWorkPlan" class="row">
+    <div class="col-4">
+        <div class="form-group">
+            <label asp-for="DateStart" class="control-label"></label>
+            <input asp-for="DateStart" type="date" class="form-control" />
+            <span asp-validation-for="DateStart" class="text-danger"></span>
+        </div>
+        <p></p>
+        <div class="form-group">
+            <label asp-for="DateFinish" class="control-label"></label>
+            <input asp-for="DateFinish" type="date" class="form-control" />
+            <span asp-validation-for="DateFinish" class="text-danger"></span>
+        </div>
+        <p></p>
+        <div class="form-group">
+            <label asp-for="ContractId" class="control-label"></label>
+            <input asp-for="ContractId" type="number" class="form-control" />
+            <span asp-validation-for="ContractId" class="text-danger"></span>
+        </div>
+        <p></p>
+        <div class="form-group">
+            <input type="submit" value="Save" class="btn btn-primary" />
+        </div>
+    </div>
+</form>

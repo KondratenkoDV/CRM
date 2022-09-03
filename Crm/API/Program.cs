@@ -23,9 +23,9 @@ namespace API
     {
         public static void Main(string[] args)
         {
-            WebBuilder(args);
+            WebBuilder(args).Run();
         }
-        public static void WebBuilder(string[] args)
+        public static WebApplication WebBuilder(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -45,6 +45,8 @@ namespace API
             }
 
             app.MapControllers();
+
+            return app;
         }
 
         public static void ConfigureServices(WebApplicationBuilder builder)

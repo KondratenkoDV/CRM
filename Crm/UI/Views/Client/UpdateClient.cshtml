@@ -1,4 +1,5 @@
 ﻿@using UI.Models.Client
+@using UI.Enum
 
 @model UpdateClientModel
 @*
@@ -27,8 +28,11 @@
         <div class="form-group">
             @Html.LabelFor(model => model.NewСodeOfTheCountry, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.NewСodeOfTheCountry, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.NewСodeOfTheCountry, "", new { @class = "text-danger" })
+                <select asp-for="NewСodeOfTheCountry"
+                    class="form-control"
+                    asp-items="Html.GetEnumSelectList<CodeOfTheCountry>()">                    
+                    <option>Select code</option>
+                </select>
             </div>
         </div>
 

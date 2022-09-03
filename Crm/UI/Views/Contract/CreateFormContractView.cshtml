@@ -6,31 +6,36 @@
 *@
 @{
 }
-@using (Html.BeginForm("CreateContract", "Contract", FormMethod.Post))
-    {
-        <span>@Html.DisplayNameFor(model => model.Subject):</span>
-        <p>
-            <input type="text" name="Subject"/>
-        </p>
-        <p>
-            <span>@Html.DisplayNameFor(model => model.Address):</span>
-        </p>
-        <p>
-            <input type="text" name="Address"/>
-        </p>
-        <p>
-            <span>@Html.DisplayNameFor(model => model.Price):</span>
-        </p>
-        <p>
-            <input type="number" name="Price"/>
-        </p>
-        <p>
-            <span>@Html.DisplayNameFor(model => model.ClientId):</span>
-        </p>
-        <p>
-            <input type="number" name="ClientId"/>
-        </p>
-        <p>
-            <input type="submit" value="save"/>
-        </p>
-    }
+<h2>Create Contract</h2>
+
+<form asp-action="CreateContract" class="row">
+    <div class="col-4">
+        <div class="form-group">
+            <label asp-for="Subject" class="control-label"></label>
+            <input asp-for="Subject" class="form-control" />
+            <span asp-validation-for="Subject" class="text-danger"></span>
+        </div>
+        <p></p>
+        <div class="form-group">
+            <label asp-for="Address" class="control-label"></label>
+            <input asp-for="Address" class="form-control" />
+            <span asp-validation-for="Address" class="text-danger"></span>
+        </div>
+        <p></p>
+        <div class="form-group">
+            <label asp-for="Price" class="control-label"></label>
+            <input asp-for="Price" type="number" class="form-control" />
+            <span asp-validation-for="Price" class="text-danger"></span>
+        </div>
+        <p></p>
+        <div class="form-group">
+            <label asp-for="ClientId" class="control-label"></label>
+            <input asp-for="ClientId" type="number" class="form-control" />
+            <span asp-validation-for="ClientId" class="text-danger"></span>
+        </div>
+        <p></p>
+        <div class="form-group">
+            <input type="submit" value="Save" class="btn btn-primary" />
+        </div>
+    </div>
+</form>

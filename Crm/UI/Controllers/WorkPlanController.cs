@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using UI.Helpers;
 using UI.Models.WorkPlan;
 
 namespace UI.Controllers
@@ -8,12 +10,12 @@ namespace UI.Controllers
     {
         private readonly IHttpClientFactory _httpClientFactory;
 
-        private string _workPlanUrl;
+        private readonly ApiConfiguration _baseUrl;
 
-        public WorkPlanController(IHttpClientFactory httpClientFactory, IConfiguration configuration)
+        public WorkPlanController(IHttpClientFactory httpClientFactory, IOptions<ApiConfiguration> options)
         {
             _httpClientFactory = httpClientFactory;
-            _workPlanUrl = configuration.GetConnectionString("API");
+            _baseUrl = options.Value;
         }
 
         public async Task<ActionResult> CreateWorkPlan(CreateWorkPlanModel createWorkPlanModel)
@@ -22,7 +24,7 @@ namespace UI.Controllers
             {
                 var httpClient = _httpClientFactory.CreateClient();
 
-                var httpResponseMessage = await httpClient.PostAsJsonAsync($"{_workPlanUrl}/WorkPlan/", createWorkPlanModel);
+                var httpResponseMessage = await httpClient.PostAsJsonAsync($"{_baseUrl.Api}/WorkPlan/", createWorkPlanModel);
 
                 if(httpResponseMessage.IsSuccessStatusCode)
                 {
@@ -49,7 +51,7 @@ namespace UI.Controllers
 
                 var selectingWorkPlanModel = new SelectingWorkPlanModel();
 
-                var httpResponseMessage = await httpClient.GetAsync($"{_workPlanUrl}/WorkPlan/{id}");
+                var httpResponseMessage = await httpClient.GetAsync($"{_baseUrl.Api}/WorkPlan/{id}");
 
                 if(httpResponseMessage.IsSuccessStatusCode)
                 {
@@ -74,7 +76,7 @@ namespace UI.Controllers
 
                 var selectingWorkPlanModel = new SelectingWorkPlanModel();
 
-                var httpResponseMessage = await httpClient.GetAsync($"{_workPlanUrl}/WorkPlan/{id}");
+                var httpResponseMessage = await httpClient.GetAsync($"{_baseUrl.Api}/WorkPlan/{id}");
 
                 if (httpResponseMessage.IsSuccessStatusCode)
                 {
@@ -103,7 +105,7 @@ namespace UI.Controllers
             {
                 var httpClient = _httpClientFactory.CreateClient();
 
-                var httpResponseMessage = await httpClient.PutAsJsonAsync($"{_workPlanUrl}/WorkPlan/{id}", updateWorkPlanModel);
+                var httpResponseMessage = await httpClient.PutAsJsonAsync($"{_baseUrl.Api}/WorkPlan/{id}", updateWorkPlanModel);
 
                 if (httpResponseMessage.IsSuccessStatusCode)
                 {
@@ -124,7 +126,7 @@ namespace UI.Controllers
             {
                 var httpClient = _httpClientFactory.CreateClient();
 
-                var httpResponseMessage = await httpClient.DeleteAsync($"{_workPlanUrl}/WorkPlan/{id}");
+                var httpResponseMessage = await httpClient.DeleteAsync($"{_baseUrl.Api}/WorkPlan/{id}");
 
                 if(httpResponseMessage.IsSuccessStatusCode)
                 {

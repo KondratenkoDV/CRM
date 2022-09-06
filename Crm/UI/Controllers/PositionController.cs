@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using UI.Helpers;
 using UI.Models.Position;
 
 namespace UI.Controllers
@@ -8,12 +10,12 @@ namespace UI.Controllers
     {
         private readonly IHttpClientFactory _httpClientFactory;
 
-        private string _positionUrl;
+        private readonly ApiConfiguration _baseUrl;
 
-        public PositionController(IHttpClientFactory httpClientFactory, IConfiguration configuration)
+        public PositionController(IHttpClientFactory httpClientFactory, IOptions<ApiConfiguration> options)
         {
             _httpClientFactory = httpClientFactory;
-            _positionUrl = configuration.GetConnectionString("API");
+            _baseUrl = options.Value;
         }
 
         public async Task<ActionResult> CreatePosition(CreatePositionModel createPositionModel)
@@ -22,7 +24,7 @@ namespace UI.Controllers
             {
                 var httpClient = _httpClientFactory.CreateClient();
 
-                var httpResponseMessage = await httpClient.PostAsJsonAsync($"{_positionUrl}/Position/", createPositionModel);
+                var httpResponseMessage = await httpClient.PostAsJsonAsync($"{_baseUrl.Api}/Position/", createPositionModel);
 
                 if(httpResponseMessage.IsSuccessStatusCode)
                 {
@@ -49,7 +51,7 @@ namespace UI.Controllers
 
                 var selectingPositionModel = new SelectingPositionModel();
 
-                var httpResponseMessage = await httpClient.GetAsync($"{_positionUrl}/Position/{id}");
+                var httpResponseMessage = await httpClient.GetAsync($"{_baseUrl.Api}/Position/{id}");
 
                 if(httpResponseMessage.IsSuccessStatusCode)
                 {
@@ -74,7 +76,7 @@ namespace UI.Controllers
 
                 var selectingPositionModel = new SelectingPositionModel();
 
-                var httpResponseMessage = await httpClient.GetAsync($"{_positionUrl}/Position/{id}");
+                var httpResponseMessage = await httpClient.GetAsync($"{_baseUrl.Api}/Position/{id}");
 
                 if (httpResponseMessage.IsSuccessStatusCode)
                 {
@@ -101,7 +103,7 @@ namespace UI.Controllers
             {
                 var httpClient = _httpClientFactory.CreateClient();
 
-                var httpResponseMessage = await httpClient.PutAsJsonAsync($"{_positionUrl}/Position/{id}", updatePositionModel);
+                var httpResponseMessage = await httpClient.PutAsJsonAsync($"{_baseUrl.Api}/Position/{id}", updatePositionModel);
 
                 if(httpResponseMessage.IsSuccessStatusCode)
                 {
@@ -122,7 +124,7 @@ namespace UI.Controllers
             {
                 var httpClient = _httpClientFactory.CreateClient();
 
-                var httpResponseMessage = await httpClient.DeleteAsync($"{_positionUrl}/Position/{id}");
+                var httpResponseMessage = await httpClient.DeleteAsync($"{_baseUrl.Api}/Position/{id}");
 
                 if(httpResponseMessage.IsSuccessStatusCode)
                 {

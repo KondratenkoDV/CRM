@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using UI.Helpers;
 using UI.Models.Employee;
 
 namespace UI.Controllers
@@ -8,12 +10,12 @@ namespace UI.Controllers
     {
         private readonly IHttpClientFactory _httpClientFactory;
 
-        private string _employeeUrl;
+        private readonly ApiConfiguration _baseUrl;
 
-        public EmployeeController(IHttpClientFactory httpClientFactory, IConfiguration configuration)
+        public EmployeeController(IHttpClientFactory httpClientFactory, IOptions<ApiConfiguration> options)
         {
             _httpClientFactory = httpClientFactory;
-            _employeeUrl = configuration.GetConnectionString("API");
+            _baseUrl = options.Value;
         }
 
         public async Task<ActionResult> CreateEmployee(CreateEmployeeModel createEmployeeModel)
@@ -22,7 +24,7 @@ namespace UI.Controllers
             {
                 var httpClient = _httpClientFactory.CreateClient();
 
-                var httpResponseMessage = await httpClient.PostAsJsonAsync($"{_employeeUrl}/Employee/", createEmployeeModel);
+                var httpResponseMessage = await httpClient.PostAsJsonAsync($"{_baseUrl.Api}/Employee/", createEmployeeModel);
 
                 if(httpResponseMessage.IsSuccessStatusCode)
                 {
@@ -49,7 +51,7 @@ namespace UI.Controllers
 
                 List<SelectingEmployeeModel> selectingEmployeeModel = new();
 
-                var httpResponseMessage = await httpClient.GetAsync($"{_employeeUrl}/Employee/");
+                var httpResponseMessage = await httpClient.GetAsync($"{_baseUrl.Api}/Employee/");
 
                 if (httpResponseMessage.IsSuccessStatusCode)
                 {
@@ -74,7 +76,7 @@ namespace UI.Controllers
 
                 var selectingEmployeeModel = new SelectingEmployeeModel();
 
-                var httpResponseMessage = await httpClient.GetAsync($"{_employeeUrl}/Employee/{id}");
+                var httpResponseMessage = await httpClient.GetAsync($"{_baseUrl.Api}/Employee/{id}");
 
                 if(httpResponseMessage.IsSuccessStatusCode)
                 {
@@ -99,7 +101,7 @@ namespace UI.Controllers
 
                 var selectingEmployeeModel = new SelectingEmployeeModel();
 
-                var httpResponseMessage = await httpClient.GetAsync($"{_employeeUrl}/Employee/{id}");
+                var httpResponseMessage = await httpClient.GetAsync($"{_baseUrl.Api}/Employee/{id}");
 
                 if (httpResponseMessage.IsSuccessStatusCode)
                 {
@@ -128,7 +130,7 @@ namespace UI.Controllers
             {
                 var httpClient = _httpClientFactory.CreateClient();
 
-                var httpResponseMessage = await httpClient.PutAsJsonAsync($"{_employeeUrl}/Employee/{id}", updateEmployeeModel);
+                var httpResponseMessage = await httpClient.PutAsJsonAsync($"{_baseUrl.Api}/Employee/{id}", updateEmployeeModel);
 
                 if(httpResponseMessage.IsSuccessStatusCode)
                 {
@@ -149,7 +151,7 @@ namespace UI.Controllers
             {
                 var httpClient = _httpClientFactory.CreateClient();
 
-                var httpResponseMessage = await httpClient.DeleteAsync($"{_employeeUrl}/Employee/{id}");
+                var httpResponseMessage = await httpClient.DeleteAsync($"{_baseUrl.Api}/Employee/{id}");
 
                 if(httpResponseMessage.IsSuccessStatusCode)
                 {

@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using UI.Helpers;
 using UI.Models.Contract;
 
 namespace UI.Controllers
@@ -8,12 +10,12 @@ namespace UI.Controllers
     {
         private readonly IHttpClientFactory _httpClientFactory;
 
-        private string _contractUrl;
+        private readonly ApiConfiguration _baseUrl;
 
-        public ContractController(IHttpClientFactory httpClientFactory, IConfiguration configuration)
+        public ContractController(IHttpClientFactory httpClientFactory, IOptions<ApiConfiguration> options)
         {
             _httpClientFactory = httpClientFactory;
-            _contractUrl = configuration.GetConnectionString("API");
+            _baseUrl = options.Value;
         }
 
         public async Task<ActionResult> CreateContract(CreateContractModel createContractModel)
@@ -22,7 +24,7 @@ namespace UI.Controllers
             {
                 var httpClient = _httpClientFactory.CreateClient();
 
-                var httpResponseMessage = await httpClient.PostAsJsonAsync($"{_contractUrl}/Contract/", createContractModel);
+                var httpResponseMessage = await httpClient.PostAsJsonAsync($"{_baseUrl.Api}/Contract/", createContractModel);
 
                 if(httpResponseMessage.IsSuccessStatusCode)
                 {
@@ -49,7 +51,7 @@ namespace UI.Controllers
 
                 List<SelectingContractModel> selectingContractModel = new();
 
-                var httpResponseMessage = await httpClient.GetAsync($"{_contractUrl}/Contract/");
+                var httpResponseMessage = await httpClient.GetAsync($"{_baseUrl.Api}/Contract/");
 
                 if(httpResponseMessage.IsSuccessStatusCode)
                 {
@@ -74,7 +76,7 @@ namespace UI.Controllers
 
                 var selectingContractModel = new SelectingContractModel();
 
-                var httpResponseMessage = await httpClient.GetAsync($"{_contractUrl}/Contract/{id}");
+                var httpResponseMessage = await httpClient.GetAsync($"{_baseUrl.Api}/Contract/{id}");
 
                 if(httpResponseMessage.IsSuccessStatusCode)
                 {
@@ -99,7 +101,7 @@ namespace UI.Controllers
 
                 var selectingContractModel = new SelectingContractModel();
 
-                var httpResponseMessage = await httpClient.GetAsync($"{_contractUrl}/Contract/{id}");
+                var httpResponseMessage = await httpClient.GetAsync($"{_baseUrl.Api}/Contract/{id}");
 
                 if(httpResponseMessage.IsSuccessStatusCode)
                 {
@@ -129,7 +131,7 @@ namespace UI.Controllers
             {
                 var httpClient = _httpClientFactory.CreateClient();
 
-                var httpResponseMessage = await httpClient.PutAsJsonAsync($"{_contractUrl}/Contract/{id}", updateContractModel);
+                var httpResponseMessage = await httpClient.PutAsJsonAsync($"{_baseUrl.Api}/Contract/{id}", updateContractModel);
 
                 if (httpResponseMessage.IsSuccessStatusCode)
                 {
@@ -150,7 +152,7 @@ namespace UI.Controllers
             {
                 var httpClient = _httpClientFactory.CreateClient();
 
-                var httpResponseMessage = await httpClient.DeleteAsync($"{_contractUrl}/Contract/{id}");
+                var httpResponseMessage = await httpClient.DeleteAsync($"{_baseUrl.Api}/Contract/{id}");
 
                 if(httpResponseMessage.IsSuccessStatusCode)
                 {

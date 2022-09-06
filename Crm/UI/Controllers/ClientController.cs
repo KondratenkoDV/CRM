@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using System.Net.Http;
+using UI.Helpers;
 using UI.Models.Client;
 using UI.Models.Enum;
 
@@ -11,12 +12,12 @@ namespace UI.Controllers
     {
         private readonly IHttpClientFactory _httpClientFactory;
 
-        private readonly string _clientUrl;
+        private readonly ApiConfiguration _baseUrl;
 
-        public ClientController(IHttpClientFactory httpClientFactory, IConfiguration configuration)
+        public ClientController(IHttpClientFactory httpClientFactory, IOptions<ApiConfiguration> options)
         {
             _httpClientFactory = httpClientFactory;
-            _clientUrl = configuration.GetConnectionString("API");
+            _baseUrl = options.Value;
         }
 
         public async Task<ActionResult> CreateClient(CreateClientModel createClientModel)
@@ -25,7 +26,7 @@ namespace UI.Controllers
             {
                 var httpClient = _httpClientFactory.CreateClient();
 
-                var httpResponseMessage = await httpClient.PostAsJsonAsync($"{_clientUrl}/Client/", createClientModel);
+                var httpResponseMessage = await httpClient.PostAsJsonAsync($"{_baseUrl.Api}/Client/", createClientModel);
 
                 if(httpResponseMessage.IsSuccessStatusCode)
                 {
@@ -52,7 +53,7 @@ namespace UI.Controllers
 
                 List<SelectingClientModel> selectingClientModel = new();
 
-                var httpResponseMessage = await httpClient.GetAsync($"{_clientUrl}/Client/");
+                var httpResponseMessage = await httpClient.GetAsync($"{_baseUrl.Api}/Client/");
 
                 if(httpResponseMessage.IsSuccessStatusCode)
                 {
@@ -77,7 +78,7 @@ namespace UI.Controllers
 
                 var selectingClientModel = new SelectingClientModel();
 
-                var httpResponseMessage = await httpClient.GetAsync($"{_clientUrl}/Client/{id}");
+                var httpResponseMessage = await httpClient.GetAsync($"{_baseUrl.Api}/Client/{id}");
 
                 if(httpResponseMessage.IsSuccessStatusCode)
                 {
@@ -102,7 +103,7 @@ namespace UI.Controllers
 
                 var selectingClientModel = new SelectingClientModel();
 
-                var httpResponseMessage = await httpClient.GetAsync($"{_clientUrl}/Client/{id}");
+                var httpResponseMessage = await httpClient.GetAsync($"{_baseUrl.Api}/Client/{id}");
 
                 if (httpResponseMessage.IsSuccessStatusCode)
                 {
@@ -113,7 +114,7 @@ namespace UI.Controllers
 
                 var selectingEnumValueModel = new List<EnumValueModel>();
 
-                httpResponseMessage = await httpClient.GetAsync($"{_clientUrl}/EnumValue/");
+                httpResponseMessage = await httpClient.GetAsync($"{_baseUrl.Api}/EnumValue/");
 
                 if (httpResponseMessage.IsSuccessStatusCode)
                 {
@@ -148,7 +149,7 @@ namespace UI.Controllers
             {
                 var httpClient = _httpClientFactory.CreateClient();
 
-                var httpResponseMessage = await httpClient.PutAsJsonAsync($"{_clientUrl}/Client/{id}", updateClientModel);
+                var httpResponseMessage = await httpClient.PutAsJsonAsync($"{_baseUrl.Api}/Client/{id}", updateClientModel);
 
                 if(httpResponseMessage.IsSuccessStatusCode)
                 {
@@ -169,7 +170,7 @@ namespace UI.Controllers
             {
                 var httpClient = _httpClientFactory.CreateClient();
 
-                var httpResponseMessage = await httpClient.DeleteAsync($"{_clientUrl}/Client/{id}");
+                var httpResponseMessage = await httpClient.DeleteAsync($"{_baseUrl.Api}/Client/{id}");
 
                 if(httpResponseMessage.IsSuccessStatusCode)
                 {
@@ -192,7 +193,7 @@ namespace UI.Controllers
 
                 var selectingEnumValueModel = new List<EnumValueModel>();
 
-                var httpResponseMessage = await httpClient.GetAsync($"{_clientUrl}/EnumValue/");
+                var httpResponseMessage = await httpClient.GetAsync($"{_baseUrl.Api}/EnumValue/");
 
                 if (httpResponseMessage.IsSuccessStatusCode)
                 {

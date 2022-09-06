@@ -1,5 +1,4 @@
 ﻿@using UI.Models.Client
-@using UI.Enum
 
 @model UpdateClientModel
 @*
@@ -30,8 +29,7 @@
             <div class="col-md-10">
                 <select asp-for="NewСodeOfTheCountry"
                     class="form-control"
-                    asp-items="Html.GetEnumSelectList<CodeOfTheCountry>()">                    
-                    <option>Select code</option>
+                    asp-items="ViewBag.EnumValueModel">
                 </select>
             </div>
         </div>

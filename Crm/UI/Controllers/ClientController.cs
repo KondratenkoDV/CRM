@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
+using System.Net.Http;
 using UI.Models.Client;
+using UI.Models.Enum;
 
 namespace UI.Controllers
 {
@@ -108,6 +111,22 @@ namespace UI.Controllers
                     selectingClientModel = JsonConvert.DeserializeObject<SelectingClientModel>(clientResponse);
                 }
 
+                var selectingEnumValueModel = new List<EnumValueModel>();
+
+                httpResponseMessage = await httpClient.GetAsync($"{_clientUrl}/EnumValue/");
+
+                if (httpResponseMessage.IsSuccessStatusCode)
+                {
+                    var enumValueResponse = httpResponseMessage.Content.ReadAsStringAsync().Result;
+
+                    selectingEnumValueModel = JsonConvert.DeserializeObject<List<EnumValueModel>>(enumValueResponse);
+                }
+
+                ViewBag.EnumValueModel = selectingEnumValueModel.Select(e => new SelectListItem()
+                {
+                    Text = e.Name
+                });
+
                 return View(new UpdateClientModel()
                 {
                     NewName = selectingClientModel.SelectedName,
@@ -165,17 +184,42 @@ namespace UI.Controllers
             }
         }
 
+        public async Task<IActionResult> CreateFormClientView()
+        {
+            try
+            {
+                var httpClient = _httpClientFactory.CreateClient();
+
+                var selectingEnumValueModel = new List<EnumValueModel>();
+
+                var httpResponseMessage = await httpClient.GetAsync($"{_clientUrl}/EnumValue/");
+
+                if (httpResponseMessage.IsSuccessStatusCode)
+                {
+                    var enumValueResponse = httpResponseMessage.Content.ReadAsStringAsync().Result;
+
+                    selectingEnumValueModel = JsonConvert.DeserializeObject<List<EnumValueModel>>(enumValueResponse);
+                }
+
+                ViewBag.EnumValueModel = selectingEnumValueModel.Select(e => new SelectListItem()
+                {
+                    Text = e.Name
+                });
+
+                return View();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         public IActionResult Сhoice()
         {
             return View();
         }
 
         public IActionResult SelectingClientView()
-        {
-            return View();
-        }
-
-        public IActionResult CreateFormClientView()
         {
             return View();
         }

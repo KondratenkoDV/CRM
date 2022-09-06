@@ -1,5 +1,4 @@
 ﻿@using UI.Models.Client
-@using UI.Enum
 
 @model CreateClientModel
 @*
@@ -17,11 +16,12 @@
             <span asp-validation-for="Name" class="text-danger"></span>
         </div>
         <p></p>
+
         <div class="form-group">
             <label asp-for="СodeOfTheCountry" class="control-label"></label>
             <select asp-for="СodeOfTheCountry"
                     class="form-control"
-                    asp-items="Html.GetEnumSelectList<CodeOfTheCountry>()">
+                    asp-items="ViewBag.EnumValueModel">
                 <option>Select code</option>
             </select>
             <span asp-validation-for="СodeOfTheCountry" class="text-danger"></span>

@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using API.DTOs.Client;
 using Domain.Interfaces;
+using API.DTOs.Enum;
+using Domain.Enum;
+using API.Helpers.Enum;
 
 namespace API.Controllers
 {
@@ -124,6 +127,19 @@ namespace API.Controllers
                 return Ok(clientsDto);
             }
             catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet]
+        public ActionResult<List<EnumValueDto>> GetCodeOfTheCountry()
+        {
+            try
+            {
+                return Ok(EnumExtensions.GetValues<CodeOfTheCountry>());
+            }
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }

@@ -1,17 +1,18 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Moq;
 using Moq.Protected;
-using Newtonsoft.Json;
+using Moq;
+using System;
 using System.Net;
 using UI.Controllers;
 using UI.Helpers;
-using UI.Models.Client;
 using Xunit;
+using UI.Models.Contract;
+using Newtonsoft.Json;
 
 namespace UI.Tests.Controllers
 {
-    public class ClientControllerTests
+    public class ContractControllerTests
     {
         private Mock<HttpMessageHandler> GetMockHttpMessageHandler(HttpResponseMessage response)
         {
@@ -51,20 +52,20 @@ namespace UI.Tests.Controllers
             return mockOptions;
         }
 
-        private SelectingClientModel GetSelectingClientModel()
+        private SelectingContractModel GetSelectingContractModel()
         {
-            return new SelectingClientModel()
+            return new SelectingContractModel()
             {
                 Id = 1,
-                SelectedName = "Name",
-                SelectedСodeOfTheCountry = "380",
-                SelectedRegionCode = "00",
-                SelectedSubscriberNumber = "0000000"
+                Address = "Address",
+                Subject = "Subject",
+                Price = 0,
+                ClientId = 0
             };
         }
 
         [Fact]
-        public async void Task_When_CreateClient_Expect_ClientWasCreated()
+        public async void Task_When_CreateContract_Expect_ContractWasCreated()
         {
             // Arrange
 
@@ -79,19 +80,19 @@ namespace UI.Tests.Controllers
 
             var mockOptions = GetMockIOptions();
 
-            var clientController = new ClientController(mockClient.Object, mockOptions.Object);
+            var contractController = new ContractController(mockClient.Object, mockOptions.Object);
 
-            var createClientModel = new CreateClientModel()
+            var createContractModel = new CreateContractModel()
             {
-                Name = "Name",
-                СodeOfTheCountry = "380",
-                RegionCode = "00",
-                SubscriberNumber = "0000000"
+                Address = "Address",
+                Subject = "Subject",
+                Price = 0,
+                ClientId = 0
             };
 
             // Act
 
-            var result = await clientController.CreateClient(createClientModel) as ViewResult;
+            var result = await contractController.CreateContract(createContractModel) as ViewResult;
 
             // Assert
 
@@ -99,13 +100,13 @@ namespace UI.Tests.Controllers
         }
 
         [Fact]
-        public async void Task_When_AllClients_Expect_ClientsWasSelected()
+        public async void Task_When_AllContracts_Expect_ContractsWasSelected()
         {
             // Arrange
 
-            var expected = new List<SelectingClientModel>()
+            var expected = new List<SelectingContractModel>()
             {
-                GetSelectingClientModel()
+                GetSelectingContractModel()
             };
 
             var response = new HttpResponseMessage(HttpStatusCode.OK)
@@ -117,23 +118,23 @@ namespace UI.Tests.Controllers
 
             var mockOptions = GetMockIOptions();
 
-            var clientController = new ClientController(mockClient.Object, mockOptions.Object);
+            var contractController = new ContractController(mockClient.Object, mockOptions.Object);
 
             // Act
 
-            var result = await clientController.AllClients() as ViewResult;
+            var result = await contractController.AllContracts() as ViewResult;
 
             // Assert
 
-            Assert.NotEmpty(result.Model as IEnumerable<SelectingClientModel>);
+            Assert.NotEmpty(result.Model as IEnumerable<SelectingContractModel>);
         }
 
         [Fact]
-        public async void Task_When_SelectClient_Expect_ClientWasSelected()
+        public async void Task_When_SelectContract_Expect_ContractWasSelected()
         {
             // Arrange
 
-            var expected = GetSelectingClientModel();
+            var expected = GetSelectingContractModel();
 
             var response = new HttpResponseMessage(HttpStatusCode.OK)
             {
@@ -144,40 +145,40 @@ namespace UI.Tests.Controllers
 
             var mockOptions = GetMockIOptions();
 
-            var clientController = new ClientController(mockClient.Object, mockOptions.Object);
+            var contractController = new ContractController(mockClient.Object, mockOptions.Object);
 
             // Act
 
-            var result = await clientController.SelectClient(expected.Id) as ViewResult;
+            var result = await contractController.SelectContract(expected.Id) as ViewResult;
 
-            var actual = result.Model as SelectingClientModel;
+            var actual = result.Model as SelectingContractModel;
 
             // Assert
 
-            Assert.Equal(expected.SelectedName, actual.SelectedName);
+            Assert.Equal(expected.Address, actual.Address);
         }
 
         [Fact]
-        public async void Task_When_UpdateClient_Expect_ClientWasUpdate()
+        public async void Task_When_UpdateContract_Expect_ContractWasUpdate()
         {
             // Arrange
 
-            var selectingClientModel = GetSelectingClientModel();
+            var selectingContractModel = GetSelectingContractModel();
 
             var response = new HttpResponseMessage(HttpStatusCode.OK)
             {
-                Content = new StringContent(JsonConvert.SerializeObject(selectingClientModel))
+                Content = new StringContent(JsonConvert.SerializeObject(selectingContractModel))
             };
 
             var mockClient = GetMockIHttpClientFactory(GetMockHttpMessageHandler(response));
 
             var mockOptions = GetMockIOptions();
 
-            var clientController = new ClientController(mockClient.Object, mockOptions.Object);
+            var contractController = new ContractController(mockClient.Object, mockOptions.Object);
 
-            var viewResult = await clientController.UpdateClient(selectingClientModel.Id) as ViewResult;
+            var viewResult = await contractController.UpdateContract(selectingContractModel.Id) as ViewResult;
 
-            var updateClientModel = viewResult.Model as UpdateClientModel;
+            var updateContractModel = viewResult.Model as UpdateContractModel;
 
             response = new HttpResponseMessage(HttpStatusCode.OK)
             {
@@ -186,19 +187,19 @@ namespace UI.Tests.Controllers
 
             mockClient = GetMockIHttpClientFactory(GetMockHttpMessageHandler(response));
 
-            clientController = new ClientController(mockClient.Object, mockOptions.Object);
+            contractController = new ContractController(mockClient.Object, mockOptions.Object);
 
             // Act
 
-            var result = await clientController.UpdateClient(updateClientModel, selectingClientModel.Id) as OkObjectResult;
+            var result = await contractController.UpdateContract(updateContractModel, selectingContractModel.Id) as ViewResult;
 
             // Assert
 
-            Assert.Equal(response.StatusCode, result.Value);
+            Assert.Null(result);
         }
 
         [Fact]
-        public async void Task_When_DeleteClient_Expect_ClientWasDeleted()
+        public async void Task_When_DeleteContract_Expect_ContractWasDeleted()
         {
             // Arrange
 
@@ -213,36 +214,11 @@ namespace UI.Tests.Controllers
 
             var mockOptions = GetMockIOptions();
 
-            var clientController = new ClientController(mockClient.Object, mockOptions.Object);
+            var contractController = new ContractController(mockClient.Object, mockOptions.Object);
 
             // Act
 
-            var result = await clientController.DeleteClient(id) as ViewResult;
-
-            // Assert
-
-            Assert.Null(result);
-        }
-
-        [Fact]
-        public async void Task_When_CreateFormClientView_Expect_PassesEnumValues()
-        {
-            // Arrange
-
-            var response = new HttpResponseMessage(HttpStatusCode.OK)
-            {
-                StatusCode = HttpStatusCode.OK
-            };
-
-            var mockClient = GetMockIHttpClientFactory(GetMockHttpMessageHandler(response));
-
-            var mockOptions = GetMockIOptions();
-
-            var clientController = new ClientController(mockClient.Object, mockOptions.Object);
-
-            // Act
-
-            var result = await clientController.CreateFormClientView() as ViewResult;
+            var result = await contractController.DeleteContract(id) as ViewResult;
 
             // Assert
 

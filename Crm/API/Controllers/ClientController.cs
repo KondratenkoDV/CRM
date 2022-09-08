@@ -133,7 +133,7 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public ActionResult<List<EnumValueDto>> GetCodeOfTheCountry()
+        public ActionResult<List<ValueCodeOfTheCountryDto>> GetCodeOfTheCountry()
         {
             try
             {

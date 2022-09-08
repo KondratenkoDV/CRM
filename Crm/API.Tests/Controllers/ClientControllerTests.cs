@@ -5,6 +5,8 @@ using API.DTOs.Client;
 using Domain.Enum;
 using Moq;
 using Domain.Interfaces;
+using Microsoft.AspNetCore.Mvc;
+using API.DTOs.Enum;
 
 namespace API.Tests.Controllers
 {
@@ -171,6 +173,26 @@ namespace API.Tests.Controllers
             // Assert
 
             mock.Verify(c => c.AllAsync(), Times.Once());
+        }
+
+        [Fact]
+        public void When_GetCodeOfTheCountry_Expect_ValueCodeOfTheCountryWasSelected()
+        {
+            // Arrange
+
+            var mock = new Mock<IClientService>();
+
+            var clientController = new ClientController(mock.Object);
+
+            // Act
+
+            var valueCodeOfTheCountry = clientController.GetCodeOfTheCountry();
+
+            var result = valueCodeOfTheCountry.Result as ObjectResult;
+
+            // Assert
+
+            Assert.NotEmpty(result.Value as List<ValueCodeOfTheCountryDto>);
         }
     }
 }

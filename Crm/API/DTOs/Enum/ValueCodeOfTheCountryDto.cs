@@ -1,6 +1,6 @@
 ﻿namespace API.DTOs.Enum
 {
-    public class EnumValueDto
+    public class ValueCodeOfTheCountryDto
     {
         public string Name { get; set; }
 

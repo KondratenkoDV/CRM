@@ -4,13 +4,13 @@ namespace API.Helpers.Enum
 {
     public static class EnumExtensions
     {
-        public static List<EnumValueDto> GetValues<T>()
+        public static List<ValueCodeOfTheCountryDto> GetValues<T>()
         {
-            var valuesEnum = new List<EnumValueDto>();
+            var valuesEnum = new List<ValueCodeOfTheCountryDto>();
 
             foreach (var enumValue in System.Enum.GetValues(typeof(T)))
             {
-                valuesEnum.Add(new EnumValueDto()
+                valuesEnum.Add(new ValueCodeOfTheCountryDto()
                 {
                     Name = System.Enum.GetName(typeof(T), enumValue),
                     Value = (int)enumValue

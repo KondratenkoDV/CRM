@@ -1,6 +1,6 @@
 ﻿namespace UI.Models.Enum
 {
-    public class EnumValueModel
+    public class ValueCodeOfTheCountryModel
     {
         public string Name { get; set; }
 

@@ -132,7 +132,7 @@ namespace API.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpGet("GetCodeOfTheCountry")]
         public ActionResult<List<ValueCodeOfTheCountryDto>> GetCodeOfTheCountry()
         {
             try

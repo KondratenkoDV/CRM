@@ -1,6 +1,7 @@
 ﻿@using UI.Models.Client
 
 @model CreateClientModel
+
 @*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
@@ -21,7 +22,7 @@
             <label asp-for="СodeOfTheCountry" class="control-label"></label>
             <select asp-for="СodeOfTheCountry"
                     class="form-control"
-                    asp-items="ViewBag.EnumValueModel">
+                    asp-items="ViewBag.CodeOfTheCountry">
                 <option>Select code</option>
             </select>
             <span asp-validation-for="СodeOfTheCountry" class="text-danger"></span>

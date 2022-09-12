@@ -87,6 +87,8 @@ namespace UI.Controllers
                     selectingClientModel = JsonConvert.DeserializeObject<SelectingClientModel>(clientResponse);
                 }
 
+                ViewBag.CodeOfTheCountry = await GetValueCodeOfTheCountry();
+
                 return View(selectingClientModel);
             }
             catch(Exception ex)
@@ -112,21 +114,7 @@ namespace UI.Controllers
                     selectingClientModel = JsonConvert.DeserializeObject<SelectingClientModel>(clientResponse);
                 }
 
-                var selectingEnumValueModel = new List<EnumValueModel>();
-
-                httpResponseMessage = await httpClient.GetAsync($"{_baseUrl.Api}/EnumValue/");
-
-                if (httpResponseMessage.IsSuccessStatusCode)
-                {
-                    var enumValueResponse = httpResponseMessage.Content.ReadAsStringAsync().Result;
-
-                    selectingEnumValueModel = JsonConvert.DeserializeObject<List<EnumValueModel>>(enumValueResponse);
-                }
-
-                ViewBag.EnumValueModel = selectingEnumValueModel.Select(e => new SelectListItem()
-                {
-                    Text = e.Name
-                });
+                ViewBag.CodeOfTheCountry = await GetValueCodeOfTheCountry();
 
                 return View(new UpdateClientModel()
                 {
@@ -185,31 +173,45 @@ namespace UI.Controllers
             }
         }
 
-        public async Task<IActionResult> CreateFormClientView()
+        public async Task<IEnumerable<SelectListItem>> GetValueCodeOfTheCountry()
         {
             try
             {
                 var httpClient = _httpClientFactory.CreateClient();
 
-                var selectingEnumValueModel = new List<EnumValueModel>();
+                var selectingEnumValueModel = new List<ValueCodeOfTheCountryModel>();
 
-                var httpResponseMessage = await httpClient.GetAsync($"{_baseUrl.Api}/EnumValue/");
+                var httpResponseMessage = await httpClient.GetAsync($"{_baseUrl.Api}/Client/GetCodeOfTheCountry/");
 
                 if (httpResponseMessage.IsSuccessStatusCode)
                 {
                     var enumValueResponse = httpResponseMessage.Content.ReadAsStringAsync().Result;
 
-                    selectingEnumValueModel = JsonConvert.DeserializeObject<List<EnumValueModel>>(enumValueResponse);
+                    selectingEnumValueModel = JsonConvert.DeserializeObject<List<ValueCodeOfTheCountryModel>>(enumValueResponse);
                 }
 
-                ViewBag.EnumValueModel = selectingEnumValueModel.Select(e => new SelectListItem()
+                var enumValueModelList = selectingEnumValueModel.Select(e => new SelectListItem()
                 {
                     Text = e.Name
                 });
 
-                return View();
+                return enumValueModelList;
             }
             catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<IActionResult> CreateFormClientView()
+        {
+            try
+            {
+                ViewBag.CodeOfTheCountry = await GetValueCodeOfTheCountry();
+
+                return View();
+            }
+            catch(Exception ex)
             {
                 return BadRequest(ex.Message);
             }

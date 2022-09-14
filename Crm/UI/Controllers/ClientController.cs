@@ -87,8 +87,6 @@ namespace UI.Controllers
                     selectingClientModel = JsonConvert.DeserializeObject<SelectingClientModel>(clientResponse);
                 }
 
-                ViewBag.CodeOfTheCountry = await GetValueCodeOfTheCountry();
-
                 return View(selectingClientModel);
             }
             catch(Exception ex)
@@ -114,15 +112,7 @@ namespace UI.Controllers
                     selectingClientModel = JsonConvert.DeserializeObject<SelectingClientModel>(clientResponse);
                 }
 
-                ViewBag.CodeOfTheCountry = await GetValueCodeOfTheCountry();
-
-                return View(new UpdateClientModel()
-                {
-                    NewName = selectingClientModel.SelectedName,
-                    NewСodeOfTheCountry = selectingClientModel.SelectedСodeOfTheCountry,
-                    NewRegionCode = selectingClientModel.SelectedRegionCode,
-                    NewSubscriberNumber = selectingClientModel.SelectedSubscriberNumber
-                });
+                return RedirectToAction("UpdateClientView", selectingClientModel);
             }
             catch(Exception ex)
             {
@@ -200,6 +190,28 @@ namespace UI.Controllers
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<ActionResult> UpdateClientView(SelectingClientModel selectingClientModel)
+        {
+            try
+            {
+                ViewBag.Id = selectingClientModel.Id;
+
+                ViewBag.CodeOfTheCountry = await GetValueCodeOfTheCountry();
+
+                return View(new UpdateClientModel()
+                {
+                    NewName = selectingClientModel.SelectedName,
+                    NewСodeOfTheCountry = selectingClientModel.SelectedСodeOfTheCountry,
+                    NewRegionCode = selectingClientModel.SelectedRegionCode,
+                    NewSubscriberNumber = selectingClientModel.SelectedSubscriberNumber
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
         }
 

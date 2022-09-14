@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Options;
 using Moq;
 using Moq.Protected;
@@ -28,11 +29,10 @@ namespace UI.Tests.Controllers
 
         private Mock<IHttpClientFactory> GetMockIHttpClientFactory(Mock<HttpMessageHandler> httpMessageHandler)
         {
-            var httpClient = new HttpClient(httpMessageHandler.Object);
-
             var mockClient = new Mock<IHttpClientFactory>();
 
-            mockClient.Setup(c => c.CreateClient(It.IsAny<string>())).Returns(httpClient);
+            mockClient.Setup(c => c.CreateClient(It.IsAny<string>()))
+                .Returns((string s) => new HttpClient(httpMessageHandler.Object));
 
             return mockClient;
         }

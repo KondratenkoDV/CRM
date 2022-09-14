@@ -4,10 +4,12 @@ using Microsoft.Extensions.Options;
 using Moq;
 using Moq.Protected;
 using Newtonsoft.Json;
+using System.Collections;
 using System.Net;
 using UI.Controllers;
 using UI.Helpers;
 using UI.Models.Client;
+using UI.Models.Enum;
 using Xunit;
 
 namespace UI.Tests.Controllers
@@ -158,7 +160,7 @@ namespace UI.Tests.Controllers
         }
 
         [Fact]
-        public async void Task_When_UpdateClient_Expect_ClientWasUpdate()
+        public async void Task_When_UpdateClient_Expect_ClientWasSelected()
         {
             // Arrange
 
@@ -175,26 +177,48 @@ namespace UI.Tests.Controllers
 
             var clientController = new ClientController(mockClient.Object, mockOptions.Object);
 
-            var viewResult = await clientController.UpdateClient(selectingClientModel.Id) as ViewResult;
-
-            var updateClientModel = viewResult.Model as UpdateClientModel;
-
-            response = new HttpResponseMessage(HttpStatusCode.OK)
-            {
-                StatusCode = HttpStatusCode.OK,
-            };
-
-            mockClient = GetMockIHttpClientFactory(GetMockHttpMessageHandler(response));
-
-            clientController = new ClientController(mockClient.Object, mockOptions.Object);
-
             // Act
 
-            var result = await clientController.UpdateClient(updateClientModel, selectingClientModel.Id) as OkObjectResult;
+            var result = await clientController.UpdateClient(selectingClientModel.Id) as RedirectToActionResult;
 
             // Assert
 
-            Assert.Equal(response.StatusCode, result.Value);
+            Assert.Equal("UpdateClientView", result.ActionName );
+        }
+
+        [Fact]
+        public async void Task_When_UpdateClient_Expect_ClientWasUpdate()
+        {
+            // Arrange
+
+            int id = 1;
+
+            var updateClientModel = new UpdateClientModel()
+            {
+                NewName = "NewName",
+                NewСodeOfTheCountry = "830",
+                NewRegionCode = "11",
+                NewSubscriberNumber = "1111111"
+            };
+
+            var response = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(JsonConvert.SerializeObject(updateClientModel))
+            };
+
+            var mockClient = GetMockIHttpClientFactory(GetMockHttpMessageHandler(response));
+
+            var mockOptions = GetMockIOptions();
+
+            var clientController = new ClientController(mockClient.Object, mockOptions.Object);
+
+            // Act
+
+            var result = await clientController.UpdateClient(updateClientModel, id) as RedirectToActionResult;
+
+            // Assert
+
+            Assert.Equal("Сhoice", result.ActionName);
         }
 
         [Fact]
@@ -217,11 +241,11 @@ namespace UI.Tests.Controllers
 
             // Act
 
-            var result = await clientController.DeleteClient(id) as ViewResult;
+            var result = await clientController.DeleteClient(id) as RedirectToActionResult;
 
             // Assert
 
-            Assert.Null(result);
+            Assert.Equal("Сhoice", result.ActionName);
         }
 
         [Fact]
@@ -229,9 +253,11 @@ namespace UI.Tests.Controllers
         {
             // Arrange
 
+            var valueСodeOfTheCountry = new List<ValueCodeOfTheCountryModel>();
+
             var response = new HttpResponseMessage(HttpStatusCode.OK)
             {
-                StatusCode = HttpStatusCode.OK
+                Content = new StringContent(JsonConvert.SerializeObject(valueСodeOfTheCountry))
             };
 
             var mockClient = GetMockIHttpClientFactory(GetMockHttpMessageHandler(response));
@@ -244,9 +270,11 @@ namespace UI.Tests.Controllers
 
             var result = await clientController.CreateFormClientView() as ViewResult;
 
+            var expected = result.ViewData as IEnumerable;
+
             // Assert
 
-            Assert.Null(result);
+            Assert.NotEmpty(expected);
         }
     }
 }
